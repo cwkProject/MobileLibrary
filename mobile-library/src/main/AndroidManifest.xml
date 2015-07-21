@@ -1,0 +1,16 @@
+<manifest
+    package="org.mobile.library"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application
+        android:name="org.mobile.util.ContextUtil"
+        android:allowBackup="true">
+        <receiver android:name="org.mobile.receiver.ApplicationVersionDownloadReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.DOWNLOAD_COMPLETE"/>
+            </intent-filter>
+        </receiver>
+
+    </application>
+
+</manifest>

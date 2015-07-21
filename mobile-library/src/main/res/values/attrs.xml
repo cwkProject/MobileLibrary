@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 车型选择列表 -->
+    <string-array name="vehicle_type_select_list">
+        <item>低栏挂车</item>
+        <item>高栏挂车</item>
+        <item>平板挂车</item>
+        <item>低栏货车</item>
+        <item>半高栏货车</item>
+        <item>高栏货车</item>
+        <item>厢车</item>
+        <item>半封闭货车</item>
+        <item>冷藏车</item>
+    </string-array>
+
+    <!-- 车长选择列表 -->
+    <string-array name="vehicle_length_select_list">
+        <item>4.2</item>
+        <item>4.5</item>
+        <item>5.2</item>
+        <item>6.2</item>
+        <item>6.8</item>
+        <item>7.2</item>
+        <item>8.2</item>
+        <item>9.6</item>
+        <item>11.7</item>
+        <item>12.5</item>
+        <item>13</item>
+        <item>13.5</item>
+        <item>14</item>
+        <item>17</item>
+        <item>17.5</item>
+        <item>18</item>
+        <item>22</item>
+    </string-array>
+
+    <!-- 车牌选择列表 -->
+    <string-array name="vehicle_plate_select_list">
+        <item>京</item>
+        <item>津</item>
+        <item>冀</item>
+        <item>晋</item>
+        <item>蒙</item>
+        <item>辽</item>
+        <item>吉</item>
+        <item>黑</item>
+        <item>沪</item>
+        <item>苏</item>
+        <item>浙</item>
+        <item>皖</item>
+        <item>闽</item>
+        <item>赣</item>
+        <item>鲁</item>
+        <item>豫</item>
+        <item>鄂</item>
+        <item>湘</item>
+        <item>粤</item>
+        <item>桂</item>
+        <item>琼</item>
+        <item>渝</item>
+        <item>川</item>
+        <item>黔</item>
+        <item>滇</item>
+        <item>藏</item>
+        <item>陕</item>
+        <item>甘</item>
+        <item>青</item>
+        <item>宁</item>
+        <item>新</item>
+        <item>台</item>
+        <item>港</item>
+        <item>澳</item>
+    </string-array>
+
+</resources>

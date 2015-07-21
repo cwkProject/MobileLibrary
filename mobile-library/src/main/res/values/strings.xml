@@ -1,0 +1,23 @@
+<resources>
+
+    <string name="app_name">MobileLibrary</string>
+    <string name="web_view_spinner_progress_dialog_message">正在加载...</string>
+    <string name="web_view_load_error_body">加载失败，请检查网络并重试</string>
+    <string name="web_view_load_error_title">error</string>
+
+    <string name="no_network">网络连接不可用</string>
+
+    <string name="update_now_version_latest">当前应用是最新版本</string>
+    <string name="update_now_version_alert">是否更新到最新版</string>
+    <string name="update_now_version_old">存在新版本</string>
+    <string name="update_now_version_loading">检查更新中...</string>
+    <string name="update_now_version_error">检查失败，请检查网络状态</string>
+
+    <string name="button_ok">确定</string>
+    <string name="button_cancel">取消</string>
+    <string name="no_sdcard">SD卡不存在或不可写</string>
+
+    <string name="entire_country">全国</string>
+    <string name="back">返回</string>
+
+</resources>

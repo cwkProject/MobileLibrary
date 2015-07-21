@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="login_error_parameter">用户名密码错误</string>
+    <string name="login_error_field_required">登录请求失败</string>
+    <string name="login_loading">登录中...</string>
+</resources>
