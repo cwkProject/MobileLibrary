@@ -3,9 +3,9 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <application
-        android:name="org.mobile.util.ContextUtil"
+        android:name=".util.ContextUtil"
         android:allowBackup="true">
-        <receiver android:name="org.mobile.receiver.ApplicationVersionDownloadReceiver">
+        <receiver android:name=".receiver.ApplicationVersionDownloadReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.DOWNLOAD_COMPLETE"/>
             </intent-filter>
