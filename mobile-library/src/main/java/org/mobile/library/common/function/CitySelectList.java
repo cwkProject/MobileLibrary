@@ -6,17 +6,18 @@ package org.mobile.library.common.function;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
-import android.widget.TextView;
 
 import org.mobile.library.R;
-import org.mobile.library.adapter.SelectListAdapterFactory;
 import org.mobile.library.database.city.CityConst;
+import org.mobile.library.database.city.CityOperator;
+import org.mobile.library.model.function.ISelectList;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -26,12 +27,22 @@ import java.util.Map;
  * @version 1.0 2015/7/18
  * @since 1.0
  */
-public class CitySelectList {
+public class CitySelectList implements ISelectList {
 
     /**
      * 日志标签前缀
      */
     private static final String LOG_TAG = "CitySelectDrawer.";
+
+    /**
+     * 表示选中第一条，及父级选项的代码
+     */
+    private static final int FIRST_SELECT = 0;
+
+    /**
+     * 表示选中返回的代码
+     */
+    private static final int BACK_SELECT = -1;
 
     /**
      * 子控件集合
@@ -48,26 +59,6 @@ public class CitySelectList {
         public ListView selectListView = null;
 
         /**
-         * 列表头布局
-         */
-        public View headView = null;
-
-        /**
-         * 列表头文本控件
-         */
-        public TextView headTextView = null;
-
-        /**
-         * 列表尾布局
-         */
-        public View footView = null;
-
-        /**
-         * 列表尾文本控件
-         */
-        public TextView footTextView = null;
-
-        /**
          * 已选择的省
          */
         public Map<String, Object> province = null;
@@ -81,6 +72,16 @@ public class CitySelectList {
          * 已选择的区
          */
         public Map<String, Object> district = null;
+
+        /**
+         * 省份数据适配器
+         */
+        private SimpleAdapter provinceAdapter = null;
+
+        /**
+         * 城市数据库工具
+         */
+        private CityOperator cityOperator = null;
     }
 
     /**
@@ -102,20 +103,6 @@ public class CitySelectList {
     }
 
     /**
-     * 城市选择取消回调
-     *
-     * @author 超悟空
-     * @version 1.0 2015/7/17
-     * @since 1.0
-     */
-    public interface CitySelectCanceledListener {
-        /**
-         * 城市选择取消
-         */
-        void onCitySelectCancel();
-    }
-
-    /**
      * 上下文
      */
     private Context context = null;
@@ -129,11 +116,6 @@ public class CitySelectList {
      * 城市选择完成回调
      */
     private CitySelectFinishedListener citySelectFinishedListener = null;
-
-    /**
-     * 城市选择取消回调
-     */
-    private CitySelectCanceledListener citySelectCanceledListener = null;
 
     /**
      * 构造函数
@@ -161,23 +143,11 @@ public class CitySelectList {
     }
 
     /**
-     * 设置城市选择取消监听器
-     *
-     * @param citySelectCanceledListener 监听器实例
-     */
-    public void setCitySelectCanceledListener(CitySelectCanceledListener
-                                                      citySelectCanceledListener) {
-        this.citySelectCanceledListener = citySelectCanceledListener;
-    }
-
-    /**
      * 初始化
      */
     private void init() {
         // 初始化控件集
         initViewHolder();
-        // 初始化输入框选择响应
-        initSelectEdit();
     }
 
     /**
@@ -185,71 +155,27 @@ public class CitySelectList {
      */
     private void initViewHolder() {
 
-        // 列表头
-        // 创建头布局
-        viewHolder.headView = LayoutInflater.from(context).inflate(R.layout.only_text_list_item,
-                null, false);
-        // 列表头文本框
-        viewHolder.headTextView = (TextView) viewHolder.headView.findViewById(R.id
-                .only_text_list_item_textView);
-        // 列表尾
-        viewHolder.footView = LayoutInflater.from(context).inflate(R.layout.only_text_list_item,
-                null, false);
-        // 列表尾文本框
-        viewHolder.footTextView = (TextView) viewHolder.footView.findViewById(R.id
-                .only_text_list_item_textView);
-    }
+        // 数据库工具
+        viewHolder.cityOperator = new CityOperator(context);
 
-    /**
-     * 初始化输入框选择响应
-     */
-    private void initSelectEdit() {
+        // 省份数据集
+        List<Map<String, Object>> provinceList = viewHolder.cityOperator.getProvinceList();
+        // 加入头数据
+        Map<String, Object> map = new HashMap<>();
 
-        // 初始化列表头点击事件
-        viewHolder.headView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.i(LOG_TAG + "initSelectEdit", "list head is clicked");
-                // 选择结束
-                selectFinish();
-            }
-        });
+        map.put(CityConst.NAME, context.getString(R.string.entire_country));
+        map.put(CityConst.CODE, FIRST_SELECT);
+        provinceList.add(0, map);
 
-        // 添加头布局
-        viewHolder.selectListView.addHeaderView(viewHolder.headView);
-
-        // 初始化列表尾文本
-        viewHolder.footTextView.setText(R.string.back);
-
-        // 初始化列表尾点击事件
-        viewHolder.footView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.i(LOG_TAG + "initSelectEdit", "list foot is clicked");
-                // 回到上级列表
-
-                if (viewHolder.province == null) {
-                    // 当前为省份列表，取消选择
-                    selectCancel();
-                }
-
-                if (viewHolder.city == null) {
-                    // 当前为城市列表，回到省份列表
-                    selectProvince();
-                } else {
-                    // 当前为区列表，回到城市列表
-                    selectCity();
-                }
-            }
-        });
-
-        // 添加尾布局
-        viewHolder.selectListView.addFooterView(viewHolder.footView);
+        // 省份数据适配器
+        viewHolder.provinceAdapter = new SimpleAdapter(context, provinceList, R.layout
+                .only_text_list_item, new String[]{CityConst.NAME}, new int[]{R.id.only_text_list_item_textView});
     }
 
     /**
      * 配置选择列表并绑定选择事件
      */
+    @Override
     public void selectSetting() {
         Log.i(LOG_TAG + "selectSetting", "Select start");
 
@@ -267,22 +193,23 @@ public class CitySelectList {
         viewHolder.city = null;
         viewHolder.district = null;
 
-        // 设置头文本内容
-        viewHolder.headTextView.setText(R.string.entire_country);
-
-        // 获取数据源适配器
-        final SimpleAdapter adapter = SelectListAdapterFactory.CreateSimpleAdapter(context,
-                SelectListAdapterFactory.DataType.PROVINCE, 0);
-        Log.i(LOG_TAG + "selectProvince", "adapter reference is " + adapter.hashCode());
         // 重置列表适配器
-        viewHolder.selectListView.setAdapter(adapter);
+        viewHolder.selectListView.setAdapter(viewHolder.provinceAdapter);
 
         // 重置选中事件
         viewHolder.selectListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                if (position == 0) {
+                    Log.i(LOG_TAG + "selectProvince", "list head is clicked");
+                    // 选择结束
+                    selectFinish();
+                }
+
                 // 设置文本结果
-                viewHolder.province = (Map<String, Object>) adapter.getItem(position - 1);
+                viewHolder.province = (Map<String, Object>) viewHolder.provinceAdapter.getItem
+                        (position);
                 Log.i(LOG_TAG + "selectProvince", "select position is " + position);
                 Log.i(LOG_TAG + "selectProvince", "select province reference is " + viewHolder
                         .province.hashCode());
@@ -305,13 +232,29 @@ public class CitySelectList {
         viewHolder.city = null;
         viewHolder.district = null;
 
-        // 设置头文本内容
-        viewHolder.headTextView.setText(name);
+        // 省份数据集
+        List<Map<String, Object>> cityList = viewHolder.cityOperator.getCityList(code);
+
+        // 加入头数据
+        Map<String, Object> map = new HashMap<>();
+
+        map.put(CityConst.NAME, name);
+        map.put(CityConst.CODE, FIRST_SELECT);
+        cityList.add(0, map);
+
+        // 加入尾数据
+        map = new HashMap<>();
+
+        map.put(CityConst.NAME, context.getString(R.string.back));
+        map.put(CityConst.CODE, BACK_SELECT);
+        cityList.add(map);
 
         // 获取数据源适配器
-        final SimpleAdapter adapter = SelectListAdapterFactory.CreateSimpleAdapter(context,
-                SelectListAdapterFactory.DataType.CITY, code);
+        final SimpleAdapter adapter = new SimpleAdapter(context, cityList, R.layout
+                .only_text_list_item, new String[]{CityConst.NAME}, new int[]{R.id.only_text_list_item_textView});
+
         Log.i(LOG_TAG + "selectCity", "adapter reference is " + adapter.hashCode());
+
         // 重置列表适配器
         viewHolder.selectListView.setAdapter(adapter);
 
@@ -319,8 +262,21 @@ public class CitySelectList {
         viewHolder.selectListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (position == 0) {
+                    Log.i(LOG_TAG + "selectCity", "list head is clicked");
+                    // 选择结束
+                    selectFinish();
+                    return;
+                }
+
+                if (position == parent.getCount() - 1) {
+                    // 返回省份列表
+                    selectProvince();
+                    return;
+                }
+
                 // 设置文本结果
-                viewHolder.city = (Map<String, Object>) adapter.getItem(position - 1);
+                viewHolder.city = (Map<String, Object>) adapter.getItem(position);
                 Log.i(LOG_TAG + "selectCity", "select position is " + position);
                 Log.i(LOG_TAG + "selectCity", "select city reference is " + viewHolder.city
                         .hashCode());
@@ -341,13 +297,29 @@ public class CitySelectList {
         // 初始化参数
         viewHolder.district = null;
 
-        // 设置头文本内容
-        viewHolder.headTextView.setText(name);
+        // 省份数据集
+        List<Map<String, Object>> districtList = viewHolder.cityOperator.getDistrictList(code);
+
+        // 加入头数据
+        Map<String, Object> map = new HashMap<>();
+
+        map.put(CityConst.NAME, name);
+        map.put(CityConst.CODE, FIRST_SELECT);
+        districtList.add(0, map);
+
+        // 加入尾数据
+        map = new HashMap<>();
+
+        map.put(CityConst.NAME, context.getString(R.string.back));
+        map.put(CityConst.CODE, BACK_SELECT);
+        districtList.add(map);
 
         // 获取数据源适配器
-        final SimpleAdapter adapter = SelectListAdapterFactory.CreateSimpleAdapter(context,
-                SelectListAdapterFactory.DataType.DISTRICT, code);
-        Log.i(LOG_TAG + "selectDistrict", "adapter reference is " + adapter.hashCode());
+        final SimpleAdapter adapter = new SimpleAdapter(context, districtList, R.layout
+                .only_text_list_item, new String[]{CityConst.NAME}, new int[]{R.id.only_text_list_item_textView});
+
+        Log.i(LOG_TAG + "selectCity", "adapter reference is " + adapter.hashCode());
+
         // 重置列表适配器
         viewHolder.selectListView.setAdapter(adapter);
 
@@ -355,8 +327,22 @@ public class CitySelectList {
         viewHolder.selectListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                if (position == 0) {
+                    Log.i(LOG_TAG + "selectCity", "list head is clicked");
+                    // 选择结束
+                    selectFinish();
+                    return;
+                }
+
+                if (position == parent.getCount() - 1) {
+                    // 返回城市列表
+                    selectCity();
+                    return;
+                }
+
                 // 设置文本结果
-                viewHolder.district = (Map<String, Object>) adapter.getItem(position - 1);
+                viewHolder.district = (Map<String, Object>) adapter.getItem(position);
                 Log.i(LOG_TAG + "selectDistrict", "select position is " + position);
                 Log.i(LOG_TAG + "selectDistrict", "select district reference is " + viewHolder
                         .district.hashCode());
@@ -378,15 +364,6 @@ public class CitySelectList {
                     .entire_country), viewHolder.city != null ? (String) viewHolder.city.get
                     (CityConst.NAME) : null, viewHolder.district != null ? (String) viewHolder
                     .district.get(CityConst.NAME) : null);
-        }
-    }
-
-    /**
-     * 选择取消
-     */
-    private void selectCancel() {
-        if (citySelectCanceledListener != null) {
-            citySelectCanceledListener.onCitySelectCancel();
         }
     }
 }

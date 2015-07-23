@@ -28,7 +28,10 @@ public class CityDatabase {
      */
     public static void copyDatabase(Context context) {
         Log.i(LOG_TAG + "copyDatabase", "copyDatabase() is invoked");
-        if (!context.getDatabasePath(CityConst.DB_NAME).getAbsoluteFile().exists()) {
+        CitySQLiteHelper citySQLiteHelper = new CitySQLiteHelper(context);
+
+        if (!context.getDatabasePath(CityConst.DB_NAME).getAbsoluteFile().exists() || new
+                CitySQLiteHelper(context).isEmpty()) {
             // 数据库不存在
             Log.i(LOG_TAG + "copyDatabase", "no database");
             // 复制数据库
@@ -36,6 +39,9 @@ public class CityDatabase {
             try {
                 //欲导入的数据库
                 Log.i(LOG_TAG + "copyDatabase", "copy database begin");
+                Log.i(LOG_TAG + "copyDatabase", "create database path");
+                citySQLiteHelper.getReadableDatabase().close();
+
                 InputStream in = context.getAssets().open(CityConst.DB_NAME);
                 Log.i(LOG_TAG + "copyDatabase", "InputStream open");
                 FileOutputStream out = new FileOutputStream(context.getDatabasePath(CityConst

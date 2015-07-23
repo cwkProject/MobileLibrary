@@ -4,6 +4,7 @@ package org.mobile.library.database.city;
  */
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
@@ -35,5 +36,24 @@ public class CitySQLiteHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         Log.i(LOG_TAG + "onUpgrade", "onUpgrade is invoked");
+    }
+
+    /**
+     * 判断数据库是否为空
+     *
+     * @return true表示为空
+     */
+    public boolean isEmpty() {
+        String sql = String.format("select count(*) from sqlite_master where type='table' and " +
+                "name='%s'", CityConst.PROVINCE_TABLE);
+        Cursor cursor = getReadableDatabase().rawQuery(sql, null);
+        if (cursor.moveToNext()) {
+            if (cursor.getInt(0) > 0) {
+                return false;
+            }
+        }
+        cursor.close();
+
+        return true;
     }
 }

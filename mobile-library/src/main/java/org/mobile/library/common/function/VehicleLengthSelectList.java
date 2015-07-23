@@ -4,14 +4,11 @@ package org.mobile.library.common.function;
  */
 
 import android.content.Context;
-import android.util.Log;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListAdapter;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import org.mobile.library.adapter.SelectListAdapterFactory;
-import org.mobile.library.model.operate.DataChangeObserver;
+import org.mobile.library.R;
+import org.mobile.library.model.function.BaseArraySelectList;
 
 /**
  * 车长选择抽屉列表
@@ -20,27 +17,12 @@ import org.mobile.library.model.operate.DataChangeObserver;
  * @version 1.0 2015/7/18
  * @since 1.0
  */
-public class VehicleLengthSelectList {
+public class VehicleLengthSelectList extends BaseArraySelectList {
 
     /**
-     * 日志标签前缀
+     * 车长数据适配器
      */
-    private static final String LOG_TAG = "VehicleLengthSelectList.";
-
-    /**
-     * 抽屉布局中的选择列表
-     */
-    private ListView selectListView = null;
-
-    /**
-     * 上下文
-     */
-    private Context context = null;
-
-    /**
-     * 选择结果回调
-     */
-    private DataChangeObserver<String> dataChangeObserver = null;
+    private ArrayAdapter<String> vehicleLengthAdapter = null;
 
     /**
      * 构造函数
@@ -48,44 +30,21 @@ public class VehicleLengthSelectList {
      * @param context        上下文
      * @param selectListView 选择列表
      */
-    public VehicleLengthSelectList(Context context, ListView
-            selectListView) {
-        this.selectListView = selectListView;
-        this.context = context;
+    public VehicleLengthSelectList(Context context, ListView selectListView) {
+        super(context, selectListView);
     }
 
-    /**
-     * 设置选择完成监听器
-     * @param dataChangeObserver 监听器实例
-     */
-    public void setSelectFinishedListener(DataChangeObserver<String> dataChangeObserver) {
-        this.dataChangeObserver = dataChangeObserver;
-    }
+    @Override
+    protected ArrayAdapter<String> onCreateAdapter(Context context) {
+        if (vehicleLengthAdapter == null) {
+            // 没有则创建
 
-    /**
-     * 配置选择列表并绑定选择事件
-     */
-    public void selectSetting() {
-        Log.i(LOG_TAG + "selectSetting", "Select start");
+            String[] vehicleLengthList = context.getResources().getStringArray(R.array
+                    .vehicle_length_select_list);
+            vehicleLengthAdapter = new ArrayAdapter<>(context, R.layout.only_text_list_item,
+                    vehicleLengthList);
+        }
 
-        // 获取数据源适配器
-        final ListAdapter adapter = SelectListAdapterFactory.CreateAdapter(context,
-                SelectListAdapterFactory.DataType.VEHICLE_LENGTH);
-        // 重置列表适配器
-        selectListView.setAdapter(adapter);
-        // 重置选中事件
-        selectListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.i(LOG_TAG + "selectSetting", "select position is " + position);
-                Log.i(LOG_TAG + "selectSetting", "select item is " + adapter.getItem(position));
-                // 设置文本结果
-                if (dataChangeObserver != null) {
-                    dataChangeObserver.notifyDataChange((String) adapter.getItem(position));
-                }
-
-            }
-        });
-
+        return vehicleLengthAdapter;
     }
 }
