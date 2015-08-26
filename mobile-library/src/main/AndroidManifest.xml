@@ -11,6 +11,12 @@
             </intent-filter>
         </receiver>
 
+        <activity
+            android:name=".scan.activity.CaptureActivity"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Black.NoTitleBar">
+        </activity>
+
     </application>
 
 </manifest>

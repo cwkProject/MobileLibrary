@@ -38,7 +38,7 @@ install {
     repositories.mavenInstaller {
         pom {
             project {
-                name projectName
+                name 'MobileLibrary'
                 groupId projectGroupId
                 artifactId projectArtifactId
                 version projectVersionName

@@ -6,8 +6,8 @@ android {
     defaultConfig {
         minSdkVersion 8
         targetSdkVersion 22
-        versionCode 1
-        versionName "0.1"
+        versionCode 3
+        versionName '0.4'
     }
     buildTypes {
         release {
@@ -24,9 +24,9 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'] , dir: 'libs')
+    compile 'com.android.support:appcompat-v7:22.0.0'
     compile files('libs/ksoap2-android-assembly-3.3.0-jar-with-dependencies.jar')
-    compile 'com.android.support:appcompat-v7:22.2.0'
+    compile 'com.google.zxing:core:3.2.1'
 }
 
 apply from: "bintrayUpload.gradle"
