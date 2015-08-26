@@ -35,7 +35,6 @@ import android.widget.RelativeLayout;
 import com.google.zxing.Result;
 
 import org.mobile.library.R;
-import org.mobile.library.model.operate.DataChangeObserver;
 import org.mobile.library.scan.camera.CameraManager;
 import org.mobile.library.scan.decode.DecodeThread;
 import org.mobile.library.scan.utils.BeepManager;
@@ -64,6 +63,11 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
      */
     public static final String SCAN_RESULT_TAG = "result";
 
+    /**
+     * 扫描完成跳转activity设置标签
+     */
+    public static final String JUMP_ACTIVITY_TAG = "class";
+
     private CameraManager cameraManager;
     private CaptureActivityHandler handler;
     private InactivityTimer inactivityTimer;
@@ -73,11 +77,6 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
     private RelativeLayout scanContainer;
     private RelativeLayout scanCropView;
     private ImageView scanLine;
-
-    /**
-     * 扫描完成监听
-     */
-    private DataChangeObserver<Bundle> scanFinalListener = null;
 
     /**
      * 扫描完成跳转对象
@@ -100,6 +99,8 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
 
+        loadData();
+
         Window window = getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_capture);
@@ -119,6 +120,20 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
         animation.setRepeatCount(-1);
         animation.setRepeatMode(Animation.RESTART);
         scanLine.startAnimation(animation);
+    }
+
+    /**
+     * 尝试提取数据
+     */
+    private void loadData() {
+        Intent intent = getIntent();
+
+        Object o = intent.getSerializableExtra(JUMP_ACTIVITY_TAG);
+
+        if (o instanceof Class) {
+            this.jumpActivity = (Class) o;
+        }
+
     }
 
     @Override
@@ -193,24 +208,6 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
     }
 
     /**
-     * 设置扫描完成监听器
-     *
-     * @param scanFinalListener 完成回调
-     */
-    public void setScanFinalListener(DataChangeObserver<Bundle> scanFinalListener) {
-        this.scanFinalListener = scanFinalListener;
-    }
-
-    /**
-     * 设置扫描完成跳转的activity，结果数据存放在Intent的Bundle对象
-     *
-     * @param jumpActivity 要跳转到的activity
-     */
-    public void setJumpActivity(Class jumpActivity) {
-        this.jumpActivity = jumpActivity;
-    }
-
-    /**
      * A valid barcode has been found, so give an indication of success and show
      * the results.
      *
@@ -223,16 +220,12 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 
         bundle.putString(SCAN_RESULT_TAG, rawResult.getText());
 
-        if (this.scanFinalListener != null) {
-            Log.i(TAG, "scanFinalListener callback");
-            this.scanFinalListener.notifyDataChange(bundle);
-        } else {
-            if (this.jumpActivity != null) {
-                Log.i(TAG, "go to activity callback");
-                startActivity(new Intent(CaptureActivity.this, this.jumpActivity).putExtras
-                        (bundle));
 
-            }
+        if (this.jumpActivity != null) {
+            Log.i(TAG, "go to activity callback");
+            startActivity(new Intent(CaptureActivity.this, this.jumpActivity).putExtras(bundle));
+        } else {
+            setResult(RESULT_OK, new Intent().putExtras(bundle));
         }
 
         finish();
