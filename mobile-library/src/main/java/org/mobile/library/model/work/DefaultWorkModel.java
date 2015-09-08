@@ -153,7 +153,7 @@ public abstract class DefaultWorkModel<Parameters, Result, DataModelType extends
 
     /**
      * 服务返回数据解析成功后，
-     * 并且服务执行为成功即{@link IDefaultDataModel#isSuccess()}返回false时，
+     * 但是服务执行为失败即{@link IDefaultDataModel#isSuccess()}返回false时，
      * 设置任务返回数据，
      * 即设置{@link #setResult(Object)}的参数。
      * 该方法在{@link #onParseSuccess(IDefaultDataModel)}之后调用
