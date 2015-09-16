@@ -12,6 +12,9 @@ import org.mobile.library.model.work.implement.CheckVersion;
 import org.mobile.library.util.ApplicationVersion;
 import org.mobile.library.util.StaticValueUtil;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 /**
  * 版本升级测试
  *
@@ -20,7 +23,7 @@ import org.mobile.library.util.StaticValueUtil;
  * @since 1.0
  */
 @RunWith(AndroidJUnit4.class)
-public class TestUpdateVersion extends ApplicationTest {
+public class TestUpdateVersion {
 
     @Test
     public void hasNewVersion() throws Exception {

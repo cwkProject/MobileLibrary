@@ -1,13 +1,13 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 22
-    buildToolsVersion '22.0.1'
+    compileSdkVersion 23
+    buildToolsVersion '23.0.1'
     defaultConfig {
         minSdkVersion 8
-        targetSdkVersion 22
-        versionCode 4
-        versionName '0.4.1'
+        targetSdkVersion 23
+        versionCode 5
+        versionName '0.4.2'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -28,12 +28,10 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:22.0.0'
-    compile files('libs/ksoap2-android-assembly-3.3.0-jar-with-dependencies.jar')
     compile 'com.google.zxing:core:3.2.1'
-
     androidTestCompile 'com.android.support.test:runner:0.4'
     androidTestCompile 'com.android.support.test:rules:0.4'
+    compile 'com.android.support:appcompat-v7:23.0.1'
 }
 
 apply from: "bintrayUpload.gradle"

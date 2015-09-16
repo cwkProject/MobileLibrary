@@ -13,26 +13,13 @@ package org.mobile.library.network.factory;
 public enum NetworkType {
 
     /**
-     * http post类型的请求
-     * 该枚举创建的连接器已被废弃，
-     * 请使用{@link #HTTP_CONNECTION_POST}创建新的连接工具
-     */
-    @Deprecated HTTP_POST,
-    /**
-     * http get类型的请求，
-     * 该枚举创建的连接器已被废弃，
-     * 请使用{@link #HTTP_CONNECTION_GET}创建新的连接工具
-     */
-    @Deprecated HTTP_GET,
-
-    /**
      * http get类型请求
      */
-    HTTP_CONNECTION_GET,
+    HTTP_GET,
     /**
      * http post类型的请求
      */
-    HTTP_CONNECTION_POST,
+    HTTP_POST,
     /**
      * 下载
      */

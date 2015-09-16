@@ -35,7 +35,7 @@ public class TestHttpURLConnectionPostCommunication {
     @Before
     public void setUp() throws Exception {
         // 新建通讯工具
-        communication = CommunicationFactory.Create(NetworkType.HTTP_CONNECTION_POST);
+        communication = CommunicationFactory.Create(NetworkType.HTTP_POST);
 
         communication.setTaskName("http://218.92.115.55/WlkgbsgsApp/Service/test.aspx");
 
