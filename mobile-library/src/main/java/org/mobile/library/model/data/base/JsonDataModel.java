@@ -8,8 +8,9 @@ import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.mobile.library.model.data.IDefaultDataModel;
-import org.mobile.library.parser.HttpResponseHttpEntityToStringParser;
+import org.mobile.library.parser.InputStreamToStringParser;
 
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -85,17 +86,17 @@ public abstract class JsonDataModel implements IDefaultDataModel {
     public boolean parse(Object data) {
         Log.i(LOG_TAG + "parse", "parse start");
 
-        if (data == null) {
+        if (data == null || !(data instanceof InputStream)) {
             // 通信异常
             Log.d(LOG_TAG + "parse", "data is null");
             return false;
         }
 
         // 新建解析器
-        HttpResponseHttpEntityToStringParser parser = new HttpResponseHttpEntityToStringParser();
+        InputStreamToStringParser parser = new InputStreamToStringParser();
 
         // 获取结果字符串
-        String resultString = parser.DataParser(data);
+        String resultString = parser.DataParser((InputStream) data);
         Log.i(LOG_TAG + "parse", "result string is " + resultString);
 
         try {
@@ -158,7 +159,8 @@ public abstract class JsonDataModel implements IDefaultDataModel {
      *
      * @throws JSONException 解析过程中出现错误
      */
-    protected abstract String onRequestMessage(boolean result, JSONObject jsonResult) throws JSONException;
+    protected abstract String onRequestMessage(boolean result, JSONObject jsonResult) throws
+            JSONException;
 
     /**
      * 提取服务反馈的结果数据，

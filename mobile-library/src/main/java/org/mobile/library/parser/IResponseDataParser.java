@@ -15,7 +15,7 @@ package org.mobile.library.parser;
  */
 public interface IResponseDataParser<Result, Source> {
     /**
-     * 解析服务器回传的数据
+     * 解析服务器响应的数据
      *
      * @param data 要解析的数据对象
      *

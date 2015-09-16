@@ -14,8 +14,10 @@ public enum NetworkType {
 
     /**
      * http post类型的请求
+     * 该枚举创建的连接器已被废弃，
+     * 请使用{@link #HTTP_CONNECTION_POST}创建新的连接工具
      */
-    HTTP_POST,
+    @Deprecated HTTP_POST,
     /**
      * http get类型的请求，
      * 该枚举创建的连接器已被废弃，
@@ -27,6 +29,10 @@ public enum NetworkType {
      * http get类型请求
      */
     HTTP_CONNECTION_GET,
+    /**
+     * http post类型的请求
+     */
+    HTTP_CONNECTION_POST,
     /**
      * 下载
      */

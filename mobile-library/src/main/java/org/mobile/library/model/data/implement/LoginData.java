@@ -7,11 +7,9 @@ import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.mobile.library.model.data.IDataModel;
-import org.mobile.library.parser.HttpResponseHttpEntityToStringParser;
+import org.mobile.library.model.data.base.JsonDataModel;
 import org.mobile.library.util.StaticValueUtil;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -21,7 +19,7 @@ import java.util.Map;
  * @version 1.0 2015/6/11
  * @since 1.0
  */
-public class LoginData implements IDataModel<Object, Map<String, String>> {
+public class LoginData extends JsonDataModel {
 
     /**
      * 日志标签前缀
@@ -62,16 +60,6 @@ public class LoginData implements IDataModel<Object, Map<String, String>> {
      * 登录成功后返回的用户名称
      */
     private String nickname = null;
-
-    /**
-     * 登录结果消息字符串
-     */
-    private String message = null;
-
-    /**
-     * 登录结果
-     */
-    private boolean login = false;
 
     /**
      * 部门编码
@@ -138,24 +126,6 @@ public class LoginData implements IDataModel<Object, Map<String, String>> {
     }
 
     /**
-     * 获取登录结果的消息串
-     *
-     * @return 返回字符串
-     */
-    public String getMessage() {
-        return message;
-    }
-
-    /**
-     * 判断是否成功登录
-     *
-     * @return 成功返回true，失败返回false
-     */
-    public boolean isLogin() {
-        return login;
-    }
-
-    /**
      * 获取用户昵称或姓名
      *
      * @return 名称字符串
@@ -183,78 +153,43 @@ public class LoginData implements IDataModel<Object, Map<String, String>> {
     }
 
     @Override
-    public Map<String, String> serialization() {
-        Log.i(LOG_TAG + "serialization", "serialization start");
-        // 序列化后的参数集
-        Map<String, String> dataMap = new HashMap<>();
-
+    protected void onFillRequestParameters(Map<String, String> dataMap) {
         // 加入用户名和密码
         dataMap.put("Logogram", userName);
-        Log.i(LOG_TAG + "serialization", "Logogram is " + userName);
+        Log.i(LOG_TAG + "onFillRequestParameters", "Logogram is " + userName);
         dataMap.put("Password", password);
-        Log.i(LOG_TAG + "serialization", "Password is " + password);
+        Log.i(LOG_TAG + "onFillRequestParameters", "Password is " + password);
         dataMap.put("DeviceToken", deviceToken);
-        Log.i(LOG_TAG + "serialization", "DeviceToken is " + deviceToken);
+        Log.i(LOG_TAG + "onFillRequestParameters", "DeviceToken is " + deviceToken);
         dataMap.put("DeviceType", deviceType);
-        Log.i(LOG_TAG + "serialization", "DeviceType is " + deviceType);
+        Log.i(LOG_TAG + "onFillRequestParameters", "DeviceType is " + deviceType);
         dataMap.put("AppName", appName);
-        Log.i(LOG_TAG + "serialization", "AppName is " + appName);
-
-        return dataMap;
+        Log.i(LOG_TAG + "onFillRequestParameters", "AppName is " + appName);
     }
 
     @Override
-    public boolean parse(Object data) {
-        Log.i(LOG_TAG + "parse", "parse start");
+    protected boolean onRequestResult(JSONObject jsonResult) throws JSONException {
+        // 得到执行结果
+        String resultState = jsonResult.getString("IsLogin");
 
-        if (data == null) {
-            // 通信异常
-            Log.d(LOG_TAG + "parse", "data is null");
-            return false;
-        }
+        return resultState != null && "yes".equals(resultState.trim().toLowerCase());
+    }
 
-        // 新建解析器
-        HttpResponseHttpEntityToStringParser parser = new HttpResponseHttpEntityToStringParser();
+    @Override
+    protected String onRequestMessage(boolean result, JSONObject jsonResult) throws JSONException {
+        return result ? null : jsonResult.getString("Message");
+    }
 
-        // 获取结果字符串
-        String resultString = parser.DataParser(data);
-        Log.i(LOG_TAG + "parse", "result string is " + resultString);
+    @Override
+    protected void onRequestSuccess(JSONObject jsonResult) throws JSONException {
+        userID = jsonResult.getString("Code_User");
+        departmentCode = jsonResult.getString("Code_Department");
+        companyCode = jsonResult.getString("Code_Company");
+        nickname = jsonResult.getString("UserName");
 
-        try {
-            // 将结果转换为JSON对象
-            JSONObject jsonObject = new JSONObject(resultString);
-
-            // 得到执行结果
-            String resultState = jsonObject.getString("IsLogin");
-
-            // 得到结果消息
-            //message = jsonObject.getString("Message");
-
-            if (resultState != null && "yes".equals(resultState.trim().toLowerCase())) {
-                // 登录成功，提取结果
-                login = true;
-                userID = jsonObject.getString("Code_User");
-                departmentCode = jsonObject.getString("Code_Department");
-                companyCode = jsonObject.getString("Code_Company");
-                nickname = jsonObject.getString("UserName");
-            } else {
-                // 登录失败
-                login = false;
-                message = jsonObject.getString("Error");
-            }
-
-            Log.i(LOG_TAG + "parse", "login result " + this.login);
-            Log.i(LOG_TAG + "parse", "userID is " + this.userID);
-            Log.i(LOG_TAG + "parse", "departmentCode is " + this.departmentCode);
-            Log.i(LOG_TAG + "parse", "companyCode is " + this.companyCode);
-            Log.i(LOG_TAG + "parse", "nickname is " + this.nickname);
-            Log.i(LOG_TAG + "parse", "message is " + this.message);
-
-            // 登录请求成功结束
-            return true;
-        } catch (JSONException e) {
-            Log.e(LOG_TAG + "parse", "JSONException is " + e.getMessage());
-            return false;
-        }
+        Log.i(LOG_TAG + "onRequestSuccess", "userID is " + this.userID);
+        Log.i(LOG_TAG + "onRequestSuccess", "departmentCode is " + this.departmentCode);
+        Log.i(LOG_TAG + "onRequestSuccess", "companyCode is " + this.companyCode);
+        Log.i(LOG_TAG + "onRequestSuccess", "nickname is " + this.nickname);
     }
 }

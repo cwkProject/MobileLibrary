@@ -3,7 +3,6 @@ package org.mobile.library.common.function;
  * Created by 超悟空 on 2015/4/23.
  */
 
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.util.Log;
@@ -78,7 +77,8 @@ public class CheckUpdate {
      * @param updateRequestUrl 版本状态请求地址
      * @param deviceType       设备类型码
      */
-    public CheckUpdate(Context context, String applicationCode, String updateRequestUrl, String deviceType) {
+    public CheckUpdate(Context context, String applicationCode, String updateRequestUrl, String
+            deviceType) {
         this.context = context;
         this.applicationCode = applicationCode;
         this.updateRequestUrl = updateRequestUrl;
@@ -164,18 +164,11 @@ public class CheckUpdate {
                 progressDialog.cancel();
 
                 if (state) {
-                    // 执行成功
-
-                    if (data == null) {
-                        // 当前为最新版本
-                        showLatest();
-                    } else {
-                        // 当前不是最新版本
-                        showUpdate();
-                    }
+                    // 执行成功，当前不是最新版本
+                    showUpdate();
                 } else {
-                    // 执行失败
-                    showError();
+                    // 当前为最新版本，或执行失败
+                    showLatest();
                 }
             }
         });
@@ -229,25 +222,12 @@ public class CheckUpdate {
     }
 
     /**
-     * 显示失败提示
-     */
-    private void showError() {
-        // 提示框
-        Dialog dialog = new Dialog(context);
-
-        // 设置标题
-        dialog.setTitle(R.string.update_now_version_error);
-
-        // 显示提示框
-        dialog.setCancelable(true);
-        dialog.show();
-    }
-
-    /**
      * 当前不是最新版本的操作
      */
     private void showUpdate() {
-        VersionUpdateDialog.showUpdate(context, ApplicationVersion.getVersionManager().getLatestVersionName(), ApplicationVersion.getVersionManager().getLatestVersionUrl());
+        VersionUpdateDialog.showUpdate(context, ApplicationVersion.getVersionManager()
+                .getLatestVersionName(), ApplicationVersion.getVersionManager()
+                .getLatestVersionUrl());
     }
 
     /**

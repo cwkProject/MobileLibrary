@@ -30,6 +30,11 @@ public abstract class DefaultWorkModel<Parameters, Result, DataModelType extends
      */
     private static final String LOG_TAG = "DefaultWorkModel.";
 
+    /**
+     * 参数
+     */
+    private Parameters[] mParameters = null;
+
     @Override
     protected final boolean onDoWork(Parameters... parameters) {
         if (!onCheckParameters(parameters)) {
@@ -40,9 +45,13 @@ public abstract class DefaultWorkModel<Parameters, Result, DataModelType extends
             return false;
         }
 
+        // 保存参数对象
+        mParameters = parameters;
+
+        // 创建数据模型
         DataModelType data = onCreateDataModel(parameters);
 
-        // 新建带有服务器公钥的通讯工具
+        // 新建通讯工具
         ICommunication communication = CommunicationFactory.Create(onNetworkType());
 
         // 设置调用的方法名
@@ -57,6 +66,9 @@ public abstract class DefaultWorkModel<Parameters, Result, DataModelType extends
         if (data.parse(communication.Response())) {
             // 解析成功
             Log.i(LOG_TAG + "onDoWork", "result parse success");
+            // 关闭网络连接
+            communication.close();
+
             Log.i(LOG_TAG + "onDoWork", "onParseSuccess(IDefaultDataModel) is invoked");
             // 解析成功回调
             onParseSuccess(data);
@@ -73,6 +85,9 @@ public abstract class DefaultWorkModel<Parameters, Result, DataModelType extends
         } else {
             // 解析失败
             Log.i(LOG_TAG + "onDoWork", "result parse failed");
+            // 关闭网络连接
+            communication.close();
+
             Log.i(LOG_TAG + "onDoWork", "onParseFailed(IDefaultDataModel) is invoked");
             // 解析失败回调
             onParseFailed(data);
@@ -112,12 +127,12 @@ public abstract class DefaultWorkModel<Parameters, Result, DataModelType extends
     /**
      * 设置网络请求类型，
      * 用于{@link CommunicationFactory#Create(NetworkType)}生产网络请求实例，
-     * 默认为{@link NetworkType#HTTP_GET}
+     * 默认为{@link NetworkType#HTTP_CONNECTION_GET}
      *
      * @return 网络请求类型枚举
      */
     protected NetworkType onNetworkType() {
-        return NetworkType.HTTP_GET;
+        return NetworkType.HTTP_CONNECTION_GET;
     }
 
     /**
@@ -187,4 +202,14 @@ public abstract class DefaultWorkModel<Parameters, Result, DataModelType extends
      * @return 参数设置完毕后的数据模型对象
      */
     protected abstract DataModelType onCreateDataModel(Parameters... parameters);
+
+    /**
+     * 获取当前任务传入的参数，
+     * 即{@link #onCheckParameters(Object[])}成功之后可获取
+     *
+     * @return 参数集合
+     */
+    protected final Parameters[] getParameters() {
+        return mParameters;
+    }
 }

@@ -272,8 +272,7 @@ public class SoapCommunication implements ICommunication<Map<String, String>, So
     }
 
     @Override
-    public void Close() {
-        // TODO Auto-generated method stub
-    }
+    public void close() {
 
+    }
 }

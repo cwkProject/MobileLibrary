@@ -5,7 +5,10 @@ package org.mobile.library.network.communication;
 
 import android.util.Log;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URLEncoder;
 import java.util.Map;
 
 /**
@@ -15,17 +18,13 @@ import java.util.Map;
  * @version 1.0 2015/7/4
  * @since 1.0
  */
-public abstract class BaseHttpURLConnectionCommunication implements ICommunication<Map<String, String>, InputStream> {
+public abstract class BaseHttpURLConnectionCommunication implements ICommunication<Map<String,
+        String>, InputStream> {
 
     /**
      * 日志标签前缀
      */
     private static final String LOG_TAG = "BaseHttpURLConnectionCommunication.";
-
-    /**
-     * 请求地址根路径，必须包含"http://"
-     */
-    protected String urlRoot = null;
 
     /**
      * 请求地址的完整路径
@@ -53,6 +52,11 @@ public abstract class BaseHttpURLConnectionCommunication implements ICommunicati
     protected int readTimeout = 0;
 
     /**
+     * 网络连接
+     */
+    private HttpURLConnection httpURLConnection = null;
+
+    /**
      * 设置读取超时时间
      *
      * @param readTimeout 超时时间，单位毫秒
@@ -73,28 +77,6 @@ public abstract class BaseHttpURLConnectionCommunication implements ICommunicati
     }
 
     /**
-     * 设置请求地址根路径
-     *
-     * @param urlRoot 必须包含"http://"，
-     *                不必是完整的地址，
-     *                具体请求的地址可以在{@link #setTaskName(String)}中传入相对路径
-     */
-    public void setUrlRoot(String urlRoot) {
-        // 自动补充一个"/"
-        this.urlRoot = urlRoot + "/";
-        Log.i(LOG_TAG + "setUrlRoot", "final urlRoot is " + this.urlRoot);
-    }
-
-    /**
-     * 获取当前请求地址根路径
-     *
-     * @return 网络地址
-     */
-    public String getUrlRoot() {
-        return urlRoot;
-    }
-
-    /**
      * 设置编码格式
      *
      * @param encoded 编码字符串，默认为UTF-8
@@ -107,34 +89,87 @@ public abstract class BaseHttpURLConnectionCommunication implements ICommunicati
     /**
      * 设置请求地址
      *
-     * @param uri 可以是完整地址或地址的相对路径，
-     *            如果是相对地址，
-     *            则必须设置过{@link #setUrlRoot(String)}
+     * @param uri 完整地址
      */
     @Override
     public void setTaskName(String uri) {
-        Log.d(LOG_TAG + "setTaskName", "uri is " + uri);
-
-        if (uri == null || uri.trim().equals("")) {
-            // 如果是空，则使用根路径
-            this.url = this.urlRoot;
-            Log.i(LOG_TAG + "setTaskName", "url is " + this.url);
-            return;
-        }
-
-        if (uri.toLowerCase().startsWith("http://")) {
-            // 如果是完整地址，则直接使用
-            this.url = uri;
-        } else {
-            // 否则认为uri是相对路径，进行拼接
-            this.url = this.urlRoot + uri;
-        }
-
+        this.url = uri;
         Log.i(LOG_TAG + "setTaskName", "url is " + this.url);
     }
 
     @Override
-    public abstract void Request(Map<String, String> sendData);
+    public void Request(Map<String, String> sendData) {
+        Log.i(LOG_TAG + "Request", "Request(Map<String, String>) start");
+        Log.i(LOG_TAG + "Request", "url is " + url);
+
+        if (url == null || !url.trim().startsWith("http://")) {
+            // 地址不合法
+            response = null;
+            Log.d(LOG_TAG + "Request", "url is error");
+            return;
+        }
+
+        try {
+
+            // 请求参数装配器参数
+            StringBuilder params = new StringBuilder();
+
+            // 遍历sendData集合并加入请求参数对象
+            if (sendData != null && !sendData.isEmpty()) {
+                Log.i(LOG_TAG + "Request", "sendData count is " + sendData.size());
+
+                // 遍历并追加参数
+                for (Map.Entry<String, String> dataEntry : sendData.entrySet()) {
+                    params.append(dataEntry.getKey());
+                    params.append('=');
+                    if (dataEntry.getValue() != null && dataEntry.getValue().length() > 0) {
+                        params.append(URLEncoder.encode(dataEntry.getValue(), encoded));
+                    } else {
+                        params.append(dataEntry.getValue());
+                    }
+                    params.append('&');
+                }
+                // 移除末尾的'&'
+                params.deleteCharAt(params.length() - 1);
+            }
+
+            Log.i(LOG_TAG + "Request", "params is " + params);
+
+            httpURLConnection = onCreateHttpURLConnection(params.toString());
+
+            // 设置超时时间
+            httpURLConnection.setConnectTimeout(timeout);
+            httpURLConnection.setReadTimeout(readTimeout);
+
+            // 建立连接
+            httpURLConnection.connect();
+
+            // 得到响应结果
+            response = httpURLConnection.getInputStream();
+
+            // 判断请求是否正常
+            if (httpURLConnection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                Log.d(LOG_TAG + "Request", "response failed code is " + httpURLConnection
+                        .getResponseCode());
+                response = null;
+            } else {
+                Log.i(LOG_TAG + "Request", "response success");
+            }
+        } catch (IOException e) {
+            Log.e(LOG_TAG + "Request", "response error IOException is " + e.getMessage());
+            response = null;
+        }
+    }
+
+    /**
+     * 创建{@link java.net.HttpURLConnection}连接对象，
+     * 为{@link #Request(Map)}生成的连接请求对象
+     *
+     * @param param 请求参数
+     *
+     * @return 创建好的连接参数
+     */
+    protected abstract HttpURLConnection onCreateHttpURLConnection(String param) throws IOException;
 
     @Override
     public InputStream Response() {
@@ -142,7 +177,10 @@ public abstract class BaseHttpURLConnectionCommunication implements ICommunicati
     }
 
     @Override
-    public void Close() {
-
+    public void close() {
+        // 关闭连接
+        if (httpURLConnection != null) {
+            httpURLConnection.disconnect();
+        }
     }
 }

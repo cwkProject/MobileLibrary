@@ -146,6 +146,7 @@ public abstract class BaseHttpClientCommunication implements ICommunication<Map<
     }
 
     @Override
-    public void Close() {
+    public void close() {
+
     }
 }

@@ -34,7 +34,7 @@ public interface ICommunication<RequestType, ResponseType> {
     ResponseType Response();
 
     /**
-     * 关闭对象
+     * 关闭网络连接
      */
-    void Close();
+    void close();
 }
