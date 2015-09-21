@@ -124,8 +124,6 @@ public abstract class BaseHttpURLConnectionCommunication implements ICommunicati
                     params.append('=');
                     if (dataEntry.getValue() != null && dataEntry.getValue().length() > 0) {
                         params.append(URLEncoder.encode(dataEntry.getValue(), encoded));
-                    } else {
-                        params.append(dataEntry.getValue());
                     }
                     params.append('&');
                 }
