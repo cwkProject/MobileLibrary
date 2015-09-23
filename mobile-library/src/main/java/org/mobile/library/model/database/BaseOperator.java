@@ -46,6 +46,7 @@ public abstract class BaseOperator<DataModel> {
      */
     public BaseOperator(Context context) {
         this.sqLiteHelper = onCreateDatabaseHelper(context);
+        tableName = onCreateTableName();
         // 创建数据库表
         onCreateTable(this.sqLiteHelper);
     }
