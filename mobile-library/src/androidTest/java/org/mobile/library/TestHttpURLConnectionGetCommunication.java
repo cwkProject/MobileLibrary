@@ -3,6 +3,7 @@ package org.mobile.library;
  * Created by 超悟空 on 2015/9/15.
  */
 
+import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.mobile.library.network.communication.ICommunication;
@@ -38,7 +39,6 @@ public class TestHttpURLConnectionGetCommunication {
         communication = CommunicationFactory.Create(NetworkType.HTTP_GET);
 
         communication.setTaskName("http://218.92.115.55/WlkgbsgsApp/Service/test.aspx");
-
     }
 
     /**
@@ -65,7 +65,7 @@ public class TestHttpURLConnectionGetCommunication {
         // 参数
         Map<String, String> map = new HashMap<>();
 
-        map.put("Data", "123abc");
+        map.put("Data", "123\nabc\n456");
 
         communication.Request(map);
 
@@ -75,7 +75,7 @@ public class TestHttpURLConnectionGetCommunication {
         String result = parser.DataParser((InputStream) communication.Response());
 
         communication.close();
-        assertEquals("123abc", result);
+        assertEquals("123\nabc\n456", result);
     }
 
     /**
@@ -124,5 +124,30 @@ public class TestHttpURLConnectionGetCommunication {
         String result = parser.DataParser((InputStream) communication.Response());
         communication.close();
         assertNotEquals("测试测试", result);
+    }
+
+    /**
+     * 响应结果转为json对象
+     * @throws Exception
+     */
+    @Test
+    public void jsonConvert() throws Exception{
+        // 参数
+        Map<String, String> map = new HashMap<>();
+
+        map.put("Data", "{\"123\":\"abc\",\"456\":\"ab cd\"}");
+
+        communication.Request(map);
+
+        // 流解析器
+        InputStreamToStringParser parser = new InputStreamToStringParser();
+
+        String result = parser.DataParser((InputStream) communication.Response());
+
+        communication.close();
+
+        JSONObject jsonObject=new JSONObject(result);
+
+        assertEquals("{\"123\":\"abc\",\"456\":\"ab cd\"}", jsonObject.toString());
     }
 }

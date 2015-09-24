@@ -42,7 +42,7 @@ public class InputStreamToStringParser implements IResponseDataParser<String, In
      *
      * @param data 响应的输入流
      *
-     * @return 解析后数据
+     * @return 解析后数据，如果数据存在则自动调用{@link String#trim()}方法
      */
     @Override
     public String DataParser(InputStream data) {
@@ -63,9 +63,16 @@ public class InputStreamToStringParser implements IResponseDataParser<String, In
         try {
 
             scanner = new Scanner(data, encoded);
+            scanner.useDelimiter("");
 
             // 得到字符串
-            String text = scanner.next();
+            StringBuilder builder = new StringBuilder();
+
+            while (scanner.hasNext()) {
+                builder.append(scanner.next());
+            }
+
+            String text = builder.toString().trim();
 
             Log.i(LOG_TAG + "DataParser", "text is " + text);
 
