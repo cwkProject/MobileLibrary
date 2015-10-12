@@ -203,6 +203,29 @@ public abstract class BaseOperator<DataModel> {
     }
 
     /**
+     * 按照固定查询规则查询表中部分符合条件的记录，
+     * 需要子类重写实现
+     *
+     * @return 全部数据集
+     */
+    public List<DataModel> queryPart() {
+        return null;
+    }
+
+    /**
+     * 按照固定查询规则和给定的条件参数，
+     * 查询表中部分符合条件的记录，
+     * 需要子类重写实现
+     *
+     * @param Parameters 条件参数集合
+     *
+     * @return 全部数据集
+     */
+    public List<DataModel> queryWithCondition(String... Parameters) {
+        return null;
+    }
+
+    /**
      * 插入一组数据
      *
      * @param dataList 要插入的数据集
@@ -231,6 +254,31 @@ public abstract class BaseOperator<DataModel> {
         close();
 
         return idList;
+    }
+
+    /**
+     * 插入一条数据
+     *
+     * @param data 要插入的数据对象
+     *
+     * @return 成功插入的新行id，插入失败返回-1
+     */
+    public final long insert(DataModel data) {
+        Log.i(LOG_TAG + "insert", "insert is invoked");
+
+        if (data == null) {
+            Log.d(LOG_TAG + "insert", "data list is null");
+            return -1;
+        }
+
+        // 数据库写对象
+        SQLiteDatabase dbWriter = sqLiteHelper.getWritableDatabase();
+
+        long id = dbWriter.insert(tableName, null, onFillData(data));
+
+        close();
+
+        return id;
     }
 
     /**
