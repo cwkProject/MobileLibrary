@@ -29,6 +29,11 @@ import static org.junit.Assert.assertTrue;
 public class TestHttpURLConnectionGetCommunication {
 
     /**
+     * 线程池线程数
+     */
+    private static final int POOL_COUNT = Runtime.getRuntime().availableProcessors() * 2 + 2;
+
+    /**
      * 网络连接工具
      */
     private ICommunication communication = null;
@@ -128,10 +133,11 @@ public class TestHttpURLConnectionGetCommunication {
 
     /**
      * 响应结果转为json对象
+     *
      * @throws Exception
      */
     @Test
-    public void jsonConvert() throws Exception{
+    public void jsonConvert() throws Exception {
         // 参数
         Map<String, String> map = new HashMap<>();
 
@@ -146,8 +152,72 @@ public class TestHttpURLConnectionGetCommunication {
 
         communication.close();
 
-        JSONObject jsonObject=new JSONObject(result);
+        JSONObject jsonObject = new JSONObject(result);
 
         assertEquals("{\"123\":\"abc\",\"456\":\"ab cd\"}", jsonObject.toString());
     }
+
+    /**
+     * 多线程模拟
+     *
+     * @throws Exception
+     */
+    @Test
+    public void threadPool() throws Exception {
+
+        // 参数
+        Map<String, String> map1 = new HashMap<>();
+
+        map1.put("Data", "测试1");
+
+        // 参数
+        Map<String, String> map2 = new HashMap<>();
+
+        map2.put("Data", "测试2");
+
+        // 参数
+        Map<String, String> map3 = new HashMap<>();
+
+        map3.put("Data", "测试3");
+
+        ICommunication communication1= CommunicationFactory.Create(NetworkType.HTTP_GET);
+
+        communication1.setTaskName("http://218.92.115.55/WlkgbsgsApp/Service/test.aspx");
+
+        communication1.Request(map1);
+
+        // 流解析器
+        InputStreamToStringParser parser = new InputStreamToStringParser();
+
+        String result = parser.DataParser((InputStream) communication1.Response());
+        communication1.close();
+
+        assertEquals("测试1", result);
+
+        ICommunication communication2= CommunicationFactory.Create(NetworkType.HTTP_GET);
+
+        communication2.setTaskName("http://218.92.115.55/WlkgbsgsApp/Service/test.aspx");
+
+        communication2.Request(map2);
+
+        ICommunication communication3= CommunicationFactory.Create(NetworkType.HTTP_GET);
+
+        communication3.setTaskName("http://218.92.115.55/WlkgbsgsApp/Service/test.aspx");
+
+        communication3.Request(map3);
+
+        result = parser.DataParser((InputStream) communication2.Response());
+        communication2.close();
+
+        assertEquals("测试2", result);
+
+        communication3.Request(map3);
+        communication2.close();
+
+        result = parser.DataParser((InputStream) communication3.Response());
+        communication3.close();
+
+        assertEquals("测试3", result);
+    }
+
 }

@@ -19,7 +19,7 @@ import java.util.List;
  * @param <DataModel> 数据表对应的数据模型
  *
  * @author 超悟空
- * @version 1.0 2015/9/21
+ * @version 1.1 2015/10/13
  * @since 1.0
  */
 public abstract class BaseOperator<DataModel> {
@@ -217,11 +217,11 @@ public abstract class BaseOperator<DataModel> {
      * 查询表中部分符合条件的记录，
      * 需要子类重写实现
      *
-     * @param Parameters 条件参数集合
+     * @param parameters 条件参数集合
      *
      * @return 全部数据集
      */
-    public List<DataModel> queryWithCondition(String... Parameters) {
+    public List<DataModel> queryWithCondition(String... parameters) {
         return null;
     }
 
@@ -286,7 +286,7 @@ public abstract class BaseOperator<DataModel> {
      *
      * @return 无记录返回true，有记录返回false
      */
-    public final boolean IsEmpty() {
+    public final boolean isEmpty() {
         final String sql = "select count(*) from " + tableName;
 
         Cursor cursor = sqLiteHelper.getReadableDatabase().rawQuery(sql, null);
@@ -309,7 +309,7 @@ public abstract class BaseOperator<DataModel> {
      *
      * @return 存在返回true，不存在返回false
      */
-    public final boolean IsExist() {
+    public final boolean isExist() {
         final String sql = String.format("select count(*) from sqlite_master where type='table' " +
                 "and " + "name='%s'", tableName);
         Cursor cursor = sqLiteHelper.getReadableDatabase().rawQuery(sql, null);

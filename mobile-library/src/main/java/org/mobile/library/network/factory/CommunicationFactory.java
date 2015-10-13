@@ -14,20 +14,22 @@ import org.mobile.library.util.ContextUtil;
  * 通讯对象工厂
  *
  * @author 超悟空
- * @version 1.0 2015/4/23
+ * @version 1.1 2015/10/13
  * @since 1.0
  */
 public class CommunicationFactory {
 
-    /**
-     * Http Get请求对象
-     */
-    private static HttpURLConnectionGetCommunication httpURLConnectionGetCommunication = null;
+    private static int POST_TIMEOUT = ContextUtil.getContext().getResources().getInteger(R
+            .integer.http_post_default_timeout);
 
-    /**
-     * Http Post请求对象
-     */
-    private static HttpURLConnectionPostCommunication httpURLConnectionPostCommunication = null;
+    private static int GET_TIMEOUT = ContextUtil.getContext().getResources().getInteger(R.integer
+            .http_get_default_timeout);
+
+    private static int POST_READ_TIMEOUT = ContextUtil.getContext().getResources().getInteger(R
+            .integer.http_post_default_read_timeout);
+
+    private static int GET_READ_TIMEOUT = ContextUtil.getContext().getResources().getInteger(R
+            .integer.http_get_default_read_timeout);
 
     /**
      * 创建通讯工具对象
@@ -41,16 +43,10 @@ public class CommunicationFactory {
         switch (networkType) {
             case HTTP_GET:
                 // HttpGet请求对象
-                if (httpURLConnectionGetCommunication == null) {
-                    httpURLConnectionGetCommunication = initHttpURLConnectionGetCommunication();
-                }
-                return httpURLConnectionGetCommunication;
+                return initHttpURLConnectionGetCommunication();
             case HTTP_POST:
                 // HttpPost请求对象
-                if (httpURLConnectionPostCommunication == null) {
-                    httpURLConnectionPostCommunication = initHttpURLConnectionPostCommunication();
-                }
-                return httpURLConnectionPostCommunication;
+                return initHttpURLConnectionPostCommunication();
             default:
                 throw new UnsupportedOperationException("network protocol not implemented");
         }
@@ -67,10 +63,8 @@ public class CommunicationFactory {
                 HttpURLConnectionPostCommunication();
 
         // 设置超时时间
-        httpURLConnectionPostCommunication.setTimeout(ContextUtil.getContext().getResources()
-                .getInteger(R.integer.http_post_default_timeout));
-        httpURLConnectionPostCommunication.setReadTimeout(ContextUtil.getContext().getResources()
-                .getInteger(R.integer.http_post_default_read_timeout));
+        httpURLConnectionPostCommunication.setTimeout(POST_TIMEOUT);
+        httpURLConnectionPostCommunication.setReadTimeout(POST_READ_TIMEOUT);
 
         return httpURLConnectionPostCommunication;
     }
@@ -86,10 +80,8 @@ public class CommunicationFactory {
                 HttpURLConnectionGetCommunication();
 
         // 设置超时时间
-        httpURLConnectionGetCommunication.setTimeout(ContextUtil.getContext().getResources()
-                .getInteger(R.integer.http_get_default_timeout));
-        httpURLConnectionGetCommunication.setReadTimeout(ContextUtil.getContext().getResources()
-                .getInteger(R.integer.http_get_default_read_timeout));
+        httpURLConnectionGetCommunication.setTimeout(GET_TIMEOUT);
+        httpURLConnectionGetCommunication.setReadTimeout(GET_READ_TIMEOUT);
 
         return httpURLConnectionGetCommunication;
     }
