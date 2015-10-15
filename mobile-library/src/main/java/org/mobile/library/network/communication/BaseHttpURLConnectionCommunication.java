@@ -142,19 +142,22 @@ public abstract class BaseHttpURLConnectionCommunication implements ICommunicati
             // 建立连接
             httpURLConnection.connect();
 
-            // 得到响应结果
-            response = httpURLConnection.getInputStream();
+            // 得到响应码
+            int responseCode = httpURLConnection.getResponseCode();
+            Log.i(LOG_TAG + "Request", "response code is " + responseCode);
 
             // 判断请求是否正常
-            if (httpURLConnection.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                Log.d(LOG_TAG + "Request", "response failed code is " + httpURLConnection
-                        .getResponseCode());
+            if (responseCode != HttpURLConnection.HTTP_OK) {
                 response = null;
             } else {
                 Log.i(LOG_TAG + "Request", "response success");
+                // 得到响应结果
+                response = httpURLConnection.getInputStream();
             }
+
         } catch (IOException e) {
-            Log.e(LOG_TAG + "Request", "response error IOException is " + e.getMessage());
+            Log.e(LOG_TAG + "Request", "response error IOException class is " + e.toString());
+            Log.e(LOG_TAG + "Request", "response error IOException message is " + e.getMessage());
             response = null;
         }
     }

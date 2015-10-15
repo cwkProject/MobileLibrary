@@ -52,7 +52,7 @@ public abstract class DefaultWorkModel<Parameters, Result, DataModelType extends
         DataModelType data = onCreateDataModel(parameters);
 
         // 新建通讯工具
-        ICommunication communication = CommunicationFactory.Create(onNetworkType());
+        ICommunication communication = onCreateCommunication();
 
         // 设置调用的方法名
         communication.setTaskName(onTaskUri());
@@ -133,6 +133,19 @@ public abstract class DefaultWorkModel<Parameters, Result, DataModelType extends
      */
     protected NetworkType onNetworkType() {
         return NetworkType.HTTP_GET;
+    }
+
+    /**
+     * 创建网络请求工具，
+     * 用于发送网络请求，
+     * 默认使用{@link CommunicationFactory}工具进行创建，
+     * 使用{@link #onNetworkType()}返回的请求类型，
+     * 如果需要使用自定义网络请求工具请重写此方法
+     *
+     * @return 网络请求工具实例
+     */
+    protected ICommunication onCreateCommunication() {
+        return CommunicationFactory.Create(onNetworkType());
     }
 
     /**

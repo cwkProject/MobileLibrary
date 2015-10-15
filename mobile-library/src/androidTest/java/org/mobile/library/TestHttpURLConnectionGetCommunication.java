@@ -17,6 +17,7 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -180,7 +181,7 @@ public class TestHttpURLConnectionGetCommunication {
 
         map3.put("Data", "测试3");
 
-        ICommunication communication1= CommunicationFactory.Create(NetworkType.HTTP_GET);
+        ICommunication communication1 = CommunicationFactory.Create(NetworkType.HTTP_GET);
 
         communication1.setTaskName("http://218.92.115.55/WlkgbsgsApp/Service/test.aspx");
 
@@ -194,13 +195,13 @@ public class TestHttpURLConnectionGetCommunication {
 
         assertEquals("测试1", result);
 
-        ICommunication communication2= CommunicationFactory.Create(NetworkType.HTTP_GET);
+        ICommunication communication2 = CommunicationFactory.Create(NetworkType.HTTP_GET);
 
         communication2.setTaskName("http://218.92.115.55/WlkgbsgsApp/Service/test.aspx");
 
         communication2.Request(map2);
 
-        ICommunication communication3= CommunicationFactory.Create(NetworkType.HTTP_GET);
+        ICommunication communication3 = CommunicationFactory.Create(NetworkType.HTTP_GET);
 
         communication3.setTaskName("http://218.92.115.55/WlkgbsgsApp/Service/test.aspx");
 
@@ -220,4 +221,48 @@ public class TestHttpURLConnectionGetCommunication {
         assertEquals("测试3", result);
     }
 
+    /**
+     * 批量访问模拟
+     *
+     * @throws Exception
+     */
+    @Test
+    public void batchRequest() throws Exception {
+
+        String[] cargos = {"复合肥" , "纯碱" , "煤矿" , "苹果" , "香蕉" , "橘子" , "葡萄" , "鸡蛋"};
+
+        for (int i = 1; i < cargos.length; i++) {
+            // 参数
+            Map<String, String> map = new HashMap<>();
+
+            map.put("CargoOwner", null);
+            map.put("Operation", null);
+            map.put("count", "30");
+            map.put("startRow", "0");
+            map.put("Voyage", null);
+            map.put("EndTime", "2015-10-15");
+            map.put("StartTime", "2015-09-15");
+            map.put("CodeCompany", "14");
+            map.put("Cargo", cargos[i]);
+
+            ICommunication communication = CommunicationFactory.Create(NetworkType.HTTP_GET);
+
+            communication.setTaskName("http://218.92.115.55/M_Lhgl/Service/Consign/GetConsign" +
+                    ".aspx");
+
+            communication.Request(map);
+
+            //            // 流解析器
+            //            InputStreamToStringParser parser = new InputStreamToStringParser();
+            //
+            //            String result = parser.DataParser((InputStream) communication.Response());
+
+            //            assertEquals("{\"IsSuccess\":\"No\",\"Data\":null,
+            // \"Message\":\"暂无更多数据！\"}", result);
+
+            assertNotNull(communication.Response());
+
+            communication.close();
+        }
+    }
 }
