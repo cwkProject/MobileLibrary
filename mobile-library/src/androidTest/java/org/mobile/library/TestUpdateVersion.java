@@ -31,7 +31,7 @@ public class TestUpdateVersion {
         // 新建检查更新任务
         CheckVersion checkVersion = new CheckVersion();
 
-        checkVersion.setWorkBackListener(new WorkBack<String>() {
+        checkVersion.setWorkEndListener(new WorkBack<String>() {
             @Override
             public void doEndWork(boolean state, String data) {
                 assertEquals(true, state);

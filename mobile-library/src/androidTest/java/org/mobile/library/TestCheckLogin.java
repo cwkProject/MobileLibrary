@@ -33,7 +33,7 @@ public class TestCheckLogin {
     public void setUp() throws Exception {
         login = new CheckLogin();
 
-        login.setWorkBackListener(new WorkBack<String>() {
+        login.setWorkEndListener(new WorkBack<String>() {
             @Override
             public void doEndWork(boolean state, String data) {
                 isLogin = state;

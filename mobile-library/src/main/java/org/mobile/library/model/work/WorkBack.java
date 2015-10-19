@@ -4,21 +4,28 @@ package org.mobile.library.model.work;
  */
 
 /**
- * 功能处理结束后的回调接口
+ * 功能处理结束后的回调接口，
+ * 隐藏了结果消息回传参数
  *
  * @param <Result> 功能返回的结果数据类型
  *
  * @author 超悟空
- * @version 1.0 2015/1/7
+ * @version 2.0 2015/10/16
  * @since 1.0
  */
-public interface WorkBack<Result> {
+public abstract class WorkBack<Result> implements IWorkEndListener<Result> {
 
     /**
-     * 回调方法，在功能函数执行后被调用
+     * 任务结束回调方法，
+     * 在任务函数执行结束后被调用
      *
-     * @param state 任务执行结果
-     * @param data  结果数据
+     * @param state  任务执行结果
+     * @param result 结果数据
      */
-    public void doEndWork(boolean state, Result data);
+    public abstract void doEndWork(boolean state, Result result);
+
+    @Override
+    public final void doEndWork(boolean state, String message, Result result) {
+        doEndWork(state, result);
+    }
 }

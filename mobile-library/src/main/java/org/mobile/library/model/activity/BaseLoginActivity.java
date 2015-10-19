@@ -316,7 +316,7 @@ public abstract class BaseLoginActivity extends Activity {
         CheckLogin login = new CheckLogin();
 
         // 设置回调监听
-        login.setWorkBackListener(new WorkBack<String>() {
+        login.setWorkEndListener(new WorkBack<String>() {
             @Override
             public void doEndWork(boolean state, String data) {
                 // 关闭进度条
@@ -336,7 +336,8 @@ public abstract class BaseLoginActivity extends Activity {
                     }
 
                     // 检查是否要保存用户名和密码
-                    if ((loginSaveCheck != null && loginSaveCheck.isChecked()) || (loginAutoCheck != null && loginAutoCheck.isChecked())) {
+                    if ((loginSaveCheck != null && loginSaveCheck.isChecked()) || (loginAutoCheck
+                            != null && loginAutoCheck.isChecked())) {
                         config.setPassword(password);
                     }
 

@@ -156,7 +156,7 @@ public class CheckUpdate {
         progressDialog.setCancelable(true);
 
         // 设置任务结束回调
-        checkVersion.setWorkBackListener(new WorkBack<String>() {
+        checkVersion.setWorkEndListener(new WorkBack<String>() {
             @Override
             public void doEndWork(boolean state, String data) {
 
@@ -203,7 +203,7 @@ public class CheckUpdate {
         CheckVersion checkVersion = new CheckVersion();
 
         // 设置任务结束回调
-        checkVersion.setWorkBackListener(new WorkBack<String>() {
+        checkVersion.setWorkEndListener(new WorkBack<String>() {
             @Override
             public void doEndWork(boolean state, String data) {
 

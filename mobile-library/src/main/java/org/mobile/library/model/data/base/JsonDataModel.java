@@ -148,7 +148,7 @@ public abstract class JsonDataModel implements IDefaultDataModel {
     protected abstract boolean onRequestResult(JSONObject jsonResult) throws JSONException;
 
     /**
-     * 提取服务返回的结果消息，
+     * 提取服务返回的结果消息<br>
      * 在{@link #onRequestResult(JSONObject)}之后被调用
      *
      * @param result     服务请求执行结果，
@@ -163,7 +163,7 @@ public abstract class JsonDataModel implements IDefaultDataModel {
             JSONException;
 
     /**
-     * 提取服务反馈的结果数据，
+     * 提取服务反馈的结果数据<br>
      * 在服务请求成功后调用，
      * 即{@link #onRequestResult(JSONObject)}返回值为true时，
      * 在{@link #onRequestMessage(boolean , JSONObject)}之后被调用，
@@ -175,7 +175,7 @@ public abstract class JsonDataModel implements IDefaultDataModel {
     protected abstract void onRequestSuccess(JSONObject jsonResult) throws JSONException;
 
     /**
-     * 提取服务反馈的结果数据，
+     * 提取服务反馈的结果数据<br>
      * 在服务请求失败后调用，
      * 即{@link #onRequestResult(JSONObject)}返回值为false时，
      * 在{@link #onRequestMessage(boolean , JSONObject)}之后被调用，
