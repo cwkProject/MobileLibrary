@@ -1,4 +1,4 @@
-package org.mobile.library.util;
+package org.mobile.library.global;
 /**
  * Created by 超悟空 on 2015/4/23.
  */
@@ -9,15 +9,10 @@ import org.mobile.library.model.config.TemporaryConfigModel;
  * 保存当前应用版本信息的数据类
  *
  * @author 超悟空
- * @version 1.0 2015/4/23
+ * @version 2.0 2015/10/30
  * @since 1.0
  */
 public class ApplicationVersion extends TemporaryConfigModel {
-
-    /**
-     * 自身的静态对象
-     */
-    private static ApplicationVersion applicationVersion = new ApplicationVersion();
 
     /**
      * 标识当前是否为最新版本，默认为true
@@ -40,20 +35,10 @@ public class ApplicationVersion extends TemporaryConfigModel {
     private long appFileId = 0;
 
     /**
-     * 私有构造函数
+     * 构造函数
      */
-    private ApplicationVersion() {
+    public ApplicationVersion() {
         super();
-    }
-
-    /**
-     * 获取全局临时数据对象
-     *
-     * @return 数据对象
-     */
-    public static ApplicationVersion getVersionManager() {
-
-        return applicationVersion;
     }
 
     @Override

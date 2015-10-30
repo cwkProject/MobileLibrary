@@ -5,6 +5,8 @@ package org.mobile.library.network.communication;
 
 import android.util.Log;
 
+import org.mobile.library.network.util.SyncCommunication;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -18,7 +20,7 @@ import java.util.Map;
  * @version 1.0 2015/7/4
  * @since 1.0
  */
-public abstract class BaseHttpURLConnectionCommunication implements ICommunication<Map<String,
+public abstract class BaseHttpURLConnectionCommunication implements SyncCommunication<Map<String,
         String>, InputStream> {
 
     /**
@@ -131,9 +133,11 @@ public abstract class BaseHttpURLConnectionCommunication implements ICommunicati
                 params.deleteCharAt(params.length() - 1);
             }
 
-            Log.i(LOG_TAG + "Request", "params is " + params);
+            // 要发送的参数
+            String parameter = params.toString();
+            Log.i(LOG_TAG + "Request", "params is " + parameter);
 
-            httpURLConnection = onCreateHttpURLConnection(params.toString());
+            httpURLConnection = onCreateHttpURLConnection(parameter);
 
             // 设置超时时间
             httpURLConnection.setConnectTimeout(timeout);
@@ -141,6 +145,9 @@ public abstract class BaseHttpURLConnectionCommunication implements ICommunicati
 
             // 建立连接
             httpURLConnection.connect();
+
+            // 写入输出流
+            onWriteOutputStream(httpURLConnection, parameter);
 
             // 得到响应码
             int responseCode = httpURLConnection.getResponseCode();
@@ -163,14 +170,30 @@ public abstract class BaseHttpURLConnectionCommunication implements ICommunicati
     }
 
     /**
+     * 写入输出流<br>
+     * 须在{@link #onCreateHttpURLConnection(String)}中开启{@link HttpURLConnection#setDoOutput(boolean)}
+     *
+     * @param httpURLConnection {@link #onCreateHttpURLConnection(String)}中创建的网络访问对象
+     * @param parameter         要发送的参数
+     *
+     * @throws IOException 连接创建出错
+     */
+    protected void onWriteOutputStream(HttpURLConnection httpURLConnection, String parameter)
+            throws IOException {
+    }
+
+    /**
      * 创建{@link java.net.HttpURLConnection}连接对象，
      * 为{@link #Request(Map)}生成的连接请求对象
      *
-     * @param param 请求参数
+     * @param parameter 请求参数
      *
      * @return 创建好的连接参数
+     *
+     * @throws IOException 连接创建出错
      */
-    protected abstract HttpURLConnection onCreateHttpURLConnection(String param) throws IOException;
+    protected abstract HttpURLConnection onCreateHttpURLConnection(String parameter) throws
+            IOException;
 
     @Override
     public InputStream Response() {
@@ -183,5 +206,9 @@ public abstract class BaseHttpURLConnectionCommunication implements ICommunicati
         if (httpURLConnection != null) {
             httpURLConnection.disconnect();
         }
+    }
+
+    @Override
+    public void cancel() {
     }
 }

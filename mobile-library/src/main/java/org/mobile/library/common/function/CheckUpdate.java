@@ -11,8 +11,7 @@ import org.mobile.library.R;
 import org.mobile.library.common.dialog.VersionUpdateDialog;
 import org.mobile.library.model.work.WorkBack;
 import org.mobile.library.model.work.implement.CheckVersion;
-import org.mobile.library.util.ApplicationVersion;
-import org.mobile.library.util.StaticValueUtil;
+import org.mobile.library.global.ApplicationStaticValue;
 
 /**
  * 检查更新功能类
@@ -55,7 +54,7 @@ public class CheckUpdate {
      * @param applicationCode 当前应用代码
      */
     public CheckUpdate(Context context, String applicationCode) {
-        this(context, applicationCode, StaticValueUtil.UPDATE_REQUEST_URL);
+        this(context, applicationCode, ApplicationStaticValue.UPDATE_REQUEST_URL);
     }
 
     /**
@@ -66,7 +65,7 @@ public class CheckUpdate {
      * @param updateRequestUrl 版本状态请求地址
      */
     public CheckUpdate(Context context, String applicationCode, String updateRequestUrl) {
-        this(context, applicationCode, updateRequestUrl, StaticValueUtil.DEVICE_TYPE);
+        this(context, applicationCode, updateRequestUrl, ApplicationStaticValue.DEVICE_TYPE);
     }
 
     /**
@@ -88,7 +87,7 @@ public class CheckUpdate {
     /**
      * 设置当前设备类型
      *
-     * @param deviceType 类型字符串，默认使用{@link StaticValueUtil#DEVICE_TYPE}
+     * @param deviceType 类型字符串，默认使用{@link ApplicationStaticValue#DEVICE_TYPE}
      */
     public void setDeviceType(String deviceType) {
         this.deviceType = deviceType;
@@ -133,7 +132,7 @@ public class CheckUpdate {
     /**
      * 设置版本状态请求地址
      *
-     * @param updateRequestUrl 完整的地址串，默认使用{@link StaticValueUtil#UPDATE_REQUEST_URL}
+     * @param updateRequestUrl 完整的地址串，默认使用{@link ApplicationStaticValue#UPDATE_REQUEST_URL}
      */
     public void setUpdateRequestUrl(String updateRequestUrl) {
         this.updateRequestUrl = updateRequestUrl;
@@ -225,9 +224,7 @@ public class CheckUpdate {
      * 当前不是最新版本的操作
      */
     private void showUpdate() {
-        VersionUpdateDialog.showUpdate(context, ApplicationVersion.getVersionManager()
-                .getLatestVersionName(), ApplicationVersion.getVersionManager()
-                .getLatestVersionUrl());
+        VersionUpdateDialog.showUpdate(context);
     }
 
     /**

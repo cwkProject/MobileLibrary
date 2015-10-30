@@ -25,7 +25,7 @@ public class HttpURLConnectionPostCommunication extends BaseHttpURLConnectionCom
     private static final String LOG_TAG = "HttpURLConnectionPostCommunication.";
 
     @Override
-    protected HttpURLConnection onCreateHttpURLConnection(String param) throws IOException {
+    protected HttpURLConnection onCreateHttpURLConnection(String parameter) throws IOException {
         Log.i(LOG_TAG + "onCreateHttpURLConnection", "create httpURLConnection post");
 
         // 新建URL对象
@@ -41,14 +41,18 @@ public class HttpURLConnectionPostCommunication extends BaseHttpURLConnectionCom
         // 设置可写请求参数
         httpURLConnection.setDoOutput(true);
 
-        if (param != null && param.length() > 0) {
+        return httpURLConnection;
+    }
+
+    @Override
+    protected void onWriteOutputStream(HttpURLConnection httpURLConnection, String parameter)
+            throws IOException {
+        if (parameter != null && parameter.length() > 0) {
             // 写入请求参数
             OutputStream out = httpURLConnection.getOutputStream();
-            out.write(param.getBytes());
+            out.write(parameter.getBytes());
             out.flush();
             out.close();
         }
-
-        return httpURLConnection;
     }
 }

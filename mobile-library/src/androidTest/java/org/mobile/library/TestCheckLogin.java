@@ -7,7 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mobile.library.model.work.WorkBack;
 import org.mobile.library.model.work.implement.CheckLogin;
-import org.mobile.library.util.LoginStatus;
+import org.mobile.library.global.LoginStatus;
 
 import static org.junit.Assert.assertEquals;
 

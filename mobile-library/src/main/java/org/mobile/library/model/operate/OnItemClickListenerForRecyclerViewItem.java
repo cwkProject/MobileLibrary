@@ -20,5 +20,5 @@ public interface OnItemClickListenerForRecyclerViewItem<DataSourceType, ViewHold
      * @param dataSource 当前适配器绑定的数据集
      * @param holder     点击位置的布局管理工具
      */
-    public void onClick(DataSourceType dataSource, ViewHolderType holder);
+    void onClick(DataSourceType dataSource, ViewHolderType holder);
 }

@@ -1,4 +1,4 @@
-package org.mobile.library.util;
+package org.mobile.library.global;
 /**
  * Created by 超悟空 on 2015/6/11.
  */
@@ -9,14 +9,10 @@ import org.mobile.library.model.config.TemporaryConfigModel;
  * 应用相关参数
  *
  * @author 超悟空
- * @version 1.0 2015/6/11
+ * @version 2.0 2015/10/30
  * @since 1.0
  */
 public class ApplicationAttribute extends TemporaryConfigModel {
-    /**
-     * 自身的静态对象
-     */
-    private static ApplicationAttribute applicationAttribute = new ApplicationAttribute();
 
     /**
      * 设备UUID
@@ -24,9 +20,9 @@ public class ApplicationAttribute extends TemporaryConfigModel {
     private String deviceToken = null;
 
     /**
-     * 设备类型，默认{@link StaticValueUtil#DEVICE_TYPE}
+     * 设备类型，默认{@link ApplicationStaticValue#DEVICE_TYPE}
      */
-    private String deviceType = StaticValueUtil.DEVICE_TYPE;
+    private String deviceType = ApplicationStaticValue.DEVICE_TYPE;
 
     /**
      * 应用标识
@@ -45,7 +41,7 @@ public class ApplicationAttribute extends TemporaryConfigModel {
     /**
      * 设置设备类型
      *
-     * @param deviceType 设备类型码，默认{@link StaticValueUtil#DEVICE_TYPE}
+     * @param deviceType 设备类型码，默认{@link ApplicationStaticValue#DEVICE_TYPE}
      */
     public void setDeviceType(String deviceType) {
         this.deviceType = deviceType;
@@ -72,7 +68,7 @@ public class ApplicationAttribute extends TemporaryConfigModel {
     /**
      * 获取设备类型
      *
-     * @return 设备类型码，默认{@link StaticValueUtil#DEVICE_TYPE}
+     * @return 设备类型码，默认{@link ApplicationStaticValue#DEVICE_TYPE}
      */
     public String getDeviceType() {
         return deviceType;
@@ -88,25 +84,16 @@ public class ApplicationAttribute extends TemporaryConfigModel {
     }
 
     /**
-     * 私有构造函数
+     * 构造函数
      */
-    private ApplicationAttribute() {
+    public ApplicationAttribute() {
         super();
     }
 
     @Override
     protected void onCreate() {
-        setDeviceType(StaticValueUtil.DEVICE_TYPE);
+        setDeviceType(ApplicationStaticValue.DEVICE_TYPE);
         setDeviceToken(null);
         setAppName(null);
-    }
-
-    /**
-     * 获取全局临时数据对象
-     *
-     * @return 数据对象
-     */
-    public static ApplicationAttribute getApplicationAttribute() {
-        return applicationAttribute;
     }
 }

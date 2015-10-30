@@ -9,8 +9,8 @@ import org.mobile.library.R;
 import org.mobile.library.model.data.implement.LoginData;
 import org.mobile.library.model.work.DefaultWorkModel;
 import org.mobile.library.util.BroadcastUtil;
-import org.mobile.library.util.ContextUtil;
-import org.mobile.library.util.LoginStatus;
+import org.mobile.library.global.GlobalApplication;
+import org.mobile.library.global.LoginStatus;
 
 /**
  * 登录检查任务类
@@ -40,7 +40,7 @@ public class CheckLogin extends DefaultWorkModel<String, String, LoginData> {
     @Override
     protected void onParameterError(String... parameters) {
         Log.d(LOG_TAG + "onDoWork", "userName or password is null");
-        setResult(ContextUtil.getContext().getString(R.string.login_error_parameter));
+        setResult(GlobalApplication.getGlobal().getString(R.string.login_error_parameter));
         sendBroadcast();
     }
 
@@ -51,7 +51,7 @@ public class CheckLogin extends DefaultWorkModel<String, String, LoginData> {
 
     @Override
     protected String onParseFailedSetResult(LoginData data) {
-        return ContextUtil.getContext().getString(R.string.login_error_field_required);
+        return GlobalApplication.getGlobal().getString(R.string.login_error_field_required);
     }
 
     @Override
@@ -105,6 +105,6 @@ public class CheckLogin extends DefaultWorkModel<String, String, LoginData> {
      * 发送广播
      */
     private void sendBroadcast() {
-        BroadcastUtil.sendBroadcast(ContextUtil.getContext(), BroadcastUtil.MEMORY_STATE_LOGIN);
+        BroadcastUtil.sendBroadcast(GlobalApplication.getGlobal(), BroadcastUtil.MEMORY_STATE_LOGIN);
     }
 }

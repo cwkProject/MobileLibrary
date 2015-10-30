@@ -6,32 +6,31 @@ package org.mobile.library.model.work;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import org.mobile.library.model.operate.AsyncExecute;
+import org.mobile.library.model.operate.Cancelable;
+import org.mobile.library.model.operate.ProgressUpdate;
+import org.mobile.library.model.operate.SyncExecute;
+
 /**
- * 基础任务处理模型，用于执行任务逻辑
+ * 基础任务处理模型，
+ * 用于执行任务逻辑，
+ * 同时实现同步与异步流程，
+ * 异步流程基于{@link AsyncTask}实现
  *
  * @param <Parameters> 任务所需参数类型
  * @param <Result>     结果数据类型
  *
  * @author 超悟空
- * @version 2.0 2015/10/16
+ * @version 2.1 2015/10/29
  * @since 1.0
  */
-public abstract class WorkModel<Parameters, Result> {
+public abstract class WorkModel<Parameters, Result> extends WorkProcessModel<Parameters, Result>
+        implements SyncExecute<Parameters>, AsyncExecute<Parameters>, Cancelable {
 
     /**
      * 日志标签前缀
      */
     private static final String LOG_TAG = "WorkModel.";
-
-    /**
-     * 结果数据对象
-     */
-    private Result result = null;
-
-    /**
-     * 执行结果信息
-     */
-    private String message = null;
 
     /**
      * 任务完成回调接口
@@ -206,19 +205,7 @@ public abstract class WorkModel<Parameters, Result> {
      * @return 结果数据
      */
     public final Result getResult() {
-        Log.i(LOG_TAG + "getResult", "getResult() is invoked");
-        return result;
-    }
-
-    /**
-     * 设置任务结果数据<br>
-     * 应该在{@link #onDoWork(Object[])}中设置结果
-     *
-     * @param result 结果数据对象
-     */
-    protected final void setResult(Result result) {
-        Log.i(LOG_TAG + "setResult", "setResult(Object) is invoked");
-        this.result = result;
+        return super.getResult();
     }
 
     /**
@@ -229,19 +216,7 @@ public abstract class WorkModel<Parameters, Result> {
      * @return 结果消息
      */
     public final String getMessage() {
-        Log.i(LOG_TAG + "getMessage", "getMessage() is invoked");
-        return message;
-    }
-
-    /**
-     * 设置任务结果消息<br>
-     * 应该在{@link #onDoWork(Object[])}中设置消息
-     *
-     * @param message 结果消息
-     */
-    protected final void setMessage(String message) {
-        Log.i(LOG_TAG + "setMessage", "setMessage(String) is invoked");
-        this.message = message;
+        return super.getMessage();
     }
 
     /**

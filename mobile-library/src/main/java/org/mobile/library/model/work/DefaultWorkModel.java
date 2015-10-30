@@ -6,14 +6,14 @@ package org.mobile.library.model.work;
 import android.util.Log;
 
 import org.mobile.library.model.data.IDefaultDataModel;
-import org.mobile.library.network.communication.ICommunication;
+import org.mobile.library.network.util.SyncCommunication;
 import org.mobile.library.network.factory.CommunicationFactory;
 import org.mobile.library.network.factory.NetworkType;
 
 /**
  * 默认实现的网络任务模型基类<br>
  * 内部使用{@link IDefaultDataModel}作为默认的数据模型类，
- * 使用{@link ICommunication}作为网络请求工具
+ * 使用{@link SyncCommunication}作为网络请求工具
  *
  * @param <Parameters>    功能所需参数类型
  * @param <Result>        结果数据类型
@@ -53,7 +53,7 @@ public abstract class DefaultWorkModel<Parameters, Result, DataModelType extends
         DataModelType data = onCreateDataModel(parameters);
 
         // 新建通讯工具
-        ICommunication communication = onCreateCommunication();
+        SyncCommunication communication = onCreateCommunication();
 
         // 设置调用的方法名
         communication.setTaskName(onTaskUri());
@@ -144,7 +144,7 @@ public abstract class DefaultWorkModel<Parameters, Result, DataModelType extends
 
     /**
      * 设置网络请求类型<br>
-     * 用于{@link CommunicationFactory#Create(NetworkType)}生产网络请求实例，
+     * 用于{@link CommunicationFactory#CreateSyncCommunication(NetworkType)}生产网络请求实例，
      * 默认为{@link NetworkType#HTTP_GET}
      *
      * @return 网络请求类型枚举
@@ -162,8 +162,8 @@ public abstract class DefaultWorkModel<Parameters, Result, DataModelType extends
      *
      * @return 网络请求工具实例
      */
-    protected ICommunication onCreateCommunication() {
-        return CommunicationFactory.Create(onNetworkType());
+    protected SyncCommunication onCreateCommunication() {
+        return CommunicationFactory.CreateSyncCommunication(onNetworkType());
     }
 
     /**

@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import org.mobile.library.global.GlobalApplication;
+
 import java.lang.reflect.Field;
 
 /**
@@ -245,7 +247,7 @@ public class PreferencesUtil {
      * @return SharedPreferences对象
      */
     public SharedPreferences getSharedPreferences() {
-        return this.context.getSharedPreferences(this.fileName, ContextUtil.MODE_PRIVATE);
+        return this.context.getSharedPreferences(this.fileName, GlobalApplication.MODE_PRIVATE);
     }
 
     /**

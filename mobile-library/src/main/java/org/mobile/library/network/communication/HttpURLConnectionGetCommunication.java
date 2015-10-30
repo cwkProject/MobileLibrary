@@ -24,15 +24,15 @@ public class HttpURLConnectionGetCommunication extends BaseHttpURLConnectionComm
     private static final String LOG_TAG = "HttpURLConnectionGetCommunication.";
 
     @Override
-    protected HttpURLConnection onCreateHttpURLConnection(String param) throws IOException {
+    protected HttpURLConnection onCreateHttpURLConnection(String parameter) throws IOException {
         Log.i(LOG_TAG + "onCreateHttpURLConnection", "create httpURLConnection get");
 
         // 完整的请求地址
         String fullUrl = url;
 
-        if (param != null && param.length() > 0) {
+        if (parameter != null && parameter.length() > 0) {
             // 拼接参数
-            fullUrl += "?" + param;
+            fullUrl += "?" + parameter;
         }
 
         Log.i(LOG_TAG + "onCreateHttpURLConnection", "full url is " + fullUrl);

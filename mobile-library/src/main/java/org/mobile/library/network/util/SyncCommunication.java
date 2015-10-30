@@ -1,16 +1,18 @@
-package org.mobile.library.network.communication;
+package org.mobile.library.network.util;
+
+import org.mobile.library.model.operate.Cancelable;
 
 /**
- * 与服务器通讯接口
+ * 与服务器通讯同步模式执行接口
  *
  * @param <RequestType>  请求数据类型
  * @param <ResponseType> 接收数据类型
  *
  * @author 超悟空
- * @version 1.0 2015/1/6
+ * @version 2.0 2015/10/30
  * @since 1.0
  */
-public interface ICommunication<RequestType, ResponseType> {
+public interface SyncCommunication<RequestType, ResponseType> extends Cancelable {
 
     /**
      * 设置请求的任务名
@@ -22,7 +24,7 @@ public interface ICommunication<RequestType, ResponseType> {
     /**
      * 向服发送请求
      *
-     * @param sendData 向服务器发送请求时附加的数据
+     * @param sendData 向服务器发送的数据
      */
     void Request(RequestType sendData);
 

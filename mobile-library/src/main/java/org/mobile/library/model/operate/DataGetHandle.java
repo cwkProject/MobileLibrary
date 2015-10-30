@@ -19,5 +19,5 @@ public interface DataGetHandle<DataType> {
      *
      * @return 数据提供者整理的数据
      */
-    public DataType getData();
+    DataType getData();
 }

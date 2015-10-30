@@ -16,11 +16,11 @@ import android.widget.EditText;
 
 import org.mobile.library.R;
 import org.mobile.library.common.dialog.SimpleDialog;
+import org.mobile.library.global.ApplicationAttribute;
+import org.mobile.library.global.ApplicationConfig;
+import org.mobile.library.global.GlobalApplication;
 import org.mobile.library.model.work.WorkBack;
 import org.mobile.library.model.work.implement.CheckLogin;
-import org.mobile.library.util.ApplicationAttribute;
-import org.mobile.library.util.ConfigUtil;
-import org.mobile.library.util.LoginStatus;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -102,7 +102,7 @@ public abstract class BaseLoginActivity extends Activity {
         setContentView(onActivityLoginLayout());
 
         // 重置用户登录参数
-        LoginStatus.getLoginStatus().Reset();
+        GlobalApplication.getGlobal().getLoginStatus().Reset();
 
         // 初始化界面
         init();
@@ -162,14 +162,16 @@ public abstract class BaseLoginActivity extends Activity {
             // 获取保存密码复选框
             loginSaveCheck = (CheckBox) findViewById(loginSaveCheckID);
             // 设置复选框初状态
-            loginSaveCheck.setChecked(ConfigUtil.getInstance().isLoginSave());
+            loginSaveCheck.setChecked(GlobalApplication.getGlobal().getApplicationConfig()
+                    .isLoginSave());
         }
 
         if (loginAutoCheckID > 0) {
             // 获取自动登录复选框
             loginAutoCheck = (CheckBox) findViewById(loginAutoCheckID);
             // 设置复选框初状态
-            loginAutoCheck.setChecked(ConfigUtil.getInstance().isLoginAuto());
+            loginAutoCheck.setChecked(GlobalApplication.getGlobal().getApplicationConfig()
+                    .isLoginAuto());
         }
 
         // 如果同时存在
@@ -221,13 +223,16 @@ public abstract class BaseLoginActivity extends Activity {
         passwordEditText = (EditText) findViewById(onPasswordEditTextID());
 
         // 尝试填充数据
-        if (ConfigUtil.getInstance().getUserName() != null) {
+        if (GlobalApplication.getGlobal().getApplicationConfig().getUserName() != null) {
             // 填充用户
-            userNameEditText.setText(ConfigUtil.getInstance().getUserName());
+            userNameEditText.setText(GlobalApplication.getGlobal().getApplicationConfig()
+                    .getUserName());
 
-            if ((loginSaveCheck != null && loginSaveCheck.isChecked()) || (loginAutoCheck != null && loginAutoCheck.isChecked())) {
+            if ((loginSaveCheck != null && loginSaveCheck.isChecked()) || (loginAutoCheck != null
+                    && loginAutoCheck.isChecked())) {
                 // 记住密码状态或自动登录状态，填充密码
-                passwordEditText.setText(ConfigUtil.getInstance().getPassword());
+                passwordEditText.setText(GlobalApplication.getGlobal().getApplicationConfig()
+                        .getPassword());
             } else {
                 // 让密码框拥有焦点
                 setSoftInput(passwordEditText);
@@ -255,7 +260,8 @@ public abstract class BaseLoginActivity extends Activity {
         timer.schedule(new TimerTask() {
 
             public void run() {
-                InputMethodManager inputManager = (InputMethodManager) editText.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                InputMethodManager inputManager = (InputMethodManager) editText.getContext()
+                        .getSystemService(Context.INPUT_METHOD_SERVICE);
                 inputManager.showSoftInput(editText, 0);
             }
 
@@ -326,7 +332,7 @@ public abstract class BaseLoginActivity extends Activity {
                     // 登录成功
 
                     // 保存当前设置
-                    ConfigUtil config = ConfigUtil.getInstance();
+                    ApplicationConfig config = GlobalApplication.getGlobal().getApplicationConfig();
                     config.setUserName(userName);
                     if (loginAutoCheck != null) {
                         config.setLoginAuto(loginAutoCheck.isChecked());
@@ -357,10 +363,12 @@ public abstract class BaseLoginActivity extends Activity {
         startProgressDialog();
 
         // 设置应用相关参数
-        onApplicationAttribute(ApplicationAttribute.getApplicationAttribute());
+        onApplicationAttribute(GlobalApplication.getGlobal().getApplicationAttribute());
 
         // 执行登录任务
-        login.beginExecute(userName, password, onAppName(), ApplicationAttribute.getApplicationAttribute().getDeviceToken(), ApplicationAttribute.getApplicationAttribute().getDeviceType());
+        login.beginExecute(userName, password, onAppName(), GlobalApplication.getGlobal()
+                .getApplicationAttribute().getDeviceToken(), GlobalApplication.getGlobal()
+                .getApplicationAttribute().getDeviceType());
     }
 
     /**

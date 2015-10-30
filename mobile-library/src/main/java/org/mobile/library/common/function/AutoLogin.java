@@ -6,10 +6,10 @@ package org.mobile.library.common.function;
 import android.content.Context;
 import android.util.Log;
 
+import org.mobile.library.global.ApplicationAttribute;
+import org.mobile.library.global.GlobalApplication;
 import org.mobile.library.model.work.implement.CheckLogin;
-import org.mobile.library.util.ApplicationAttribute;
 import org.mobile.library.util.BroadcastUtil;
-import org.mobile.library.util.ConfigUtil;
 
 /**
  * 自动登录功能
@@ -38,7 +38,7 @@ public class AutoLogin {
         Log.i(LOG_TAG + "autoLogin", "autoLogin() is invoked");
 
         // 判断是否自动登录
-        if (ConfigUtil.getInstance().isLoginAuto()) {
+        if (GlobalApplication.getGlobal().getApplicationConfig().isLoginAuto()) {
             Log.i(LOG_TAG + "autoLogin", "auto login");
 
             // 进行登录验证
@@ -46,7 +46,11 @@ public class AutoLogin {
             // 执行登录任务
             Log.i(LOG_TAG + "autoLogin", "auto login begin");
 
-            login.beginExecute(ConfigUtil.getInstance().getUserName(), ConfigUtil.getInstance().getPassword(), appCode, ApplicationAttribute.getApplicationAttribute().getDeviceToken(), ApplicationAttribute.getApplicationAttribute().getDeviceType());
+            login.beginExecute(GlobalApplication.getGlobal().getApplicationConfig().getUserName()
+                    , GlobalApplication.getGlobal().getApplicationConfig().getPassword(),
+                    appCode, GlobalApplication.getGlobal().getApplicationAttribute()
+                            .getDeviceToken(), GlobalApplication.getGlobal()
+                            .getApplicationAttribute().getDeviceType());
         } else {
             Log.i(LOG_TAG + "autoLogin", "no auto login");
             // 发送登录状态改变广播，标识一个加载动作结束

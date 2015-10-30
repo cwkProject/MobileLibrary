@@ -6,7 +6,7 @@ package org.mobile.library.common.function;
 import android.content.Context;
 import android.net.ConnectivityManager;
 
-import org.mobile.library.util.ContextUtil;
+import org.mobile.library.global.GlobalApplication;
 
 /**
  * 检测网络连接状态
@@ -23,7 +23,7 @@ public class CheckNetwork {
      * @return true可用；false不可用
      */
     public static boolean isOpenNetwork() {
-        ConnectivityManager connManager = (ConnectivityManager) ContextUtil.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager connManager = (ConnectivityManager) GlobalApplication.getGlobal().getSystemService(Context.CONNECTIVITY_SERVICE);
         return connManager.getActiveNetworkInfo() != null && connManager.getActiveNetworkInfo().isAvailable();
     }
 }

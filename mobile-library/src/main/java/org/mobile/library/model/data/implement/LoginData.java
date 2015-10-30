@@ -8,7 +8,7 @@ import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.mobile.library.model.data.base.JsonDataModel;
-import org.mobile.library.util.StaticValueUtil;
+import org.mobile.library.global.ApplicationStaticValue;
 
 import java.util.Map;
 
@@ -42,9 +42,9 @@ public class LoginData extends JsonDataModel {
     private String deviceToken = null;
 
     /**
-     * 设备类型，默认{@link StaticValueUtil#DEVICE_TYPE}
+     * 设备类型，默认{@link ApplicationStaticValue#DEVICE_TYPE}
      */
-    private String deviceType = StaticValueUtil.DEVICE_TYPE;
+    private String deviceType = ApplicationStaticValue.DEVICE_TYPE;
 
     /**
      * 应用标识
@@ -110,7 +110,7 @@ public class LoginData extends JsonDataModel {
     /**
      * 设置设备类型
      *
-     * @param deviceType 设备类型码，默认{@link StaticValueUtil#DEVICE_TYPE}
+     * @param deviceType 设备类型码，默认{@link ApplicationStaticValue#DEVICE_TYPE}
      */
     public void setDeviceType(String deviceType) {
         this.deviceType = deviceType;

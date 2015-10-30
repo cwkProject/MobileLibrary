@@ -27,5 +27,5 @@ public enum NetworkType {
     /**
      * 上传
      */
-    UPDATE
+    UPLOAD
 }

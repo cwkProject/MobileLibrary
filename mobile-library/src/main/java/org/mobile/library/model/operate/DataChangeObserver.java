@@ -22,5 +22,5 @@ public interface DataChangeObserver<DataType> {
      *
      * @param data 改变后的数据
      */
-    public void notifyDataChange(DataType data);
+    void notifyDataChange(DataType data);
 }

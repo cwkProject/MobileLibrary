@@ -1,4 +1,4 @@
-package org.mobile.library.util;
+package org.mobile.library.global;
 /**
  * Created by 超悟空 on 2015/6/11.
  */
@@ -9,15 +9,10 @@ import org.mobile.library.model.config.TemporaryConfigModel;
  * 登录状态数据类
  *
  * @author 超悟空
- * @version 1.0 2015/6/11
+ * @version 2.0 2015/10/30
  * @since 1.0
  */
 public class LoginStatus extends TemporaryConfigModel {
-
-    /**
-     * 自身的静态对象
-     */
-    private static LoginStatus loginStatus = new LoginStatus();
 
     /**
      * 标记是否已登录
@@ -45,24 +40,15 @@ public class LoginStatus extends TemporaryConfigModel {
     private String nickname = null;
 
     /**
-     * 登录的get请求地址，默认使用{@link StaticValueUtil#LOGIN_URL}
+     * 登录的get请求地址，默认使用{@link ApplicationStaticValue#LOGIN_URL}
      */
-    private String loginUrl = StaticValueUtil.LOGIN_URL;
+    private String loginUrl = ApplicationStaticValue.LOGIN_URL;
 
     /**
-     * 私有构造函数
+     * 构造函数
      */
-    private LoginStatus() {
+    public LoginStatus() {
         super();
-    }
-
-    /**
-     * 获取全局临时数据对象
-     *
-     * @return 数据对象
-     */
-    public static LoginStatus getLoginStatus() {
-        return loginStatus;
     }
 
     @Override
@@ -168,7 +154,7 @@ public class LoginStatus extends TemporaryConfigModel {
     /**
      * 获取登录请求的地址
      *
-     * @return get请求地址，默认使用{@link StaticValueUtil#LOGIN_URL}
+     * @return get请求地址，默认使用{@link ApplicationStaticValue#LOGIN_URL}
      */
     public String getLoginUrl() {
         return loginUrl;

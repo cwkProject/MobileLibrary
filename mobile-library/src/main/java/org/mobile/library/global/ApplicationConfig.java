@@ -1,8 +1,10 @@
-package org.mobile.library.util;
+package org.mobile.library.global;
 
 /**
  * Created by 超悟空 on 2015/6/11.
  */
+
+import android.content.Context;
 
 import org.mobile.library.model.config.PersistenceConfigModel;
 
@@ -13,12 +15,7 @@ import org.mobile.library.model.config.PersistenceConfigModel;
  * @version 1.0 2015/6/11
  * @since 1.0
  */
-public class ConfigUtil extends PersistenceConfigModel {
-
-    /**
-     * 全局配置对象
-     */
-    private static ConfigUtil ourInstance = new ConfigUtil();
+public class ApplicationConfig extends PersistenceConfigModel {
 
     /**
      * 标记是否保存用户名密码
@@ -41,20 +38,13 @@ public class ConfigUtil extends PersistenceConfigModel {
     private String password = null;
 
     /**
-     * 获取全局配置
-     *
-     * @return 全局配置对象
-     */
-    public static ConfigUtil getInstance() {
-        return ourInstance;
-    }
-
-    /**
      * 构造函数
+     *
+     * @param context 上下文
      */
-    private ConfigUtil() {
+    public ApplicationConfig(Context context) {
         // 父类构造函数，传入全局内容提供者
-        super(ContextUtil.getContext());
+        super(context);
         // 加载数据
         Refresh();
     }

@@ -18,5 +18,5 @@ public interface BackHandle {
      *
      * @return 处理标识
      */
-    public abstract boolean onBackPressed();
+    boolean onBackPressed();
 }

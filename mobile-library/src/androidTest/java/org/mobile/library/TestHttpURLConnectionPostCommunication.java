@@ -5,7 +5,7 @@ package org.mobile.library;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mobile.library.network.communication.ICommunication;
+import org.mobile.library.network.util.SyncCommunication;
 import org.mobile.library.network.factory.CommunicationFactory;
 import org.mobile.library.network.factory.NetworkType;
 import org.mobile.library.parser.InputStreamToStringParser;
@@ -30,12 +30,12 @@ public class TestHttpURLConnectionPostCommunication {
     /**
      * 网络连接工具
      */
-    private ICommunication communication = null;
+    private SyncCommunication communication = null;
 
     @Before
     public void setUp() throws Exception {
         // 新建通讯工具
-        communication = CommunicationFactory.Create(NetworkType.HTTP_POST);
+        communication = CommunicationFactory.CreateSyncCommunication(NetworkType.HTTP_POST);
 
         communication.setTaskName("http://218.92.115.55/WlkgbsgsApp/Service/test.aspx");
 

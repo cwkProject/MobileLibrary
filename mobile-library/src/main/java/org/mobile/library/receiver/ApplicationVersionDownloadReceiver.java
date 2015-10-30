@@ -8,12 +8,14 @@ import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
 
-import org.mobile.library.util.StaticValueUtil;
+import org.mobile.library.model.operate.EmptyParameterObserver;
+import org.mobile.library.global.ApplicationStaticValue;
 
 import java.io.File;
 
@@ -31,6 +33,34 @@ public class ApplicationVersionDownloadReceiver extends BroadcastReceiver {
      */
     private static final String LOG_TAG = "ApplicationVersionDownloadReceiver.";
 
+    /**
+     * 下载完成回调
+     */
+    private EmptyParameterObserver endObserver = null;
+
+    /**
+     * 设置下载完成监听
+     *
+     * @param endObserver 监听器
+     */
+    public void setEndObserver(EmptyParameterObserver endObserver) {
+        this.endObserver = endObserver;
+    }
+
+    /**
+     * 得到本接收者监听的动作集合
+     *
+     * @return 填充完毕的意图集合
+     */
+    @TargetApi(Build.VERSION_CODES.GINGERBREAD)
+    public final IntentFilter getRegisterIntentFilter() {
+        // 新建动作集合
+        IntentFilter filter = new IntentFilter();
+        // 下载结果监听
+        filter.addAction(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
+        return filter;
+    }
+
     @TargetApi(Build.VERSION_CODES.GINGERBREAD)
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -41,7 +71,9 @@ public class ApplicationVersionDownloadReceiver extends BroadcastReceiver {
             Log.i(LOG_TAG + "onReceive", "ACTION_DOWNLOAD_COMPLETE");
             long nowId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, 0);
             Log.i(LOG_TAG + "onReceive", "now download file id is " + nowId);
-            long tagId = context.getSharedPreferences(StaticValueUtil.APPLICATION_CONFIG_FILE_NAME, Context.MODE_PRIVATE).getLong(StaticValueUtil.UPDATE_APP_FILE_ID_TAG, 0);
+            long tagId = context.getSharedPreferences(ApplicationStaticValue
+                    .APPLICATION_CONFIG_FILE_NAME, Context.MODE_PRIVATE).getLong(ApplicationStaticValue
+                    .UPDATE_APP_FILE_ID_TAG, 0);
             Log.i(LOG_TAG + "onReceive", "target file id is " + tagId);
 
             if (nowId == tagId) {
@@ -62,7 +94,8 @@ public class ApplicationVersionDownloadReceiver extends BroadcastReceiver {
         Log.i(LOG_TAG + "queryDownloadStatus", "queryDownloadStatus(Context) is invoked");
         DownloadManager.Query query = new DownloadManager.Query();
         query.setFilterById(id);
-        DownloadManager downloadManager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
+        DownloadManager downloadManager = (DownloadManager) context.getSystemService(Context
+                .DOWNLOAD_SERVICE);
         Cursor cursor = downloadManager.query(query);
 
         if (cursor != null && cursor.moveToFirst()) {
@@ -81,13 +114,19 @@ public class ApplicationVersionDownloadReceiver extends BroadcastReceiver {
                 case DownloadManager.STATUS_SUCCESSFUL:
                     //完成
                     Log.i(LOG_TAG + "down", "STATUS_SUCCESSFUL");
-                    String path = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI));
+                    String path = cursor.getString(cursor.getColumnIndex(DownloadManager
+                            .COLUMN_LOCAL_URI));
                     doInstall(context, path);
+                    if (endObserver != null) {
+                        endObserver.invoke();
+                    }
                     break;
                 case DownloadManager.STATUS_FAILED:
                     //清除已下载的内容，重新下载
                     Log.i(LOG_TAG + "down", "STATUS_FAILED");
-                    context.getSharedPreferences(StaticValueUtil.APPLICATION_CONFIG_FILE_NAME, Context.MODE_PRIVATE).edit().remove(StaticValueUtil.UPDATE_APP_FILE_ID_TAG).commit();
+                    context.getSharedPreferences(ApplicationStaticValue.APPLICATION_CONFIG_FILE_NAME,
+                            Context.MODE_PRIVATE).edit().remove(ApplicationStaticValue
+                            .UPDATE_APP_FILE_ID_TAG).commit();
                     break;
             }
             cursor.close();

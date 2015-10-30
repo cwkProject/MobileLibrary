@@ -1,4 +1,4 @@
-package org.mobile.library.util;
+package org.mobile.library.global;
 /**
  * Created by 超悟空 on 2015/4/23.
  */
@@ -10,7 +10,7 @@ package org.mobile.library.util;
  * @version 1.0 2015/4/23
  * @since 1.0
  */
-public interface StaticValueUtil {
+public interface ApplicationStaticValue {
 
     /**
      * 设备类型

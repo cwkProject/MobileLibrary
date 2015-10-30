@@ -5,9 +5,9 @@ package org.mobile.library.model.work.implement;
 
 import org.mobile.library.model.data.implement.UpdateData;
 import org.mobile.library.model.work.DefaultWorkModel;
-import org.mobile.library.util.ApplicationVersion;
+import org.mobile.library.global.ApplicationVersion;
 import org.mobile.library.util.BroadcastUtil;
-import org.mobile.library.util.ContextUtil;
+import org.mobile.library.global.GlobalApplication;
 
 
 /**
@@ -84,7 +84,7 @@ public class CheckVersion extends DefaultWorkModel<String, String, UpdateData> {
      */
     private void sendBroadcast() {
         // 发送版本检查结果广播
-        BroadcastUtil.sendBroadcast(ContextUtil.getContext(), BroadcastUtil
+        BroadcastUtil.sendBroadcast(GlobalApplication.getGlobal(), BroadcastUtil
                 .APPLICATION_VERSION_STATE);
     }
 }

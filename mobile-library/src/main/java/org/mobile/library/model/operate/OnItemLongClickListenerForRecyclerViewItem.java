@@ -22,5 +22,5 @@ public interface OnItemLongClickListenerForRecyclerViewItem<DataSourceType, View
      *
      * @return true表示事件被处理
      */
-    public boolean onLongClick(DataSourceType dataSource, ViewHolderType holder);
+    boolean onLongClick(DataSourceType dataSource, ViewHolderType holder);
 }

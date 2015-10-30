@@ -9,8 +9,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mobile.library.model.work.WorkBack;
 import org.mobile.library.model.work.implement.CheckVersion;
-import org.mobile.library.util.ApplicationVersion;
-import org.mobile.library.util.StaticValueUtil;
+import org.mobile.library.global.ApplicationVersion;
+import org.mobile.library.global.ApplicationStaticValue;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -40,7 +40,7 @@ public class TestUpdateVersion {
         });
 
         // 执行任务
-        checkVersion.execute(StaticValueUtil.DEVICE_TYPE, "HMW", StaticValueUtil
+        checkVersion.execute(ApplicationStaticValue.DEVICE_TYPE, "HMW", ApplicationStaticValue
                 .UPDATE_REQUEST_URL);
 
         assertEquals(false, ApplicationVersion.getVersionManager().isLatestVersion());

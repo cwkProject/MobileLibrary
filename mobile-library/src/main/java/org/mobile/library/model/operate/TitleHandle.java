@@ -17,12 +17,12 @@ public interface TitleHandle {
      *
      * @return 标题字符串
      */
-    public abstract String getTitle();
+    String getTitle();
 
     /**
      * 设置对象标题
      *
      * @param title 标题字符串
      */
-    public abstract void setTitle(CharSequence title);
+    void setTitle(CharSequence title);
 }
