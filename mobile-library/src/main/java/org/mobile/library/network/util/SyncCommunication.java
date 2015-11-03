@@ -29,6 +29,13 @@ public interface SyncCommunication<RequestType, ResponseType> extends Cancelable
     void Request(RequestType sendData);
 
     /**
+     * 判断请求是否成功
+     *
+     * @return true表示请求成功
+     */
+    boolean isSuccessful();
+
+    /**
      * 接收服务器响应的数据
      *
      * @return 服务器返回的数据

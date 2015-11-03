@@ -179,6 +179,11 @@ public class HttpURLConnectionUploadCommunication implements SyncCommunication<M
 
     }
 
+    @Override
+    public boolean isSuccessful() {
+        return false;
+    }
+
     /**
      * 设置连接请求参数
      */

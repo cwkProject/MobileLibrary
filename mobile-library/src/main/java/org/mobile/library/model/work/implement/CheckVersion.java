@@ -43,7 +43,7 @@ public class CheckVersion extends DefaultWorkModel<String, String, UpdateData> {
     @Override
     protected void onParseSuccess(UpdateData data) {
         // 改变全局临时变量
-        ApplicationVersion config = ApplicationVersion.getVersionManager();
+        ApplicationVersion config = GlobalApplication.getGlobal().getApplicationVersion();
         config.setLatestVersion(!data.isSuccess());
         config.setLatestVersionName(data.getVersionName());
         config.setLatestVersionUrl(data.getUrl());

@@ -211,4 +211,9 @@ public abstract class BaseHttpURLConnectionCommunication implements SyncCommunic
     @Override
     public void cancel() {
     }
+
+    @Override
+    public boolean isSuccessful() {
+        return false;
+    }
 }

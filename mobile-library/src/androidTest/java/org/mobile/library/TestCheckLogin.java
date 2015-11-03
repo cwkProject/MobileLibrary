@@ -3,11 +3,11 @@ package org.mobile.library;
  * Created by 超悟空 on 2015/9/16.
  */
 
-import org.junit.Before;
 import org.junit.Test;
+import org.mobile.library.global.GlobalApplication;
+import org.mobile.library.global.LoginStatus;
 import org.mobile.library.model.work.WorkBack;
 import org.mobile.library.model.work.implement.CheckLogin;
-import org.mobile.library.global.LoginStatus;
 
 import static org.junit.Assert.assertEquals;
 
@@ -20,67 +20,107 @@ import static org.junit.Assert.assertEquals;
  */
 public class TestCheckLogin {
 
-    /**
-     * 登录验证任务
-     */
-    private CheckLogin login = null;
+    @Test
+    public void trueIdentity() throws Exception {
 
-    private boolean isLogin = false;
-
-    private String message = null;
-
-    @Before
-    public void setUp() throws Exception {
-        login = new CheckLogin();
+        CheckLogin login = new CheckLogin();
 
         login.setWorkEndListener(new WorkBack<String>() {
             @Override
             public void doEndWork(boolean state, String data) {
-                isLogin = state;
-                message = data;
+                assertEquals(true, state);
             }
         });
-    }
-
-    @Test
-    public void trueIdentity() throws Exception {
 
         login.execute("xuehui", "123456", "LHGL");
-
-        assertEquals(true, isLogin);
     }
 
     @Test
     public void falseIdentity() throws Exception {
 
-        login.execute("xuehui", "1234", "LHGL");
+        CheckLogin login = new CheckLogin();
 
-        assertEquals(false, isLogin);
+        login.setWorkEndListener(new WorkBack<String>() {
+            @Override
+            public void doEndWork(boolean state, String data) {
+                assertEquals(false, state);
+            }
+        });
+
+        login.execute("xuehui", "1234", "LHGL");
     }
 
     @Test
     public void falseMessage() throws Exception {
-        login.execute("xuehui", "1234", "LHGL");
 
-        assertEquals("密码错误！", message);
+        CheckLogin login = new CheckLogin();
+
+        login.setWorkEndListener(new WorkBack<String>() {
+            @Override
+            public void doEndWork(boolean state, String data) {
+                assertEquals("密码错误！", data);
+            }
+        });
+
+        login.execute("xuehui", "1234", "LHGL");
     }
 
     @Test
     public void trueMessage() throws Exception {
+        CheckLogin login = new CheckLogin();
+
+        login.setWorkEndListener(new WorkBack<String>() {
+            @Override
+            public void doEndWork(boolean state, String data) {
+                assertEquals(null, data);
+            }
+        });
+
         login.execute("xuehui", "123456", "LHGL");
 
-        assertEquals(null, message);
+
     }
 
     @Test
     public void successStatus() throws Exception {
+        CheckLogin login = new CheckLogin();
+
         login.execute("xuehui", "123456", "LHGL");
 
-        LoginStatus status = LoginStatus.getLoginStatus();
+        LoginStatus status = GlobalApplication.getGlobal().getLoginStatus();
 
         assertEquals("227", status.getUserID());
         assertEquals("薛辉", status.getNickname());
         assertEquals("2", status.getCodeCompany());
         assertEquals("2", status.getCodeDepartment());
+    }
+
+    @Test
+    public void async() throws Exception {
+        final Integer LOCK = 1;
+
+        CheckLogin login = new CheckLogin();
+
+        login.setWorkEndListener(new WorkBack<String>() {
+            @Override
+            public void doEndWork(boolean state, String data) {
+                LoginStatus status = GlobalApplication.getGlobal().getLoginStatus();
+
+                assertEquals("227", status.getUserID());
+                assertEquals("薛辉", status.getNickname());
+                assertEquals("2", status.getCodeCompany());
+                assertEquals("2", status.getCodeDepartment());
+
+                synchronized (LOCK) {
+                    LOCK.notify();
+                }
+            }
+        });
+
+        login.beginExecute("xuehui", "123456", "LHGL");
+
+        synchronized (LOCK) {
+            LOCK.wait();
+        }
     }
 }

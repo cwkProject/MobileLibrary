@@ -5,27 +5,26 @@ package org.mobile.library;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mobile.library.network.util.SyncCommunication;
 import org.mobile.library.network.factory.CommunicationFactory;
 import org.mobile.library.network.factory.NetworkType;
-import org.mobile.library.parser.InputStreamToStringParser;
+import org.mobile.library.network.util.AsyncCommunication;
+import org.mobile.library.network.util.NetworkCallback;
+import org.mobile.library.network.util.SyncCommunication;
 
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
- * HttpURLConnectionPostCommunication网络连接单元测试
+ * HttpPost网络连接单元测试
  *
  * @author 超悟空
- * @version 1.0 2015/9/16
+ * @version 2.0 2015/11/2
  * @since 1.0
  */
-public class TestHttpURLConnectionPostCommunication {
+public class TestHttpPostCommunication {
 
     /**
      * 网络连接工具
@@ -51,7 +50,7 @@ public class TestHttpURLConnectionPostCommunication {
 
         communication.Request(null);
 
-        assertTrue(communication.Response() instanceof InputStream);
+        assertTrue(communication.Response() instanceof String);
     }
 
     /**
@@ -69,13 +68,10 @@ public class TestHttpURLConnectionPostCommunication {
 
         communication.Request(map);
 
-        // 流解析器
-        InputStreamToStringParser parser = new InputStreamToStringParser();
-
-        String result = parser.DataParser((InputStream) communication.Response());
+        String result = (String) communication.Response();
 
         communication.close();
-        assertEquals("123abc", result);
+        assertEquals("123abc", result.trim());
     }
 
     /**
@@ -93,36 +89,47 @@ public class TestHttpURLConnectionPostCommunication {
 
         communication.Request(map);
 
+        String result = (String) communication.Response();
 
-        // 流解析器
-        InputStreamToStringParser parser = new InputStreamToStringParser();
-
-        String result = parser.DataParser((InputStream) communication.Response());
         communication.close();
-        assertEquals("测试测试", result);
+        assertEquals("测试测试", result.trim());
     }
 
     /**
-     * 响应编码测试
+     * 异步通信测试
      *
      * @throws Exception
      */
     @Test
-    public void responseEncode() throws Exception {
+    public void async() throws Exception {
+
+        final Integer LOCK = 1;
 
         // 参数
         Map<String, String> map = new HashMap<>();
 
         map.put("Data", "测试测试");
 
-        communication.Request(map);
+        AsyncCommunication communication = CommunicationFactory.CreateAsyncCommunication
+                (NetworkType.HTTP_POST);
 
-        // 流解析器
-        InputStreamToStringParser parser = new InputStreamToStringParser();
+        communication.setTaskName("http://218.92.115.55/WlkgbsgsApp/Service/test.aspx");
 
-        parser.setEncoded("GBK");
-        String result = parser.DataParser((InputStream) communication.Response());
-        communication.close();
-        assertNotEquals("测试测试", result);
+        communication.Request(map, new NetworkCallback<String>() {
+            @Override
+            public void onFinish(boolean result, String response) {
+
+                assertTrue(result);
+                assertEquals("测试测试", response.trim());
+
+                synchronized (LOCK) {
+                    LOCK.notify();
+                }
+            }
+        });
+
+        synchronized (LOCK) {
+            LOCK.wait();
+        }
     }
 }

@@ -34,7 +34,7 @@ public class CheckLogin extends DefaultWorkModel<String, String, LoginData> {
 
     @Override
     protected String onTaskUri() {
-        return LoginStatus.getLoginStatus().getLoginUrl();
+        return GlobalApplication.getGlobal().getLoginStatus().getLoginUrl();
     }
 
     @Override
@@ -57,7 +57,7 @@ public class CheckLogin extends DefaultWorkModel<String, String, LoginData> {
     @Override
     protected String onRequestSuccessSetResult(LoginData data) {
         // 登录相关临时参数
-        LoginStatus config = LoginStatus.getLoginStatus();
+        LoginStatus config = GlobalApplication.getGlobal().getLoginStatus();
 
         // 登录成功设置参数
         config.setLogin(true);
@@ -105,6 +105,7 @@ public class CheckLogin extends DefaultWorkModel<String, String, LoginData> {
      * 发送广播
      */
     private void sendBroadcast() {
-        BroadcastUtil.sendBroadcast(GlobalApplication.getGlobal(), BroadcastUtil.MEMORY_STATE_LOGIN);
+        BroadcastUtil.sendBroadcast(GlobalApplication.getGlobal(), BroadcastUtil
+                .MEMORY_STATE_LOGIN);
     }
 }

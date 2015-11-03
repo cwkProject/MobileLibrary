@@ -113,7 +113,7 @@ public class GlobalApplication extends Application {
      *
      * @return UI线程Handler
      */
-    public Handler getHandler() {
+    public Handler getUiHandler() {
         return handler;
     }
 

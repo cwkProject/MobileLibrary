@@ -1,14 +1,15 @@
 package org.mobile.library.network.communication;
 /**
- * Created by 超悟空 on 2015/10/30.
+ * Created by 超悟空 on 2015/11/2.
  */
 
-import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.squareup.okhttp.Callback;
+import com.squareup.okhttp.FormEncodingBuilder;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
+import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 
 import org.mobile.library.global.GlobalApplication;
@@ -16,26 +17,27 @@ import org.mobile.library.network.util.AsyncCommunication;
 import org.mobile.library.network.util.NetworkCallback;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 基于OkHttp实现的异步Get请求通讯组件类
+ * 基于OkHttp实现的异步Post请求通讯组件类，
+ * 默认表单提交类，不可扩展，
+ * 数据提交使用application/x-www-form-urlencoded表单，
+ * 默认UTF-8字符编码提交，不支持其他编码
  *
  * @author 超悟空
- * @version 1.0 2015/10/30
+ * @version 1.0 2015/11/2
  * @since 1.0
  */
-public class OkHttpGetAsyncCommunication implements AsyncCommunication<Map<String, String>,
+public class OkHttpPostAsyncCommunication implements AsyncCommunication<Map<String, String>,
         String> {
 
     /**
      * 日志标签前缀
      */
-    private static final String LOG_TAG = "OkHttpGetAsyncCommunication.";
+    private static final String LOG_TAG = "OkHttpPostAsyncCommunication.";
 
     /**
      * 当前网络请求标签
@@ -46,11 +48,6 @@ public class OkHttpGetAsyncCommunication implements AsyncCommunication<Map<Strin
      * 请求地址的完整路径
      */
     protected String url = null;
-
-    /**
-     * 请求数据编码，默认使用UTF-8
-     */
-    protected String encoded = "UTF-8";
 
     /**
      * 请求超时时间
@@ -83,16 +80,6 @@ public class OkHttpGetAsyncCommunication implements AsyncCommunication<Map<Strin
     }
 
     /**
-     * 设置编码格式
-     *
-     * @param encoded 编码字符串，默认为UTF-8
-     */
-    public void setEncoded(String encoded) {
-        Log.i(LOG_TAG + "setEncoded", "encoded is " + encoded);
-        this.encoded = encoded;
-    }
-
-    /**
      * 设置请求地址
      *
      * @param url 完整地址
@@ -120,18 +107,13 @@ public class OkHttpGetAsyncCommunication implements AsyncCommunication<Map<Strin
         }
 
         // 拼接参数
-        String params = onBuildParameter(sendData);
-
-
-        // 最终请求地址
-        String finalUrl = url + "?" + params;
-        Log.i(LOG_TAG + "Request", "final url is " + finalUrl);
+        RequestBody body = onBuildForm(sendData);
 
         // 得到okHttpClient对象
         OkHttpClient okHttpClient = GlobalApplication.getGlobal().getOkHttpClient();
 
         // 创建请求
-        Request request = new Request.Builder().tag(tag).url(finalUrl).build();
+        Request request = new Request.Builder().tag(tag).url(url).post(body).build();
 
         // 判断是否需要克隆
         if (timeout + readTimeout > -2) {
@@ -174,46 +156,32 @@ public class OkHttpGetAsyncCommunication implements AsyncCommunication<Map<Strin
                 }
             }
         });
-
     }
 
     /**
-     * 拼接参数字符串
+     * 创建提交表单
      *
-     * @param sendData 请求参数对
+     * @param sendData 要发送的参数对
      *
-     * @return 拼接完成的字符串
+     * @return 装配好的表单
      */
-    @NonNull
-    private String onBuildParameter(Map<String, String> sendData) {
-        // 请求参数装配器参数
-        StringBuilder params = new StringBuilder();
+    private RequestBody onBuildForm(Map<String, String> sendData) {
+        FormEncodingBuilder builder = new FormEncodingBuilder();
 
-        try {
+        // 遍历sendData集合并加入请求参数对象
+        if (sendData != null && !sendData.isEmpty()) {
+            Log.i(LOG_TAG + "onBuildForm", "sendData count is " + sendData.size());
 
-            // 遍历sendData集合并加入请求参数对象
-            if (sendData != null && !sendData.isEmpty()) {
-                Log.i(LOG_TAG + "onBuildParameter", "sendData count is " + sendData.size());
-
-                // 遍历并追加参数
-                for (Map.Entry<String, String> dataEntry : sendData.entrySet()) {
-                    params.append(dataEntry.getKey());
-                    params.append('=');
-                    if (dataEntry.getValue() != null && dataEntry.getValue().length() > 0) {
-                        params.append(URLEncoder.encode(dataEntry.getValue(), encoded));
-                    }
-                    params.append('&');
-                }
-                // 移除末尾的'&'
-                params.deleteCharAt(params.length() - 1);
+            // 遍历并追加参数
+            for (Map.Entry<String, String> dataEntry : sendData.entrySet()) {
+                Log.i(LOG_TAG + "onBuildForm", "pair is " + dataEntry.getKey() + "=" + dataEntry
+                        .getValue());
+                // 加入表单
+                builder.add(dataEntry.getKey(), dataEntry.getValue());
             }
-        } catch (UnsupportedEncodingException e) {
-            Log.e(LOG_TAG + "onBuildParameter", "response error IOException class is " + e
-                    .toString());
-            Log.e(LOG_TAG + "onBuildParameter", "response error IOException message is " + e
-                    .getMessage());
         }
-        return params.toString();
+
+        return builder.build();
     }
 
     @Override

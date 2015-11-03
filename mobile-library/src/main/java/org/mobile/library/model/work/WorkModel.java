@@ -71,6 +71,7 @@ public abstract class WorkModel<Parameters, Result> extends WorkProcessModel<Par
      * @return 执行结果
      */
     @SafeVarargs
+    @Override
     public final boolean execute(Parameters... parameters) {
         Log.i(LOG_TAG + "execute", "execute start");
         // 用于保存执行结果
@@ -124,6 +125,7 @@ public abstract class WorkModel<Parameters, Result> extends WorkProcessModel<Par
      * @param parameters 任务所需参数
      */
     @SafeVarargs
+    @Override
     public final void beginExecute(Parameters... parameters) {
         Log.i(LOG_TAG + "beginExecute", "beginExecute start");
         // 新建异步任务
@@ -198,28 +200,6 @@ public abstract class WorkModel<Parameters, Result> extends WorkProcessModel<Par
     }
 
     /**
-     * 获取任务执行结果数据<br>
-     * 该结果应该在{@link #onDoWork(Object[])}中调用{@link #setResult(Object)}进行赋值，
-     * 否则你将会获取null引用
-     *
-     * @return 结果数据
-     */
-    public final Result getResult() {
-        return super.getResult();
-    }
-
-    /**
-     * 获取任务结果消息<br>
-     * 该消息应该在{@link #onDoWork(Object[])}中调用{@link #setMessage(String)}进行赋值，
-     * 否则你将会获取null引用
-     *
-     * @return 结果消息
-     */
-    public final String getMessage() {
-        return super.getMessage();
-    }
-
-    /**
      * 判断任务是否被取消<br>
      * 当{@link #onDoWork(Object[])}执行时，
      * 外部线程调用{@link #cancel()}方法后，
@@ -238,6 +218,7 @@ public abstract class WorkModel<Parameters, Result> extends WorkProcessModel<Par
      * 且在{@link #onDoWork(Object[])}执行结束后回调{@link #onCancelWork(boolean , String , Object)
      * }方法和{@link #setWorkCancelledListener(IWorkEndListener)}中定义的任务取消回调接口
      */
+    @Override
     public final void cancel() {
         Log.i(LOG_TAG + "cancel", "cancel() is invoked");
         if (work != null) {
@@ -254,6 +235,7 @@ public abstract class WorkModel<Parameters, Result> extends WorkProcessModel<Par
      * 在{@link #onDoWork(Object[])}之前被调用，
      * 运行于当前线程
      */
+    @Override
     protected void onStartWork() {
     }
 
@@ -273,6 +255,7 @@ public abstract class WorkModel<Parameters, Result> extends WorkProcessModel<Par
      * @return 执行结果
      */
     @SuppressWarnings("unchecked")
+    @Override
     protected abstract boolean onDoWork(Parameters... parameters);
 
     /**
@@ -301,6 +284,7 @@ public abstract class WorkModel<Parameters, Result> extends WorkProcessModel<Par
      * @param message 结果消息
      * @param result  结果数据对象
      */
+    @Override
     protected void onStopWork(boolean state, String message, Result result) {
         Log.i(LOG_TAG + "onStopWork", "onStopWork(boolean , Object) is invoked");
         onStopWork(state, result);

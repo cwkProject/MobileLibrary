@@ -7,10 +7,10 @@ import android.support.test.runner.AndroidJUnit4;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mobile.library.global.ApplicationStaticValue;
+import org.mobile.library.global.GlobalApplication;
 import org.mobile.library.model.work.WorkBack;
 import org.mobile.library.model.work.implement.CheckVersion;
-import org.mobile.library.global.ApplicationVersion;
-import org.mobile.library.global.ApplicationStaticValue;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -43,8 +43,9 @@ public class TestUpdateVersion {
         checkVersion.execute(ApplicationStaticValue.DEVICE_TYPE, "HMW", ApplicationStaticValue
                 .UPDATE_REQUEST_URL);
 
-        assertEquals(false, ApplicationVersion.getVersionManager().isLatestVersion());
-        assertNotNull(ApplicationVersion.getVersionManager().getLatestVersionUrl());
-        assertNotNull(ApplicationVersion.getVersionManager().getLatestVersionName());
+        assertEquals(false, GlobalApplication.getGlobal().getApplicationVersion().isLatestVersion
+                ());
+        assertNotNull(GlobalApplication.getGlobal().getApplicationVersion().getLatestVersionUrl());
+        assertNotNull(GlobalApplication.getGlobal().getApplicationVersion().getLatestVersionName());
     }
 }

@@ -8,9 +8,7 @@ import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.mobile.library.model.data.IDefaultDataModel;
-import org.mobile.library.parser.InputStreamToStringParser;
 
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,10 +16,10 @@ import java.util.Map;
  * 解析Json字符串的数据模型基类
  *
  * @author 超悟空
- * @version 1.0 2015/7/2
+ * @version 2.0 2015/11/3
  * @since 1.0
  */
-public abstract class JsonDataModel implements IDefaultDataModel {
+public abstract class JsonDataModel implements IDefaultDataModel<String, Map<String, String>> {
 
     /**
      * 日志标签前缀
@@ -83,25 +81,18 @@ public abstract class JsonDataModel implements IDefaultDataModel {
     protected abstract void onFillRequestParameters(Map<String, String> dataMap);
 
     @Override
-    public boolean parse(Object data) {
+    public boolean parse(String data) {
         Log.i(LOG_TAG + "parse", "parse start");
-
-        if (data == null || !(data instanceof InputStream)) {
+        Log.i(LOG_TAG + "parse", "result string is " + data);
+        if (data == null) {
             // 通信异常
             Log.d(LOG_TAG + "parse", "data is null");
             return false;
         }
 
-        // 新建解析器
-        InputStreamToStringParser parser = new InputStreamToStringParser();
-
-        // 获取结果字符串
-        String resultString = parser.DataParser((InputStream) data);
-        Log.i(LOG_TAG + "parse", "result string is " + resultString);
-
         try {
             // 将结果转换为JSON对象
-            JSONObject jsonObject = new JSONObject(resultString);
+            JSONObject jsonObject = new JSONObject(data);
 
             Log.i(LOG_TAG + "parse", "onRequestResult(JSONObject) is invoked");
             // 提取服务执行结果

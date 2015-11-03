@@ -1,19 +1,17 @@
 package org.mobile.library.network.communication;
 /**
- * Created by 超悟空 on 2015/10/30.
+ * Created by 超悟空 on 2015/11/2.
  */
 
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
 import org.mobile.library.global.GlobalApplication;
-import org.mobile.library.network.util.AsyncCommunication;
-import org.mobile.library.network.util.NetworkCallback;
+import org.mobile.library.network.util.SyncCommunication;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -23,19 +21,18 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 基于OkHttp实现的异步Get请求通讯组件类
+ * 基于OkHttp实现的同步Get请求通讯组件类
  *
  * @author 超悟空
- * @version 1.0 2015/10/30
+ * @version 1.0 2015/11/2
  * @since 1.0
  */
-public class OkHttpGetAsyncCommunication implements AsyncCommunication<Map<String, String>,
-        String> {
+public class OkHttpGetSyncCommunication implements SyncCommunication<Map<String, String>, String> {
 
     /**
      * 日志标签前缀
      */
-    private static final String LOG_TAG = "OkHttpGetAsyncCommunication.";
+    private static final String LOG_TAG = "OkHttpGetSyncCommunication.";
 
     /**
      * 当前网络请求标签
@@ -61,6 +58,16 @@ public class OkHttpGetAsyncCommunication implements AsyncCommunication<Map<Strin
      * 读取超时时间
      */
     protected int readTimeout = -1;
+
+    /**
+     * 要返回的响应结果
+     */
+    private String response = null;
+
+    /**
+     * 标识请求是否成功
+     */
+    private boolean success = false;
 
     /**
      * 设置读取超时时间
@@ -104,7 +111,7 @@ public class OkHttpGetAsyncCommunication implements AsyncCommunication<Map<Strin
     }
 
     @Override
-    public void Request(Map<String, String> sendData, final NetworkCallback<String> callback) {
+    public void Request(Map<String, String> sendData) {
         Log.i(LOG_TAG + "Request", "Request start");
         Log.i(LOG_TAG + "Request", "url is " + url);
 
@@ -112,16 +119,13 @@ public class OkHttpGetAsyncCommunication implements AsyncCommunication<Map<Strin
             // 地址不合法
             Log.d(LOG_TAG + "Request", "url is error");
 
-            if (callback != null) {
-                callback.onFinish(false, null);
-            }
-
+            this.success = false;
+            response = null;
             return;
         }
 
         // 拼接参数
         String params = onBuildParameter(sendData);
-
 
         // 最终请求地址
         String finalUrl = url + "?" + params;
@@ -146,34 +150,41 @@ public class OkHttpGetAsyncCommunication implements AsyncCommunication<Map<Strin
             }
         }
 
-        // 发送请求
-        okHttpClient.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Request request, IOException e) {
-                Log.e(LOG_TAG + "Request", "onFailure IOException is " + e.getMessage());
+        try {
+            // 发起同步请求
+            Response response = okHttpClient.newCall(request).execute();
 
-                if (callback != null) {
-                    callback.onFinish(false, null);
-                }
+            if (response.isSuccessful()) {
+                Log.i(LOG_TAG + "Request", "request is success");
+                this.success = true;
+                this.response = response.body().string();
+                Log.i(LOG_TAG + "Request", "response is " + this.response);
+            } else {
+                Log.i(LOG_TAG + "Request", "request is failed");
+                this.success = false;
+                this.response = null;
             }
 
-            @Override
-            public void onResponse(Response response) throws IOException {
-                Log.i(LOG_TAG + "Request", "onResponse response message is " + response.message());
-                if (callback != null) {
+        } catch (IOException e) {
+            Log.e(LOG_TAG + "Request", "response error IOException class is " + e.toString());
+            Log.e(LOG_TAG + "Request", "response error IOException message is " + e.getMessage());
+            this.success = false;
+            response = null;
+        }
+    }
 
-                    if (response.isSuccessful()) {
-                        Log.i(LOG_TAG + "Request", "request is success");
-                        String responseString = response.body().string();
-                        Log.i(LOG_TAG + "Request", "response is " + responseString);
-                        callback.onFinish(true, responseString);
-                    } else {
-                        Log.i(LOG_TAG + "Request", "request is failed");
-                        callback.onFinish(false, null);
-                    }
-                }
-            }
-        });
+    @Override
+    public boolean isSuccessful() {
+        return success;
+    }
+
+    @Override
+    public String Response() {
+        return response;
+    }
+
+    @Override
+    public void close() {
 
     }
 

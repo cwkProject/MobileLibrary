@@ -19,5 +19,6 @@ public interface AsyncExecute<Parameters> {
      *
      * @param parameters 任务所需参数
      */
+    @SuppressWarnings("unchecked")
     void beginExecute(Parameters... parameters);
 }

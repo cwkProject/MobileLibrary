@@ -61,7 +61,7 @@ public abstract class WorkProcessModel<Parameters, Result> {
      *
      * @return 结果数据
      */
-    protected Result getResult() {
+    public final Result getResult() {
         return result;
     }
 
@@ -71,7 +71,7 @@ public abstract class WorkProcessModel<Parameters, Result> {
      *
      * @param result 结果数据对象
      */
-    protected void setResult(Result result) {
+    protected final void setResult(Result result) {
         Log.i(LOG_TAG + "setResult", "result is " + result);
         this.result = result;
     }
@@ -83,7 +83,7 @@ public abstract class WorkProcessModel<Parameters, Result> {
      *
      * @return 结果消息
      */
-    protected String getMessage() {
+    public final String getMessage() {
         return message;
     }
 
@@ -93,7 +93,7 @@ public abstract class WorkProcessModel<Parameters, Result> {
      *
      * @param message 结果消息
      */
-    protected void setMessage(String message) {
+    protected final void setMessage(String message) {
         Log.i(LOG_TAG + "setMessage", "message is " + message);
         this.message = message;
     }

@@ -21,5 +21,6 @@ public interface SyncExecute<Parameters> {
      *
      * @return 执行结果
      */
+    @SuppressWarnings("unchecked")
     boolean execute(Parameters... parameters);
 }
