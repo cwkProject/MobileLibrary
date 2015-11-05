@@ -15,6 +15,7 @@ import org.mobile.library.network.factory.NetworkType;
 import org.mobile.library.network.util.AsyncCommunication;
 import org.mobile.library.network.util.NetworkCallback;
 import org.mobile.library.network.util.NetworkProgressListener;
+import org.mobile.library.network.util.NetworkRefreshProgressHandler;
 import org.mobile.library.network.util.SyncCommunication;
 
 /**
@@ -275,9 +276,49 @@ public abstract class DefaultWorkModel<Parameters, Result, DataModelType extends
         if (isAsync) {
             // 新建通讯工具
             asyncCommunication = onCreateAsyncCommunication();
+            // 尝试绑定进度监听器
+            if (asyncCommunication instanceof NetworkRefreshProgressHandler) {
+                onBindProgressListener((NetworkRefreshProgressHandler) asyncCommunication);
+            }
         } else {
             // 新建通讯工具
             syncCommunication = onCreateSyncCommunication();
+            // 尝试绑定进度监听器
+            if (syncCommunication instanceof NetworkRefreshProgressHandler) {
+                onBindProgressListener((NetworkRefreshProgressHandler) syncCommunication);
+            }
+        }
+    }
+
+    /**
+     * 绑定进度监听器
+     *
+     * @param progressHandler 可设置监听器的网络工具
+     */
+    private void onBindProgressListener(NetworkRefreshProgressHandler progressHandler) {
+        if (networkProgressListener != null) {
+            // 开始绑定
+            Log.i(LOG_TAG + "onBindProgressListener", "set ProgressListener");
+
+            if (isProgressUiThread) {
+                // 发送到UI线程
+                progressHandler.setNetworkProgressListener(new NetworkProgressListener() {
+                    @Override
+                    public void onRefreshProgress(final long current, final long total, final
+                    boolean done) {
+                        GlobalApplication.getGlobal().getUiHandler().post(new Runnable() {
+                            @Override
+                            public void run() {
+                                networkProgressListener.onRefreshProgress(current, total, done);
+                            }
+                        });
+                    }
+                });
+            } else {
+                // 在当前线程
+                // 直接绑定
+                progressHandler.setNetworkProgressListener(networkProgressListener);
+            }
         }
     }
 
@@ -316,6 +357,7 @@ public abstract class DefaultWorkModel<Parameters, Result, DataModelType extends
      *
      * @return 检测结果，合法返回true，非法返回false
      */
+    @SuppressWarnings("unchecked")
     protected abstract boolean onCheckParameters(Parameters... parameters);
 
     /**
@@ -325,6 +367,7 @@ public abstract class DefaultWorkModel<Parameters, Result, DataModelType extends
      *
      * @param parameters 任务传入参数
      */
+    @SuppressWarnings("unchecked")
     protected void onParameterError(Parameters... parameters) {
     }
 
@@ -472,6 +515,7 @@ public abstract class DefaultWorkModel<Parameters, Result, DataModelType extends
      *
      * @return 参数设置完毕后的数据模型对象
      */
+    @SuppressWarnings("unchecked")
     protected abstract DataModelType onCreateDataModel(Parameters... parameters);
 
     /**
@@ -502,8 +546,8 @@ public abstract class DefaultWorkModel<Parameters, Result, DataModelType extends
      *
      * @param networkProgressListener 监听器对象
      */
-    public final void setNetworkProgressListener(NetworkProgressListener networkProgressListener) {
-        setNetworkProgressListener(networkProgressListener, true);
+    public final void setProgressListener(NetworkProgressListener networkProgressListener) {
+        setProgressListener(networkProgressListener, true);
     }
 
     /**
@@ -534,8 +578,8 @@ public abstract class DefaultWorkModel<Parameters, Result, DataModelType extends
      *                                false表示在当前线程回调，
      *                                默认为true
      */
-    public void setNetworkProgressListener(NetworkProgressListener networkProgressListener,
-                                           boolean isUiThread) {
+    public void setProgressListener(NetworkProgressListener networkProgressListener, boolean
+            isUiThread) {
         this.networkProgressListener = networkProgressListener;
         this.isProgressUiThread = isUiThread;
     }

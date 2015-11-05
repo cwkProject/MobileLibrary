@@ -7,6 +7,8 @@ import org.mobile.library.network.communication.OkHttpGetAsyncCommunication;
 import org.mobile.library.network.communication.OkHttpGetSyncCommunication;
 import org.mobile.library.network.communication.OkHttpPostAsyncCommunication;
 import org.mobile.library.network.communication.OkHttpPostSyncCommunication;
+import org.mobile.library.network.communication.OkHttpUploadAsyncCommunication;
+import org.mobile.library.network.communication.OkHttpUploadSyncCommunication;
 import org.mobile.library.network.util.AsyncCommunication;
 import org.mobile.library.network.util.SyncCommunication;
 
@@ -38,7 +40,7 @@ public class CommunicationFactory {
                 return new OkHttpPostSyncCommunication();
             case UPLOAD:
                 // HttpUpload请求对象
-
+                return new OkHttpUploadSyncCommunication();
             default:
                 throw new UnsupportedOperationException("network protocol not implemented");
         }
@@ -61,6 +63,7 @@ public class CommunicationFactory {
                 return new OkHttpPostAsyncCommunication();
             case UPLOAD:
                 // HttpUpload请求对象
+                return new OkHttpUploadAsyncCommunication();
             default:
                 throw new UnsupportedOperationException("network protocol not implemented");
         }

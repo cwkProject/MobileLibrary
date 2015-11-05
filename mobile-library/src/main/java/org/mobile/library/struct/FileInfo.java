@@ -3,14 +3,9 @@ package org.mobile.library.struct;
  * Created by 超悟空 on 2015/10/28.
  */
 
-import android.util.Log;
-
 import org.mobile.library.util.MIMEUtil;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 
 /**
  * 文件上传使用的文件信息包装类
@@ -37,24 +32,6 @@ public class FileInfo {
      * 要上传的新文件名
      */
     private String fileName = null;
-
-    /**
-     * 文件输入流
-     */
-    private InputStream fileStream = null;
-
-    /**
-     * 构造函数
-     *
-     * @param fileStream 文件输入流
-     * @param mimeType   文件mime类型
-     * @param fileName   文件名
-     */
-    public FileInfo(InputStream fileStream, String mimeType, String fileName) {
-        this.mimeType = mimeType;
-        this.fileName = fileName;
-        this.fileStream = fileStream;
-    }
 
     /**
      * 构造函数
@@ -174,23 +151,5 @@ public class FileInfo {
      */
     public void setFileName(String fileName) {
         this.fileName = fileName;
-    }
-
-    /**
-     * 获取文件输入流
-     *
-     * @return 文件输入流
-     */
-    public InputStream getFileStream() {
-
-        if (fileStream == null) {
-            try {
-                fileStream = new FileInputStream(file);
-            } catch (FileNotFoundException e) {
-                Log.e(LOG_TAG + "getFileStream", "FileNotFoundException is " + e.getMessage());
-            }
-        }
-
-        return fileStream;
     }
 }

@@ -78,7 +78,6 @@ public class TestCheckLogin {
 
         login.execute("xuehui", "123456", "LHGL");
 
-
     }
 
     @Test
