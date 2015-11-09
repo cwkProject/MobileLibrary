@@ -177,7 +177,8 @@ public class OkHttpPostAsyncCommunication implements AsyncCommunication<Map<Stri
                 Log.i(LOG_TAG + "onBuildForm", "pair is " + dataEntry.getKey() + "=" + dataEntry
                         .getValue());
                 // 加入表单
-                builder.add(dataEntry.getKey(), dataEntry.getValue());
+                builder.add(dataEntry.getKey(), dataEntry.getValue() == null ? "" : dataEntry
+                        .getValue());
             }
         }
 
