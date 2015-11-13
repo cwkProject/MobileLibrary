@@ -13,7 +13,6 @@ import android.os.Build;
 import android.os.Environment;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import org.mobile.library.global.ApplicationStaticValue;
@@ -36,11 +35,6 @@ public class VersionUpdateService extends Service {
     private static final String LOG_TAG = "VersionUpdateService.";
 
     /**
-     * 本地广播管理器
-     */
-    private LocalBroadcastManager localBroadcastManager = null;
-
-    /**
      * 版本升级的下载文件接收者
      */
     private ApplicationVersionDownloadReceiver receiver = null;
@@ -53,12 +47,19 @@ public class VersionUpdateService extends Service {
 
     @Override
     public void onCreate() {
+        Log.i(LOG_TAG + "onCreate", "onCreate() is invoked");
         super.onCreate();
+    }
 
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.i(LOG_TAG + "onStartCommand", "onStartCommand is invoked");
         // 注册广播接收者
         registerReceivers();
         // 启动下载
         onStartDownload();
+
+        return super.onStartCommand(intent, flags, startId);
     }
 
     @Override
@@ -66,7 +67,7 @@ public class VersionUpdateService extends Service {
         super.onDestroy();
 
         // 注销广播接收者
-        unregisterReceivers();
+        unregisterReceiver(receiver);
     }
 
     /**
@@ -111,8 +112,6 @@ public class VersionUpdateService extends Service {
      */
     private void registerReceivers() {
         Log.i(LOG_TAG + "registerReceivers", "registerReceivers() is invoked");
-        // 新建本地广播管理器
-        localBroadcastManager = LocalBroadcastManager.getInstance(this);
 
         // 新建接收者
         receiver = new ApplicationVersionDownloadReceiver();
@@ -127,21 +126,7 @@ public class VersionUpdateService extends Service {
         });
 
         // 注册
-        localBroadcastManager.registerReceiver(receiver, receiver.getRegisterIntentFilter());
-    }
-
-    /**
-     * 注销广播接收者
-     */
-    private void unregisterReceivers() {
-        Log.i(LOG_TAG + "unregisterReceivers", "unregisterReceivers() is invoked");
-        if (localBroadcastManager == null) {
-            return;
-        }
-
-        if (receiver != null) {
-            localBroadcastManager.unregisterReceiver(receiver);
-        }
+        registerReceiver(receiver, receiver.getRegisterIntentFilter());
     }
 
 }

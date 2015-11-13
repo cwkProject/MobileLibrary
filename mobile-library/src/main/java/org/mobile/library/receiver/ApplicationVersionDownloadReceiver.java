@@ -72,8 +72,8 @@ public class ApplicationVersionDownloadReceiver extends BroadcastReceiver {
             long nowId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, 0);
             Log.i(LOG_TAG + "onReceive", "now download file id is " + nowId);
             long tagId = context.getSharedPreferences(ApplicationStaticValue
-                    .APPLICATION_CONFIG_FILE_NAME, Context.MODE_PRIVATE).getLong(ApplicationStaticValue
-                    .UPDATE_APP_FILE_ID_TAG, 0);
+                    .APPLICATION_CONFIG_FILE_NAME, Context.MODE_PRIVATE).getLong
+                    (ApplicationStaticValue.UPDATE_APP_FILE_ID_TAG, 0);
             Log.i(LOG_TAG + "onReceive", "target file id is " + tagId);
 
             if (nowId == tagId) {
@@ -117,16 +117,13 @@ public class ApplicationVersionDownloadReceiver extends BroadcastReceiver {
                     String path = cursor.getString(cursor.getColumnIndex(DownloadManager
                             .COLUMN_LOCAL_URI));
                     doInstall(context, path);
-                    if (endObserver != null) {
-                        endObserver.invoke();
-                    }
                     break;
                 case DownloadManager.STATUS_FAILED:
                     //清除已下载的内容，重新下载
                     Log.i(LOG_TAG + "down", "STATUS_FAILED");
-                    context.getSharedPreferences(ApplicationStaticValue.APPLICATION_CONFIG_FILE_NAME,
-                            Context.MODE_PRIVATE).edit().remove(ApplicationStaticValue
-                            .UPDATE_APP_FILE_ID_TAG).commit();
+                    context.getSharedPreferences(ApplicationStaticValue
+                            .APPLICATION_CONFIG_FILE_NAME, Context.MODE_PRIVATE).edit().remove
+                            (ApplicationStaticValue.UPDATE_APP_FILE_ID_TAG).commit();
                     break;
             }
             cursor.close();
@@ -165,6 +162,10 @@ public class ApplicationVersionDownloadReceiver extends BroadcastReceiver {
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.setDataAndType(uri, "application/vnd.android.package-archive");
                 context.startActivity(intent);
+            }
+
+            if (endObserver != null) {
+                endObserver.invoke();
             }
         }
     }
