@@ -7,6 +7,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import org.mobile.library.cache.util.CacheLevel;
 import org.mobile.library.model.database.BaseOperator;
@@ -22,6 +23,11 @@ import java.util.List;
  * @since 1.0
  */
 public class CacheLevelOperator extends BaseOperator<CacheLevel> {
+
+    /**
+     * 日志标签前缀
+     */
+    private static final String LOG_TAG = "CacheLevelOperator.";
 
     /**
      * 构造函数
@@ -60,8 +66,15 @@ public class CacheLevelOperator extends BaseOperator<CacheLevel> {
 
     @Override
     protected List<CacheLevel> query(String sql) {
+        Log.i(LOG_TAG + "query", "query sql: " + sql);
+
         // 查询数据
         Cursor cursor = sqLiteHelper.getReadableDatabase().rawQuery(sql, null);
+
+        Log.i(LOG_TAG + "query", "result cursor count is " + cursor.getCount());
+
+        // 数据填充
+        List<CacheLevel> list = new ArrayList<>();
 
         // 列索引
         int key = cursor.getColumnIndex(CacheDatabaseConst.CACHE_LEVEL.KEY);
@@ -69,9 +82,6 @@ public class CacheLevelOperator extends BaseOperator<CacheLevel> {
         int maxCapacity = cursor.getColumnIndex(CacheDatabaseConst.CACHE_LEVEL.MAX_CAPACITY);
         int timeout = cursor.getColumnIndex(CacheDatabaseConst.CACHE_LEVEL.TIMEOUT);
         int remark = cursor.getColumnIndex(CacheDatabaseConst.CACHE_LEVEL.REMARK);
-
-        // 数据填充
-        List<CacheLevel> list = new ArrayList<>();
 
         while (cursor.moveToNext()) {
             // 一条记录
@@ -89,6 +99,25 @@ public class CacheLevelOperator extends BaseOperator<CacheLevel> {
         close();
 
         return list;
+    }
+
+    /**
+     * 查询单个缓存层级信息
+     *
+     * @param key 缓存层级key
+     *
+     * @return 缓存层级信息对象，如果查询失败或目标不存在则返回null
+     */
+    public CacheLevel queryCacheLevel(String key) {
+        Log.i(LOG_TAG + "queryCacheLevel", "query key is " + key);
+
+        String sql = String.format("select * from %s where %s='%s'", CacheDatabaseConst
+                .CACHE_LEVEL.TABLE_NAME, CacheDatabaseConst.CACHE_LEVEL.KEY, key);
+
+        // 查询结果
+        List<CacheLevel> list = query(sql);
+
+        return list.isEmpty() ? null : list.get(0);
     }
 
     @Override

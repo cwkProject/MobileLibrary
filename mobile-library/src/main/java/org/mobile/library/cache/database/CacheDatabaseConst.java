@@ -76,7 +76,7 @@ public interface CacheDatabaseConst {
          * 建表语句
          */
         String CREATE_TABLE = String.format("CREATE TABLE IF NOT EXISTS %s ( %s INTEGER PRIMARY " +
-                        "KEY, %s TEXT NOT NULL,  %s TEXT NOT NULL, %s TEXT, %s TEXT, %s INTEGER, " +
+                        "KEY, %s TEXT NOT NULL,  %s TEXT UNIQUE, %s TEXT, %s TEXT, %s INTEGER, " +
                         "%s INTEGER, %s TEXT NOT NULL, FOREIGN KEY(%s) REFERENCES %s(%s))",
                 TABLE_NAME, _ID, KEY, REAL_FILE_NAME, OLD_FILE_NAME, FILE_TYPE, GROUP, TIMEOUT,
                 LEVEL_KEY, LEVEL_KEY, CACHE_LEVEL.TABLE_NAME, CACHE_LEVEL.KEY);
@@ -121,7 +121,7 @@ public interface CacheDatabaseConst {
          * 建表语句
          */
         String CREATE_TABLE = String.format("CREATE TABLE IF NOT EXISTS %s ( %s INTEGER " +
-                "PRIMARY KEY, %s TEXT UNIQUE,  %s TEXT NOT NULL, %s INTEGER, %s INTEGER, " +
+                "PRIMARY KEY, %s TEXT UNIQUE,  %s TEXT UNIQUE, %s INTEGER, %s INTEGER, " +
                 "%s TEXT)", TABLE_NAME, _ID, KEY, REAL_PATH, MAX_CAPACITY, TIMEOUT, REMARK);
     }
 }
