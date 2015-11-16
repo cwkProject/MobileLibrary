@@ -46,6 +46,11 @@ public class CacheInfoOperator extends BaseOperator<CacheInfo> {
     }
 
     @Override
+    protected SQLiteOpenHelper onCreateWriteDatabaseHelper(Context context) {
+        return CacheSQLiteOpenHelper.getSqLiteOpenHelper(context);
+    }
+
+    @Override
     protected String onCreateTableName() {
         return CacheDatabaseConst.CACHE_INFO.TABLE_NAME;
     }

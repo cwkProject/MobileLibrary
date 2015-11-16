@@ -44,6 +44,11 @@ public class CacheLevelOperator extends BaseOperator<CacheLevel> {
     }
 
     @Override
+    protected SQLiteOpenHelper onCreateWriteDatabaseHelper(Context context) {
+        return CacheSQLiteOpenHelper.getSqLiteOpenHelper(context);
+    }
+
+    @Override
     protected String onCreateTableName() {
         return CacheDatabaseConst.CACHE_LEVEL.TABLE_NAME;
     }
