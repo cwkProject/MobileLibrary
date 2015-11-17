@@ -205,7 +205,7 @@ public abstract class BaseOperator<DataModel> {
         // where子句
         String whereSql = onWhereSql(data);
 
-        Log.i(LOG_TAG + "update", "where sql is " + whereSql);
+        Log.i(LOG_TAG + "delete", "where sql is " + whereSql);
 
         // 执行删除
         int rowCount = dbWriter.delete(tableName, whereSql, null);

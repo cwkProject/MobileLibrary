@@ -48,11 +48,6 @@ public interface CacheDatabaseConst {
         String REAL_FILE_NAME = "real_file_name";
 
         /**
-         * 原缓存文件名字段名
-         */
-        String OLD_FILE_NAME = "old_file_name";
-
-        /**
          * 缓存文件类型枚举字段名
          */
         String FILE_TYPE = "file_type";
@@ -73,13 +68,18 @@ public interface CacheDatabaseConst {
         String LEVEL_KEY = "level_key";
 
         /**
+         * 标识缓存文件是否在外部存储中的字段名
+         */
+        String EXTERNAL = "external";
+
+        /**
          * 建表语句
          */
         String CREATE_TABLE = String.format("CREATE TABLE IF NOT EXISTS %s ( %s INTEGER PRIMARY " +
-                        "KEY, %s TEXT NOT NULL,  %s TEXT UNIQUE, %s TEXT, %s TEXT, %s INTEGER, " +
-                        "%s INTEGER, %s TEXT NOT NULL, FOREIGN KEY(%s) REFERENCES %s(%s))",
-                TABLE_NAME, _ID, KEY, REAL_FILE_NAME, OLD_FILE_NAME, FILE_TYPE, GROUP, TIMEOUT,
-                LEVEL_KEY, LEVEL_KEY, CACHE_LEVEL.TABLE_NAME, CACHE_LEVEL.KEY);
+                        "KEY, %s TEXT NOT NULL,  %s TEXT UNIQUE, %s INTEGER, %s INTEGER, " +
+                        "%s INTEGER, %s TEXT NOT NULL, %s INTEGER, FOREIGN KEY(%s) REFERENCES %s" +
+                        "(%s))", TABLE_NAME, _ID, KEY, REAL_FILE_NAME, FILE_TYPE, GROUP, TIMEOUT,
+                LEVEL_KEY, EXTERNAL, LEVEL_KEY, CACHE_LEVEL.TABLE_NAME, CACHE_LEVEL.KEY);
     }
 
     /**

@@ -6,6 +6,7 @@ package org.mobile.library.cache.database;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
@@ -63,11 +64,11 @@ public class CacheInfoOperator extends BaseOperator<CacheInfo> {
         // 填充数据
         values.put(CacheDatabaseConst.CACHE_INFO.KEY, data.getKey());
         values.put(CacheDatabaseConst.CACHE_INFO.REAL_FILE_NAME, data.getRealFileName());
-        values.put(CacheDatabaseConst.CACHE_INFO.OLD_FILE_NAME, data.getOldFileName());
         values.put(CacheDatabaseConst.CACHE_INFO.FILE_TYPE, data.getType());
         values.put(CacheDatabaseConst.CACHE_INFO.TIMEOUT, data.getTimeOut());
         values.put(CacheDatabaseConst.CACHE_INFO.GROUP, data.isGroupTag() ? 1 : 0);
         values.put(CacheDatabaseConst.CACHE_INFO.LEVEL_KEY, data.getLevelKey());
+        values.put(CacheDatabaseConst.CACHE_INFO.EXTERNAL, data.isExternal() ? 1 : 0);
 
         return values;
     }
@@ -87,21 +88,21 @@ public class CacheInfoOperator extends BaseOperator<CacheInfo> {
         // 列索引
         int key = cursor.getColumnIndex(CacheDatabaseConst.CACHE_INFO.KEY);
         int realFileName = cursor.getColumnIndex(CacheDatabaseConst.CACHE_INFO.REAL_FILE_NAME);
-        int oldFileName = cursor.getColumnIndex(CacheDatabaseConst.CACHE_INFO.OLD_FILE_NAME);
         int fileType = cursor.getColumnIndex(CacheDatabaseConst.CACHE_INFO.FILE_TYPE);
         int timeout = cursor.getColumnIndex(CacheDatabaseConst.CACHE_INFO.TIMEOUT);
         int group = cursor.getColumnIndex(CacheDatabaseConst.CACHE_INFO.GROUP);
         int levelKey = cursor.getColumnIndex(CacheDatabaseConst.CACHE_INFO.LEVEL_KEY);
+        int external = cursor.getColumnIndex(CacheDatabaseConst.CACHE_INFO.EXTERNAL);
 
         while (cursor.moveToNext()) {
             // 一条记录
             CacheInfo data = new CacheInfo(cursor.getString(key), cursor.getString(realFileName),
                     cursor.getString(levelKey));
 
-            data.setOldFileName(cursor.getString(oldFileName));
             data.setTimeOut(cursor.getLong(timeout));
             data.setType(cursor.getInt(fileType));
             data.setGroupTag(cursor.getInt(group) == 1);
+            data.setExternal(cursor.getInt(external) == 1);
 
             list.add(data);
         }
@@ -155,6 +156,27 @@ public class CacheInfoOperator extends BaseOperator<CacheInfo> {
     }
 
     /**
+     * 查询指定缓存层级中的指定类型的全部缓存信息，目标不包括缓存组
+     *
+     * @param levelKey 缓存层级key
+     * @param type     缓存文件类型
+     *
+     * @return 缓存信息对象集合，如果层级中没有缓存或仅包含缓存组则返回空集合
+     */
+    public List<CacheInfo> queryCacheInfo(String levelKey, int type) {
+        Log.i(LOG_TAG + "queryCacheInfo", "query levelKey is " + levelKey);
+        Log.i(LOG_TAG + "queryCacheInfo", "query type is " + type);
+
+        // 查询sql
+        String sql = String.format("select * from %s where %s='%s' and %s=0 and %s=%s",
+                CacheDatabaseConst.CACHE_INFO.TABLE_NAME, CacheDatabaseConst.CACHE_INFO
+                        .LEVEL_KEY, levelKey, CacheDatabaseConst.CACHE_INFO.GROUP,
+                CacheDatabaseConst.CACHE_INFO.FILE_TYPE, type);
+
+        return query(sql);
+    }
+
+    /**
      * 查询缓存组信息
      *
      * @param key      缓存key
@@ -163,14 +185,36 @@ public class CacheInfoOperator extends BaseOperator<CacheInfo> {
      * @return 缓存组信息列表，如果目标组不存在或目标不是缓存组则回返回空集合
      */
     public List<CacheInfo> queryCacheGroup(String key, String levelKey) {
-        Log.i(LOG_TAG + "queryCacheInfo", "query key is " + key);
-        Log.i(LOG_TAG + "queryCacheInfo", "query levelKey is " + levelKey);
+        Log.i(LOG_TAG + "queryCacheGroup", "query key is " + key);
+        Log.i(LOG_TAG + "queryCacheGroup", "query levelKey is " + levelKey);
 
         // 查询sql
         String sql = String.format("select * from %s where %s='%s' and %s='%s' and %s=1",
                 CacheDatabaseConst.CACHE_INFO.TABLE_NAME, CacheDatabaseConst.CACHE_INFO.KEY, key,
                 CacheDatabaseConst.CACHE_INFO.LEVEL_KEY, levelKey, CacheDatabaseConst.CACHE_INFO
                         .GROUP);
+
+        return query(sql);
+    }
+
+    /**
+     * 查询缓存组中指定缓存类型的信息
+     *
+     * @param key      缓存key
+     * @param levelKey 缓存层级key
+     * @param type     缓存类型
+     *
+     * @return 缓存组信息列表，如果目标组不存在或目标不是缓存组则回返回空集合
+     */
+    public List<CacheInfo> queryCacheGroup(String key, String levelKey, int type) {
+        Log.i(LOG_TAG + "queryCacheGroup", "query key is " + key);
+        Log.i(LOG_TAG + "queryCacheGroup", "query levelKey is " + levelKey);
+
+        // 查询sql
+        String sql = String.format("select * from %s where %s='%s' and %s='%s' and %s=1 and " +
+                "%s=%s", CacheDatabaseConst.CACHE_INFO.TABLE_NAME, CacheDatabaseConst.CACHE_INFO
+                .KEY, key, CacheDatabaseConst.CACHE_INFO.LEVEL_KEY, levelKey, CacheDatabaseConst
+                .CACHE_INFO.GROUP, CacheDatabaseConst.CACHE_INFO.FILE_TYPE, type);
 
         return query(sql);
     }
@@ -183,7 +227,7 @@ public class CacheInfoOperator extends BaseOperator<CacheInfo> {
      * @return 缓存组键值对集合
      */
     public Map<String, List<CacheInfo>> queryCacheGroup(String levelKey) {
-        Log.i(LOG_TAG + "queryCacheInfo", "query levelKey is " + levelKey);
+        Log.i(LOG_TAG + "queryCacheGroup", "query levelKey is " + levelKey);
 
         // 查询sql
         String sql = String.format("select * from %s where %s='%s' and %s=1", CacheDatabaseConst
@@ -216,6 +260,30 @@ public class CacheInfoOperator extends BaseOperator<CacheInfo> {
         }
 
         return map;
+    }
+
+    /**
+     * 按指定条件删除索引
+     *
+     * @param key      缓存key
+     * @param levelKey 缓存层级key
+     */
+    public synchronized void delete(String key, String levelKey) {
+        // 得到数据库写对象
+        SQLiteDatabase dbWriter = writeSqLiteHelper.getWritableDatabase();
+
+        // where子句
+        String whereSql = String.format("%s='%s' and %s='%s'", CacheDatabaseConst.CACHE_INFO.KEY,
+                key, CacheDatabaseConst.CACHE_INFO.LEVEL_KEY, levelKey);
+
+        Log.i(LOG_TAG + "delete", "where sql is " + whereSql);
+
+        // 执行删除
+        int rowCount = dbWriter.delete(CacheDatabaseConst.CACHE_INFO.TABLE_NAME, whereSql, null);
+
+        Log.i(LOG_TAG + "delete", "delete row count is " + rowCount);
+
+        close();
     }
 
     @Override

@@ -84,23 +84,7 @@ public class CacheLevel {
     }
 
     /**
-     * 设置缓存超时时间，毫秒级<br>
-     * 可以用预定义倍数计算，
-     * {@link CacheInfo#MAGNITUDE_MILLISECOND}，
-     * {@link CacheInfo#MAGNITUDE_SECOND}，
-     * {@link CacheInfo#MAGNITUDE_MINUTE}，
-     * {@link CacheInfo#MAGNITUDE_HOUR}，
-     * {@link CacheInfo#MAGNITUDE_DAY}，
-     * {@link CacheInfo#MAGNITUDE_WEEK}，
-     * {@link CacheInfo#MAGNITUDE_MOUNTH}
-     * <example>
-     * // 设置超时时间为3天
-     * CacheLevel cacheLevel=new CacheLevel("example", UUID);
-     * cacheLevel.setTimeOut(3 * CacheInfo.MAGNITUDE_DAY);
-     * Log.i("example.setTimeOut","time is "+cacheLevel.getTimeOut());
-     * //*******
-     * // 输出信息为： time is 259200000
-     * <example/>
+     * 设置缓存超时时间，毫秒级
      *
      * @param timeOut 超时时间
      */
