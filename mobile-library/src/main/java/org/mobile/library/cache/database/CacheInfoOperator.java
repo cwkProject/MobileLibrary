@@ -286,6 +286,30 @@ public class CacheInfoOperator extends BaseOperator<CacheInfo> {
         close();
     }
 
+    /**
+     * 删除指定层级下的全部索引
+     *
+     * @param levelKey 缓存层级key
+     */
+    public synchronized void delete(String levelKey) {
+        // 得到数据库写对象
+        SQLiteDatabase dbWriter = writeSqLiteHelper.getWritableDatabase();
+
+        // where子句
+        String whereSql = String.format("%s='%s' or %s like '%s/%%'", CacheDatabaseConst
+                .CACHE_INFO.LEVEL_KEY, levelKey, CacheDatabaseConst.CACHE_INFO.LEVEL_KEY, levelKey);
+
+        Log.i(LOG_TAG + "delete", "where sql is " + whereSql);
+
+        // 执行删除
+        int rowCount = dbWriter.delete(CacheDatabaseConst.CACHE_INFO.TABLE_NAME, whereSql, null);
+
+        Log.i(LOG_TAG + "delete", "delete row count is " + rowCount);
+
+        close();
+    }
+
+
     @Override
     protected String onWhereSql(CacheInfo data) {
         return String.format("%s='%s'", CacheDatabaseConst.CACHE_INFO.REAL_FILE_NAME, data

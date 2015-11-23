@@ -67,4 +67,9 @@ public class CacheManager {
      * 倍数月(30天)
      */
     public static final long MAGNITUDE_MONTH = 30 * MAGNITUDE_DAY;
+
+    /**
+     * 根目录key
+     */
+    public static final String ROOT = "root";
 }
