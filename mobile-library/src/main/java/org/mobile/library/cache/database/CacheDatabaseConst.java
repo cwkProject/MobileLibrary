@@ -123,5 +123,9 @@ public interface CacheDatabaseConst {
         String CREATE_TABLE = String.format("CREATE TABLE IF NOT EXISTS %s ( %s INTEGER " +
                 "PRIMARY KEY, %s TEXT UNIQUE,  %s TEXT UNIQUE, %s INTEGER, %s INTEGER, " +
                 "%s TEXT)", TABLE_NAME, _ID, KEY, REAL_PATH, MAX_CAPACITY, TIMEOUT, REMARK);
+
+        String INSERT_ROOT = String.format("insert into %s (%s,%s,%s,%s,%s) VALUES ('%s','%s',%s," +
+                "%s,'%s')" + "", TABLE_NAME, KEY, REAL_PATH, MAX_CAPACITY, TIMEOUT, REMARK,
+                "root", "", 30 * 1024 * 1024, 0, "cache root path");
     }
 }

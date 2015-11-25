@@ -12,7 +12,6 @@ import org.mobile.library.cache.database.CacheLevelOperator;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -170,7 +169,7 @@ public class CacheFileUtil {
 
         try {
             if (!file.exists()) {
-                file.mkdir();
+                file.mkdirs();
                 file.createNewFile();
             }
 
@@ -184,7 +183,7 @@ public class CacheFileUtil {
     /**
      * 获取一个缓存层级信息，若指定key不存在则会被新建
      *
-     * @param key       层级key
+     * @param key       完整层级key
      * @param parentKey 父级key
      *
      * @return 缓存层级信息对象
@@ -193,29 +192,20 @@ public class CacheFileUtil {
         Log.i(LOG_TAG + "getCacheLevel", "level key is " + key);
         Log.i(LOG_TAG + "getCacheLevel", "parent key is " + parentKey);
 
-        String levelKey;
-
-        if (parentKey == null || "root".equals(parentKey)) {
-            levelKey = key;
-        } else {
-            levelKey = parentKey + "/" + key;
-        }
-
         // 尝试查询
-        CacheLevel cacheLevel = cacheLevelOperator.queryCacheLevel(levelKey);
+        CacheLevel cacheLevel = cacheLevelOperator.queryCacheLevel(key);
 
         if (cacheLevel == null) {
             // 不存在则新建
-            if (parentKey == null || "root".equals(parentKey)) {
-                cacheLevel = new CacheLevel(levelKey, UUID.randomUUID().toString());
-            } else {
-                String levelPath = cacheLevelOperator.queryCacheLevel(parentKey).getRealPath();
-                cacheLevel = new CacheLevel(levelKey, levelPath + "/" + UUID.randomUUID()
-                        .toString());
-            }
+
+            String levelPath = cacheLevelOperator.queryCacheLevel(parentKey).getRealPath();
+            cacheLevel = new CacheLevel(key, levelPath + "/" + UUID.randomUUID().toString());
 
             // 保存到数据库
             cacheLevelOperator.insert(cacheLevel);
+
+            // 创建文件夹
+            new File(cacheLevel.getRealPath()).mkdirs();
         }
 
         return cacheLevel;
@@ -228,31 +218,6 @@ public class CacheFileUtil {
      */
     public void updateCacheLevel(CacheLevel cacheLevel) {
         cacheLevelOperator.update(cacheLevel);
-    }
-
-    /**
-     * 获取缓存文件对象
-     *
-     * @param cacheKey 缓存key
-     * @param levelKey 缓存层级key
-     *
-     * @return 文件对象，缓存不存在则返回null
-     */
-    public File getFile(String cacheKey, String levelKey) {
-        Log.i(LOG_TAG + "getFile", "cache key is " + cacheKey);
-        Log.i(LOG_TAG + "getFile", "level key is " + levelKey);
-
-        // 文件路径
-        String path = getPath(cacheKey, levelKey);
-
-        if (path == null) {
-            Log.i(LOG_TAG + "getFile", "path is null");
-            return null;
-        }
-
-        File file = new File(path);
-
-        return file.exists() ? file : null;
     }
 
     /**
@@ -293,34 +258,6 @@ public class CacheFileUtil {
     }
 
     /**
-     * 获取缓存文件输入流
-     *
-     * @param cacheKey 缓存key
-     * @param levelKey 缓存层级key
-     *
-     * @return 文件输入流，缓存不存在则返回null
-     */
-    public FileInputStream getStream(String cacheKey, String levelKey) {
-        Log.i(LOG_TAG + "getStream", "cache key is " + cacheKey);
-        Log.i(LOG_TAG + "getStream", "level key is " + levelKey);
-
-        // 文件路径
-        String path = getPath(cacheKey, levelKey);
-
-        if (path == null) {
-            Log.i(LOG_TAG + "getStream", "path is null");
-            return null;
-        }
-
-        try {
-            return new FileInputStream(path);
-        } catch (FileNotFoundException e) {
-            Log.e(LOG_TAG + "getStream", "FileNotFoundException is " + e.getMessage());
-            return null;
-        }
-    }
-
-    /**
      * 获取指定类型的缓存文件路径
      *
      * @param levelKey 缓存层级key
@@ -335,74 +272,6 @@ public class CacheFileUtil {
         List<CacheInfo> cacheInfoList = cacheInfoOperator.queryCacheInfo(levelKey, type);
 
         return buildPathList(levelKey, cacheInfoList);
-    }
-
-    /**
-     * 获取指定类型的缓存文件对象
-     *
-     * @param levelKey 缓存层级key
-     * @param type     文件类型
-     *
-     * @return 文件数组，异常或目录为空则返回null
-     */
-    public File[] getFile(String levelKey, int type) {
-        Log.i(LOG_TAG + "getFile", "type is " + type);
-        Log.i(LOG_TAG + "getFile", "level key is " + levelKey);
-
-        // 文件路径
-        String[] pathList = getPath(levelKey, type);
-
-        return buildFileList(pathList);
-    }
-
-    /**
-     * 装配文件数组
-     *
-     * @param pathList 文件路径数组
-     *
-     * @return 装配好的文件对象数组
-     */
-    @Nullable
-    private File[] buildFileList(String[] pathList) {
-        if (pathList == null) {
-            Log.i(LOG_TAG + "buildFileList", "path list is null");
-            return null;
-        }
-
-        // 文件数组
-        List<File> fileList = new ArrayList<>();
-
-        for (String path : pathList) {
-            File file = new File(path);
-            if (file.exists()) {
-                fileList.add(file);
-            }
-        }
-
-        if (fileList.size() == 0) {
-            Log.i(LOG_TAG + "buildFileList", "fileList is null");
-            return null;
-        }
-
-        return fileList.toArray(new File[fileList.size()]);
-    }
-
-    /**
-     * 获取指定类型的缓存文件输入流
-     *
-     * @param levelKey 缓存层级key
-     * @param type     文件类型
-     *
-     * @return 输入流数组，异常或目录为空则返回null
-     */
-    public FileInputStream[] getStream(String levelKey, int type) {
-        Log.i(LOG_TAG + "getStream", "type is " + type);
-        Log.i(LOG_TAG + "getStream", "level key is " + levelKey);
-
-        // 文件路径
-        String[] pathList = getPath(levelKey, type);
-
-        return buildFileInputStreamList(pathList);
     }
 
     /**
@@ -453,81 +322,6 @@ public class CacheFileUtil {
     }
 
     /**
-     * 获取指定类型的组缓存输入流
-     *
-     * @param cacheKey 缓存组key
-     * @param levelKey 缓存层级key
-     * @param type     缓存类型
-     *
-     * @return 输入流数组，异常或目录为空则返回null
-     */
-    public FileInputStream[] getGroupStream(String cacheKey, String levelKey, int type) {
-        Log.i(LOG_TAG + "getGroupStream", "cache key is " + cacheKey);
-        Log.i(LOG_TAG + "getGroupStream", "type is " + type);
-        Log.i(LOG_TAG + "getGroupStream", "level key is " + levelKey);
-
-        // 文件路径
-        String[] pathList = getGroupPath(cacheKey, levelKey, type);
-
-        return buildFileInputStreamList(pathList);
-    }
-
-    /**
-     * 装配文件输入流数组
-     *
-     * @param pathList 文件路径数组
-     *
-     * @return 装配好的文件输入流数组
-     */
-    @Nullable
-    private FileInputStream[] buildFileInputStreamList(String[] pathList) {
-        if (pathList == null) {
-            Log.i(LOG_TAG + "buildFileInputStreamList", "path list is null");
-            return null;
-        }
-
-        // 输入流数组
-        List<FileInputStream> fileInputStreamList = new ArrayList<>();
-
-        for (String path : pathList) {
-            try {
-                FileInputStream fileInputStream = new FileInputStream(path);
-                fileInputStreamList.add(fileInputStream);
-            } catch (FileNotFoundException e) {
-                Log.e(LOG_TAG + "buildFileInputStreamList", "FileNotFoundException is " + e
-                        .getMessage());
-            }
-        }
-
-        if (fileInputStreamList.size() == 0) {
-            Log.i(LOG_TAG + "buildFileInputStreamList", "fileInputStreamList is null");
-            return null;
-        }
-
-        return fileInputStreamList.toArray(new FileInputStream[fileInputStreamList.size()]);
-    }
-
-    /**
-     * 获取指定类型的组缓存文件对象
-     *
-     * @param cacheKey 缓存组key
-     * @param levelKey 缓存层级key
-     * @param type     文件类型
-     *
-     * @return 文件数组，异常或目录为空则返回null
-     */
-    public File[] getGroupFile(String cacheKey, String levelKey, int type) {
-        Log.i(LOG_TAG + "getGroupFile", "cache key is " + cacheKey);
-        Log.i(LOG_TAG + "getGroupFile", "type is " + type);
-        Log.i(LOG_TAG + "getGroupFile", "level key is " + levelKey);
-
-        // 文件路径
-        String[] pathList = getGroupPath(cacheKey, levelKey, type);
-
-        return buildFileList(pathList);
-    }
-
-    /**
      * 删除指定的缓存，如果该缓存key指向缓存组，则会删除全部组文件
      *
      * @param cacheKey 缓存key或缓存组key
@@ -538,10 +332,8 @@ public class CacheFileUtil {
         Log.i(LOG_TAG + "delete", "level key is " + levelKey);
 
         // 先删除文件
-        File file = getFile(cacheKey, levelKey);
-        if (file != null) {
-            deleteFile(file);
-        }
+        File file = new File(getPath(cacheKey, levelKey));
+        deleteFile(file);
 
         // 缓存组
         List<CacheInfo> cacheInfoList = cacheInfoOperator.queryCacheGroup(cacheKey, levelKey);
@@ -549,13 +341,10 @@ public class CacheFileUtil {
         // 文件路径
         String[] pathList = buildPathList(levelKey, cacheInfoList);
 
-        // 获得文件数组
-        File[] fileList = buildFileList(pathList);
-
         // 删除文件
-        if (fileList != null) {
-            for (File file1 : fileList) {
-                deleteFile(file1);
+        if (pathList != null) {
+            for (String path : pathList) {
+                deleteFile(new File(path));
             }
         }
 
@@ -633,7 +422,11 @@ public class CacheFileUtil {
         // 计算
         for (int i = cacheFileList.size() - 1; i >= 0; i--) {
             // 计算当前量
-            currentCapacity += cacheFileList.get(i).getFile().length();
+            try {
+                currentCapacity += new FileInputStream(cacheFileList.get(i).getFile()).available();
+            } catch (IOException e) {
+                Log.i(LOG_TAG + "deleteFile", "IOException is " + e.getMessage());
+            }
 
             if (currentCapacity > maxCapacity) {
                 // 容量超出限制则停止计算
@@ -679,7 +472,7 @@ public class CacheFileUtil {
         for (CacheInfo cacheInfo : cacheInfoList) {
 
             // 当前缓存层级路径
-            String levelPath = null;
+            String levelPath;
 
             if (!cacheLevelMap.containsKey(cacheInfo.getLevelKey())) {
 
@@ -712,7 +505,8 @@ public class CacheFileUtil {
                 continue;
             }
 
-            if (System.currentTimeMillis() - file.lastModified() >= cacheInfo.getTimeOut()) {
+            if (cacheInfo.getTimeOut() > 0 && System.currentTimeMillis() - file.lastModified() >=
+                    cacheInfo.getTimeOut()) {
                 // 删除超时文件
                 file.delete();
                 deleteCacheInfoList.add(cacheInfo);
