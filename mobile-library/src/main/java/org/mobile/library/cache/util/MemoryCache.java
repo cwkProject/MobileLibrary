@@ -68,16 +68,17 @@ public class MemoryCache {
     private synchronized void createMemoryCache() {
         if (softCache == null) {
             Log.i(LOG_TAG + "createMemoryCache", "create soft reference");
-            softCache = new LinkedHashMap<String, SoftReference<CacheObject>>(SOFT_CACHE_SIZE, 0.5f, true){
-                @Override protected boolean removeEldestEntry
-                (Entry < String, SoftReference < CacheObject >> eldest){
+            softCache = new LinkedHashMap<String, SoftReference<CacheObject>>(SOFT_CACHE_SIZE, 0.5f, true) {
+                @Override
+                protected boolean removeEldestEntry(Entry<String, SoftReference<CacheObject>>
+                        eldest) {
                     if (size() > SOFT_CACHE_SIZE) {
                         Log.i(LOG_TAG + "createMemoryCache", "Soft Reference limit , purge one");
                         return true;
                     }
                     return false;
                 }
-            } ;
+            };
         }
 
         if (lruCache == null) {
@@ -145,5 +146,25 @@ public class MemoryCache {
         }
 
         return null;
+    }
+
+    /**
+     * 移除一个缓存
+     *
+     * @param key 缓存key
+     */
+    public void remove(String key) {
+        if (key != null) {
+            synchronized (lruCache) {
+                lruCache.remove(key);
+            }
+
+            synchronized (softCache) {
+
+                if (softCache.containsKey(key)) {
+                    softCache.remove(key);
+                }
+            }
+        }
     }
 }

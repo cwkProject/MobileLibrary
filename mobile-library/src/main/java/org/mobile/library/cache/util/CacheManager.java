@@ -235,4 +235,11 @@ public class CacheManager {
     public static InputStreamCacheConvert getInputStreamCacheConvert() {
         return inputStreamCacheConvert;
     }
+
+    /**
+     * 自动清理超时和超容量文件
+     */
+    public static void autoClear() {
+        cacheFileUtil.autoClear();
+    }
 }

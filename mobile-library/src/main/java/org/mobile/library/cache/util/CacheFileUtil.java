@@ -75,7 +75,7 @@ public class CacheFileUtil {
         this.context = context;
 
         this.cacheLevelOperator = new CacheLevelOperator(context);
-        this.cacheLevelOperator = new CacheLevelOperator(context);
+        this.cacheInfoOperator = new CacheInfoOperator(context);
 
         // 获取缓存根目录
         File file = context.getExternalCacheDir();
@@ -169,7 +169,6 @@ public class CacheFileUtil {
 
         try {
             if (!file.exists()) {
-                file.mkdirs();
                 file.createNewFile();
             }
 
@@ -197,9 +196,14 @@ public class CacheFileUtil {
 
         if (cacheLevel == null) {
             // 不存在则新建
-
-            String levelPath = cacheLevelOperator.queryCacheLevel(parentKey).getRealPath();
-            cacheLevel = new CacheLevel(key, levelPath + "/" + UUID.randomUUID().toString());
+            String path = null;
+            if (parentKey == null || "root".equals(parentKey)) {
+                path = UUID.randomUUID().toString();
+            } else {
+                path = cacheLevelOperator.queryCacheLevel(parentKey).getRealPath() + "/" + UUID
+                        .randomUUID().toString();
+            }
+            cacheLevel = new CacheLevel(key, path);
 
             // 保存到数据库
             cacheLevelOperator.insert(cacheLevel);
@@ -440,9 +444,16 @@ public class CacheFileUtil {
             // 执行删除
             for (int i = 0; i <= deleteIndex; i++) {
                 // 删除文件
-                cacheFileList.get(i).getFile().delete();
+                CacheInfo cacheInfo = cacheFileList.get(i).getCacheInfo();
+                File file = cacheFileList.get(i).getFile();
+
+                Log.i(LOG_TAG + "deleteFile", "exceed capacity cache file key: " + cacheInfo
+                        .getKey() + ", level: " + cacheInfo.getLevelKey() + ", path:" + file
+                        .getAbsolutePath());
+
+                file.delete();
                 // 删除索引
-                cacheInfoOperator.delete(cacheFileList.get(i).getCacheInfo());
+                cacheInfoOperator.delete(cacheInfo);
             }
         }
     }
@@ -501,6 +512,8 @@ public class CacheFileUtil {
 
             if (!file.exists()) {
                 // 加入丢失列表
+                Log.i(LOG_TAG + "sortAndDelete", "miss cache file key: " + cacheInfo.getKey() +
+                        ", level: " + cacheInfo.getLevelKey() + ", path:" + file.getAbsolutePath());
                 deleteCacheInfoList.add(cacheInfo);
                 continue;
             }
@@ -508,6 +521,8 @@ public class CacheFileUtil {
             if (cacheInfo.getTimeOut() > 0 && System.currentTimeMillis() - file.lastModified() >=
                     cacheInfo.getTimeOut()) {
                 // 删除超时文件
+                Log.i(LOG_TAG + "sortAndDelete", "timeout cache file key: " + cacheInfo.getKey() +
+                        ", level: " + cacheInfo.getLevelKey() + ", path:" + file.getAbsolutePath());
                 file.delete();
                 deleteCacheInfoList.add(cacheInfo);
             }

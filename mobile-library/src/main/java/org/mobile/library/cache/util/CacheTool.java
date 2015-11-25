@@ -553,4 +553,17 @@ public class CacheTool {
 
         return list.toArray(new File[list.size()]);
     }
+
+    /**
+     * 移除一个缓存文件
+     *
+     * @param key 缓存key
+     */
+    public void remove(String key) {
+        // 尝试移除内存缓存
+        CacheManager.getMemoryCache().remove(levelKey + "/" + key);
+
+        // 尝试删除文件缓存
+        CacheManager.getCacheFileUtil().delete(key, levelKey);
+    }
 }

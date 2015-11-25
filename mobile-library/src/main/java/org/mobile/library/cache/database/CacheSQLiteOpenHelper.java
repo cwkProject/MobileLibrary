@@ -74,6 +74,7 @@ public class CacheSQLiteOpenHelper extends SQLiteOpenHelper {
 
         db.execSQL(CacheDatabaseConst.CACHE_LEVEL.CREATE_TABLE);
         db.execSQL(CacheDatabaseConst.CACHE_INFO.CREATE_TABLE);
+        db.execSQL(CacheDatabaseConst.CACHE_LEVEL.INSERT_ROOT);
     }
 
     @Override
