@@ -6,6 +6,7 @@ package org.mobile.library.cache.util.convert;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
+import android.util.Log;
 
 import org.mobile.library.cache.util.CacheObject;
 
@@ -19,6 +20,11 @@ import java.io.FileOutputStream;
  * @since 1.0
  */
 public class BitmapCacheConvert implements CacheConvert<Bitmap> {
+
+    /**
+     * 日志标签前缀
+     */
+    private static final String LOG_TAG = "BitmapCacheConvert.";
 
     private static BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
 
@@ -50,6 +56,11 @@ public class BitmapCacheConvert implements CacheConvert<Bitmap> {
 
     @Override
     public Bitmap toCache(String path) {
+        if (path == null) {
+            Log.d(LOG_TAG + "toCache", "path is null");
+            return null;
+        }
+
         return BitmapFactory.decodeFile(path, bitmapOptions);
     }
 

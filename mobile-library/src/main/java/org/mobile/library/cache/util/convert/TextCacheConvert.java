@@ -48,6 +48,11 @@ public class TextCacheConvert implements CacheConvert<String> {
     @Override
     public String toCache(String path) {
 
+        if (path == null) {
+            Log.d(LOG_TAG + "toCache", "path is null");
+            return null;
+        }
+
         Scanner scanner = null;
 
         try {
@@ -63,7 +68,7 @@ public class TextCacheConvert implements CacheConvert<String> {
 
             return builder.toString();
         } catch (FileNotFoundException e) {
-            Log.d(LOG_TAG + "toCache", "FileNotFoundException is " + e.getMessage());
+            Log.e(LOG_TAG + "toCache", "FileNotFoundException is " + e.getMessage());
             return null;
         } finally {
             if (scanner != null) {
@@ -84,7 +89,7 @@ public class TextCacheConvert implements CacheConvert<String> {
 
             writer.close();
         } catch (IOException e) {
-            Log.d(LOG_TAG + "saveFile", "IOException is " + e.getMessage());
+            Log.e(LOG_TAG + "saveFile", "IOException is " + e.getMessage());
         }
     }
 }

@@ -242,4 +242,11 @@ public class CacheManager {
     public static void autoClear() {
         cacheFileUtil.autoClear();
     }
+
+    /**
+     * 清除全部缓存
+     */
+    public static void clear() {
+        cacheFileUtil.clear();
+    }
 }

@@ -40,6 +40,12 @@ public class InputStreamCacheConvert implements CacheConvert<InputStream> {
 
     @Override
     public InputStream toCache(String path) {
+
+        if (path == null) {
+            Log.d(LOG_TAG + "toCache", "path is null");
+            return null;
+        }
+
         try {
             return new FileInputStream(path);
         } catch (FileNotFoundException e) {

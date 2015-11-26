@@ -14,17 +14,12 @@ import org.mobile.library.network.util.AsyncCommunication;
 import org.mobile.library.network.util.NetworkCallback;
 import org.mobile.library.network.util.NetworkProgressListener;
 import org.mobile.library.network.util.NetworkRefreshProgressHandler;
-import org.mobile.library.network.util.SyncCommunication;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -39,60 +34,59 @@ public class TestUpload {
     /**
      * 文件上传地址
      */
-    private static final String URL = "http://218.92.115" +
-            ".55/M_Lhgl/Service/Handover/UploadPicture" + ".aspx";
+    private static final String URL = "http://10.199.10.220:8080/Service/Handover/UploadFile.aspx";
 
     /**
      * 文件参数名
      */
-    private static final String NAME = "PicName";
+    private static final String NAME = "fileName";
 
     /**
      * 日志标签前缀
      */
     private static final String LOG_TAG = "TestUpload.";
 
-    @Test
-    public void syncUpload() throws Exception {
-        // 要上传的文件
-        File file = new File(Environment.getExternalStoragePublicDirectory(Environment
-                .DIRECTORY_DOWNLOADS), "kmPlugins.zip");
-        Assert.assertNotNull(file);
-        Log.d(LOG_TAG + "upload", "file is " + file);
-        // 参数
-        Map<String, Object> map = new HashMap<>();
-
-        // 加入文件
-        map.put(NAME, file);
-
-        SyncCommunication communication = CommunicationFactory.CreateSyncCommunication
-                (NetworkType.UPLOAD);
-
-        communication.setTaskName(URL);
-
-        final long startTime = System.currentTimeMillis();
-
-        NetworkRefreshProgressHandler refreshProgressHandler = (NetworkRefreshProgressHandler)
-                communication;
-
-        refreshProgressHandler.setNetworkProgressListener(new NetworkProgressListener() {
-            @Override
-            public void onRefreshProgress(long current, long total, boolean done) {
-                Log.i(LOG_TAG + "upload", "upload " + current + "/" + total + "，  cast time " +
-                        "" + (System.currentTimeMillis() - startTime));
-            }
-        });
-
-
-        communication.Request(map);
-
-        Log.i(LOG_TAG + "upload", "upload end cast time " + (System.currentTimeMillis() -
-                startTime));
-        communication.close();
-
-        assertTrue(communication.isSuccessful());
-        assertNotNull(communication.Response());
-    }
+//    @Test
+//    public void syncUpload() throws Exception {
+//        // 要上传的文件
+//        File file = new File(Environment.getExternalStoragePublicDirectory(Environment
+//                .DIRECTORY_DOWNLOADS), "kmPlugins.zip");
+//        Assert.assertNotNull(file);
+//        Log.d(LOG_TAG + "upload", "file is " + file);
+//        // 参数
+//        Map<String, Object> map = new HashMap<>();
+//
+//        // 加入文件
+//        map.put(NAME, file);
+//
+//        SyncCommunication communication = CommunicationFactory.CreateSyncCommunication
+//                (NetworkType.UPLOAD);
+//
+//        communication.setTaskName(URL);
+//
+//        final long startTime = System.currentTimeMillis();
+//
+//        NetworkRefreshProgressHandler refreshProgressHandler = (NetworkRefreshProgressHandler)
+//                communication;
+//
+//        refreshProgressHandler.setNetworkProgressListener(new NetworkProgressListener() {
+//            @Override
+//            public void onRefreshProgress(long current, long total, boolean done) {
+//                Log.i(LOG_TAG + "upload", "upload " + current + "/" + total + "，  cast time " +
+//                        "" + (System.currentTimeMillis() - startTime));
+//            }
+//        });
+//
+//
+//        communication.Request(map);
+//
+//        Log.i(LOG_TAG + "upload", "upload end cast time " + (System.currentTimeMillis() -
+//                startTime));
+//        communication.close();
+//
+//        assertTrue(communication.isSuccessful());
+//        assertNotNull(communication.Response());
+//    }
 
     @Test
     public void asyncUpload() throws Exception {
@@ -100,12 +94,13 @@ public class TestUpload {
         File file = new File(Environment.getExternalStoragePublicDirectory(Environment
                 .DIRECTORY_DOWNLOADS), "kmPlugins.zip");
         Assert.assertNotNull(file);
-        Log.d(LOG_TAG + "upload", "file is " + file);
+        Log.d(LOG_TAG + "asyncUpload", "file is " + file);
         // 参数
         Map<String, Object> map = new HashMap<>();
+        map.put(NAME, "image.jpg");
 
         // 加入文件
-        map.put(NAME, file);
+        map.put("file", file);
 
         AsyncCommunication communication = CommunicationFactory.CreateAsyncCommunication
                 (NetworkType.UPLOAD);
@@ -120,7 +115,7 @@ public class TestUpload {
         refreshProgressHandler.setNetworkProgressListener(new NetworkProgressListener() {
             @Override
             public void onRefreshProgress(long current, long total, boolean done) {
-                Log.i(LOG_TAG + "upload", "upload " + current + "/" + total + "，  cast time " +
+                Log.i(LOG_TAG + "asyncUpload", "upload " + current + "/" + total + "，  cast time " +
                         "" + (System.currentTimeMillis() - startTime));
             }
         });
@@ -132,7 +127,7 @@ public class TestUpload {
             public void onFinish(boolean result, Object response) {
                 assertTrue(result);
                 assertNotNull(response);
-                Log.i(LOG_TAG + "upload", "upload end cast time " + (System.currentTimeMillis() -
+                Log.i(LOG_TAG + "asyncUpload", "upload end cast time " + (System.currentTimeMillis() -
                         startTime));
 
                 synchronized (LOCK) {
@@ -146,111 +141,111 @@ public class TestUpload {
         }
     }
 
-    @Test
-    public void syncCancelUpload() throws Exception {
-        // 要上传的文件
-        File file = new File(Environment.getExternalStoragePublicDirectory(Environment
-                .DIRECTORY_DOWNLOADS), "kmPlugins.zip");
-        Assert.assertNotNull(file);
-        Log.d(LOG_TAG + "upload", "file is " + file);
-        // 参数
-        Map<String, Object> map = new HashMap<>();
-
-        // 加入文件
-        map.put(NAME, file);
-
-        final SyncCommunication communication = CommunicationFactory.CreateSyncCommunication
-                (NetworkType.UPLOAD);
-
-        communication.setTaskName(URL);
-
-        final long startTime = System.currentTimeMillis();
-
-        NetworkRefreshProgressHandler refreshProgressHandler = (NetworkRefreshProgressHandler)
-                communication;
-
-        refreshProgressHandler.setNetworkProgressListener(new NetworkProgressListener() {
-            @Override
-            public void onRefreshProgress(long current, long total, boolean done) {
-                Log.i(LOG_TAG + "upload", "upload " + current + "/" + total + "，  cast time " +
-                        "" + (System.currentTimeMillis() - startTime));
-            }
-        });
-
-        Timer timer = new Timer();
-
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                communication.cancel();
-            }
-        }, 10000);
-
-        communication.Request(map);
-
-        Log.i(LOG_TAG + "upload", "upload end cast time " + (System.currentTimeMillis() -
-                startTime));
-        communication.close();
-
-        assertFalse(communication.isSuccessful());
-        assertNull(communication.Response());
-    }
-
-    @Test
-    public void asyncCancelUpload() throws Exception {
-        // 要上传的文件
-        File file = new File(Environment.getExternalStoragePublicDirectory(Environment
-                .DIRECTORY_DOWNLOADS), "kmPlugins.zip");
-        Assert.assertNotNull(file);
-        Log.d(LOG_TAG + "upload", "file is " + file);
-        // 参数
-        Map<String, Object> map = new HashMap<>();
-
-        // 加入文件
-        map.put(NAME, file);
-
-        AsyncCommunication communication = CommunicationFactory.CreateAsyncCommunication
-                (NetworkType.UPLOAD);
-
-        communication.setTaskName(URL);
-
-        final long startTime = System.currentTimeMillis();
-
-        NetworkRefreshProgressHandler refreshProgressHandler = (NetworkRefreshProgressHandler)
-                communication;
-
-        refreshProgressHandler.setNetworkProgressListener(new NetworkProgressListener() {
-            @Override
-            public void onRefreshProgress(long current, long total, boolean done) {
-                Log.i(LOG_TAG + "upload", "upload " + current + "/" + total + "，  cast time " +
-                        "" + (System.currentTimeMillis() - startTime));
-            }
-        });
-
-        final Integer LOCK = 1;
-
-        communication.Request(map, new NetworkCallback() {
-            @Override
-            public void onFinish(boolean result, Object response) {
-                assertFalse(result);
-                assertNull(response);
-                Log.i(LOG_TAG + "upload", "upload end cast time " + (System.currentTimeMillis() -
-                        startTime));
-
-                synchronized (LOCK) {
-                    LOCK.notify();
-                }
-            }
-        });
-
-        synchronized (LOCK) {
-            LOCK.wait(10000);
-        }
-
-        communication.cancel();
-
-        synchronized (LOCK) {
-            LOCK.wait();
-        }
-    }
+//    @Test
+//    public void syncCancelUpload() throws Exception {
+//        // 要上传的文件
+//        File file = new File(Environment.getExternalStoragePublicDirectory(Environment
+//                .DIRECTORY_DOWNLOADS), "kmPlugins.zip");
+//        Assert.assertNotNull(file);
+//        Log.d(LOG_TAG + "upload", "file is " + file);
+//        // 参数
+//        Map<String, Object> map = new HashMap<>();
+//
+//        // 加入文件
+//        map.put(NAME, file);
+//
+//        final SyncCommunication communication = CommunicationFactory.CreateSyncCommunication
+//                (NetworkType.UPLOAD);
+//
+//        communication.setTaskName(URL);
+//
+//        final long startTime = System.currentTimeMillis();
+//
+//        NetworkRefreshProgressHandler refreshProgressHandler = (NetworkRefreshProgressHandler)
+//                communication;
+//
+//        refreshProgressHandler.setNetworkProgressListener(new NetworkProgressListener() {
+//            @Override
+//            public void onRefreshProgress(long current, long total, boolean done) {
+//                Log.i(LOG_TAG + "upload", "upload " + current + "/" + total + "，  cast time " +
+//                        "" + (System.currentTimeMillis() - startTime));
+//            }
+//        });
+//
+//        Timer timer = new Timer();
+//
+//        timer.schedule(new TimerTask() {
+//            @Override
+//            public void run() {
+//                communication.cancel();
+//            }
+//        }, 10000);
+//
+//        communication.Request(map);
+//
+//        Log.i(LOG_TAG + "upload", "upload end cast time " + (System.currentTimeMillis() -
+//                startTime));
+//        communication.close();
+//
+//        assertFalse(communication.isSuccessful());
+//        assertNull(communication.Response());
+//    }
+//
+//    @Test
+//    public void asyncCancelUpload() throws Exception {
+//        // 要上传的文件
+//        File file = new File(Environment.getExternalStoragePublicDirectory(Environment
+//                .DIRECTORY_DOWNLOADS), "kmPlugins.zip");
+//        Assert.assertNotNull(file);
+//        Log.d(LOG_TAG + "upload", "file is " + file);
+//        // 参数
+//        Map<String, Object> map = new HashMap<>();
+//
+//        // 加入文件
+//        map.put(NAME, file);
+//
+//        AsyncCommunication communication = CommunicationFactory.CreateAsyncCommunication
+//                (NetworkType.UPLOAD);
+//
+//        communication.setTaskName(URL);
+//
+//        final long startTime = System.currentTimeMillis();
+//
+//        NetworkRefreshProgressHandler refreshProgressHandler = (NetworkRefreshProgressHandler)
+//                communication;
+//
+//        refreshProgressHandler.setNetworkProgressListener(new NetworkProgressListener() {
+//            @Override
+//            public void onRefreshProgress(long current, long total, boolean done) {
+//                Log.i(LOG_TAG + "upload", "upload " + current + "/" + total + "，  cast time " +
+//                        "" + (System.currentTimeMillis() - startTime));
+//            }
+//        });
+//
+//        final Integer LOCK = 1;
+//
+//        communication.Request(map, new NetworkCallback() {
+//            @Override
+//            public void onFinish(boolean result, Object response) {
+//                assertFalse(result);
+//                assertNull(response);
+//                Log.i(LOG_TAG + "upload", "upload end cast time " + (System.currentTimeMillis() -
+//                        startTime));
+//
+//                synchronized (LOCK) {
+//                    LOCK.notify();
+//                }
+//            }
+//        });
+//
+//        synchronized (LOCK) {
+//            LOCK.wait(10000);
+//        }
+//
+//        communication.cancel();
+//
+//        synchronized (LOCK) {
+//            LOCK.wait();
+//        }
+//    }
 }

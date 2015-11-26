@@ -150,7 +150,8 @@ public class OkHttpGetAsyncCommunication implements AsyncCommunication<Map<Strin
         okHttpClient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
-                Log.e(LOG_TAG + "Request", "onFailure IOException is " + e.getMessage());
+                Log.e(LOG_TAG + "Request", "onFailure IOException type is " + e.toString());
+                Log.e(LOG_TAG + "Request", "onFailure IOException message is " + e.getMessage());
 
                 if (callback != null) {
                     callback.onFinish(false, null);
@@ -159,6 +160,7 @@ public class OkHttpGetAsyncCommunication implements AsyncCommunication<Map<Strin
 
             @Override
             public void onResponse(Response response) throws IOException {
+                Log.i(LOG_TAG + "Request", "onResponse response code is " + response.code());
                 Log.i(LOG_TAG + "Request", "onResponse response message is " + response.message());
                 if (callback != null) {
 

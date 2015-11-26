@@ -40,9 +40,14 @@ public class CacheGroup {
     private String key = null;
 
     /**
-     * 本缓存工具对应的父缓存工具
+     * 本缓存组对应的父缓存工具
      */
     private CacheTool parent = null;
+
+    /**
+     * 本缓存组对应的缓存层级信息对象
+     */
+    private CacheLevel cacheLevel = null;
 
     /**
      * 超时时间
@@ -55,9 +60,11 @@ public class CacheGroup {
      * @param key    本缓存组key
      * @param parent 父缓存工具引用
      */
-    public CacheGroup(String key, CacheTool parent) {
+    public CacheGroup(String key, CacheTool parent, CacheLevel cacheLevel) {
         this.key = key;
         this.parent = parent;
+        this.cacheLevel = cacheLevel;
+        this.timeout = cacheLevel.getTimeOut();
     }
 
     /**
@@ -150,8 +157,10 @@ public class CacheGroup {
      */
     private <T> void put(T cacheObject, CacheConvert<T> cacheConvert, int type) {
         // 写入文件缓存
-        cacheConvert.saveFile(CacheManager.getCacheFileUtil().put(parent.getKey(), key, timeout,
-                type, true), cacheObject);
+        Log.i(LOG_TAG + "put", "group key:" + key + " , cacheMode:only file cache , timeout:" +
+                timeout + " , type:" + type);
+        cacheConvert.saveFile(CacheManager.getCacheFileUtil().put(cacheLevel, key, timeout, type,
+                true), cacheObject);
     }
 
     /**
@@ -160,9 +169,10 @@ public class CacheGroup {
      * @return 图片数组
      */
     public Bitmap[] getForBitmaps() {
-        String[] paths = CacheManager.getCacheFileUtil().getGroupPath(key, parent.getKey(),
+        String[] paths = CacheManager.getCacheFileUtil().getGroupPath(key, cacheLevel,
                 CacheManager.FILE_TYPE_IMAGE);
-
+        Log.i(LOG_TAG + "getForBitmaps", "get group key " + key + " all bitmap path count is " +
+                paths.length);
         List<Bitmap> list = new ArrayList<>();
 
         for (String path : paths) {
@@ -173,6 +183,9 @@ public class CacheGroup {
             }
         }
 
+        Log.i(LOG_TAG + "getForFiles", "get group key " + key + " all bitmap count is " + list
+                .size());
+
         return list.toArray(new Bitmap[list.size()]);
     }
 
@@ -182,9 +195,10 @@ public class CacheGroup {
      * @return 文本数组
      */
     public String[] getForTexts() {
-        String[] paths = CacheManager.getCacheFileUtil().getGroupPath(key, parent.getKey(),
+        String[] paths = CacheManager.getCacheFileUtil().getGroupPath(key, cacheLevel,
                 CacheManager.FILE_TYPE_TEXT);
-
+        Log.i(LOG_TAG + "getForTexts", "get group key " + key + " all text path count is " +
+                paths.length);
         List<String> list = new ArrayList<>();
 
         for (String path : paths) {
@@ -195,6 +209,9 @@ public class CacheGroup {
             }
         }
 
+        Log.i(LOG_TAG + "getForFiles", "get group key " + key + " all text count is " + list.size
+                ());
+
         return list.toArray(new String[list.size()]);
     }
 
@@ -204,9 +221,10 @@ public class CacheGroup {
      * @return 文本数组
      */
     public File[] getForFiles() {
-        String[] paths = CacheManager.getCacheFileUtil().getGroupPath(key, parent.getKey(),
+        String[] paths = CacheManager.getCacheFileUtil().getGroupPath(key, cacheLevel,
                 CacheManager.FILE_TYPE_FILE);
-
+        Log.i(LOG_TAG + "getForFiles", "get group key " + key + " all file path count is " +
+                paths.length);
         List<File> list = new ArrayList<>();
 
         for (String path : paths) {
@@ -218,6 +236,16 @@ public class CacheGroup {
             }
         }
 
+        Log.i(LOG_TAG + "getForFiles", "get group key " + key + " all file count is " + list.size
+                ());
+
         return list.toArray(new File[list.size()]);
+    }
+
+    /**
+     * 清除该缓存组的全部数据
+     */
+    public void clear() {
+        parent.remove(key);
     }
 }

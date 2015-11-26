@@ -68,7 +68,7 @@ public class MemoryCache {
     private synchronized void createMemoryCache() {
         if (softCache == null) {
             Log.i(LOG_TAG + "createMemoryCache", "create soft reference");
-            softCache = new LinkedHashMap<String, SoftReference<CacheObject>>(SOFT_CACHE_SIZE, 0.5f, true) {
+            softCache = new LinkedHashMap<String, SoftReference<CacheObject>>(SOFT_CACHE_SIZE, 0.75f, true) {
                 @Override
                 protected boolean removeEldestEntry(Entry<String, SoftReference<CacheObject>>
                         eldest) {
@@ -87,8 +87,11 @@ public class MemoryCache {
                 @Override
                 protected void entryRemoved(boolean evicted, String key, CacheObject oldValue,
                                             CacheObject newValue) {
-                    Log.i(LOG_TAG + "entryRemoved", "hard cache is full , push to soft cache");
-                    softCache.put(key, new SoftReference<>(oldValue));
+                    if (evicted) {
+                        Log.i(LOG_TAG + "entryRemoved", "hard cache is full , push to soft cache " +
+                                "is " + key);
+                        softCache.put(key, new SoftReference<>(oldValue));
+                    }
                 }
 
                 @Override
@@ -106,11 +109,9 @@ public class MemoryCache {
      * @param cache 缓存对象
      */
     public void put(String key, CacheObject cache) {
-
+        Log.i(LOG_TAG + "put", "put cache is " + key);
         if (key != null && cache != null) {
-            synchronized (lruCache) {
-                lruCache.put(key, cache);
-            }
+            lruCache.put(key, cache);
         }
     }
 
@@ -122,25 +123,29 @@ public class MemoryCache {
      * @return 缓存对象
      */
     public CacheObject get(String key) {
+        Log.i(LOG_TAG + "get", "get cache is " + key);
         if (key != null) {
-            synchronized (lruCache) {
-                CacheObject cache = lruCache.get(key);
-                if (cache != null) {
-                    return cache;
-                }
+            CacheObject cache = lruCache.get(key);
+            if (cache != null) {
+                Log.i(LOG_TAG + "get", "hit " + key + " in hard cache");
+                return cache;
             }
 
             synchronized (softCache) {
 
                 if (softCache.containsKey(key)) {
-                    CacheObject cache = softCache.get(key).get();
+                    cache = softCache.get(key).get();
 
                     if (cache == null) {
                         // 已被回收
+                        Log.i(LOG_TAG + "get", "soft reference cache " + key + " is recycled");
                         softCache.remove(key);
                     } else {
+                        Log.i(LOG_TAG + "get", "hit " + key + " in soft reference");
                         return cache;
                     }
+                } else {
+                    Log.i(LOG_TAG + "get", "memory cache not exist " + key);
                 }
             }
         }
@@ -154,14 +159,14 @@ public class MemoryCache {
      * @param key 缓存key
      */
     public void remove(String key) {
+        Log.i(LOG_TAG + "remove", "remove cache is " + key);
         if (key != null) {
-            synchronized (lruCache) {
-                lruCache.remove(key);
-            }
+            Log.i(LOG_TAG + "remove", "remove " + key + " in hard cache");
+            lruCache.remove(key);
 
             synchronized (softCache) {
-
                 if (softCache.containsKey(key)) {
+                    Log.i(LOG_TAG + "remove", "remove " + key + " in soft reference");
                     softCache.remove(key);
                 }
             }

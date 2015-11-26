@@ -137,6 +137,9 @@ public class OkHttpPostSyncCommunication implements SyncCommunication<Map<String
             // 发起同步请求
             Response response = okHttpClient.newCall(request).execute();
 
+            Log.i(LOG_TAG + "Request", "onResponse response code is " + response.code());
+            Log.i(LOG_TAG + "Request", "onResponse response message is " + response.message());
+
             if (response.isSuccessful()) {
                 Log.i(LOG_TAG + "Request", "request is success");
                 this.success = true;
@@ -149,8 +152,9 @@ public class OkHttpPostSyncCommunication implements SyncCommunication<Map<String
             }
 
         } catch (IOException e) {
-            Log.e(LOG_TAG + "Request", "response error IOException class is " + e.toString());
-            Log.e(LOG_TAG + "Request", "response error IOException message is " + e.getMessage());
+            Log.e(LOG_TAG + "Request", "onFailure IOException type is " + e.toString());
+            Log.e(LOG_TAG + "Request", "onFailure IOException message is " + e.getMessage());
+
             this.success = false;
             response = null;
         }

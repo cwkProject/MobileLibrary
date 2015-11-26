@@ -132,4 +132,42 @@ public class TestHttpPostCommunication {
             LOCK.wait();
         }
     }
+
+    /**
+     * 临时测试接口连通性
+     *
+     * @throws Exception
+     */
+    @Test
+    public void tempAsync() throws Exception {
+
+        final Integer LOCK = 1;
+
+        // 参数
+        Map<String, String> map = new HashMap<>();
+
+        map.put("fileName", "image.jpg");
+
+        AsyncCommunication communication = CommunicationFactory.CreateAsyncCommunication
+                (NetworkType.HTTP_POST);
+
+        communication.setTaskName("http://10.199.10.220:8080/Service/Handover/UploadFile.aspx");
+
+        communication.Request(map, new NetworkCallback<String>() {
+            @Override
+            public void onFinish(boolean result, String response) {
+
+                assertTrue(result);
+                //assertEquals("测试测试", response.trim());
+
+                synchronized (LOCK) {
+                    LOCK.notify();
+                }
+            }
+        });
+
+        synchronized (LOCK) {
+            LOCK.wait();
+        }
+    }
 }
