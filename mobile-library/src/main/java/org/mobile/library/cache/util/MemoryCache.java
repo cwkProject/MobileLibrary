@@ -96,7 +96,12 @@ public class MemoryCache {
 
                 @Override
                 protected int sizeOf(String key, CacheObject value) {
-                    return value.getSize();
+                    int size = value.getSize();
+
+                    Log.i(LOG_TAG + "sizeOf", "hard cache put " + key + " , size is " +
+                            "is " + size);
+
+                    return size;
                 }
             };
         }

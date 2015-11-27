@@ -290,6 +290,21 @@ public class CacheFileUtil {
     }
 
     /**
+     * 获取指定层级的缓存文件路径
+     *
+     * @param cacheLevel 缓存层级对象
+     *
+     * @return 路径数组
+     */
+    public String[] getPath(CacheLevel cacheLevel) {
+        Log.i(LOG_TAG + "getPath", "level key:" + cacheLevel.getKey());
+
+        List<CacheInfo> cacheInfoList = cacheInfoOperator.queryCacheInfo(cacheLevel.getKey());
+
+        return buildPathList(cacheLevel.getRealPath(), cacheInfoList);
+    }
+
+    /**
      * 获取指定类型的组缓存路径
      *
      * @param cacheKey   缓存组key
@@ -305,6 +320,24 @@ public class CacheFileUtil {
 
         List<CacheInfo> cacheInfoList = cacheInfoOperator.queryCacheGroup(cacheKey, cacheLevel
                 .getKey(), type);
+
+        return buildPathList(cacheLevel.getRealPath(), cacheInfoList);
+    }
+
+    /**
+     * 获取组全部缓存路径
+     *
+     * @param cacheKey   缓存组key
+     * @param cacheLevel 缓存层级对象
+     *
+     * @return 路径数组
+     */
+    public String[] getGroupPath(String cacheKey, CacheLevel cacheLevel) {
+        Log.i(LOG_TAG + "getGroupPath", "level key:" + cacheLevel.getKey() + " , cache key:" +
+                cacheKey);
+
+        List<CacheInfo> cacheInfoList = cacheInfoOperator.queryCacheGroup(cacheKey, cacheLevel
+                .getKey());
 
         return buildPathList(cacheLevel.getRealPath(), cacheInfoList);
     }

@@ -101,7 +101,7 @@ public class CacheLevelOperator extends BaseOperator<CacheLevel> {
 
         // 关闭数据库
         cursor.close();
-        close();
+        close(sqLiteHelper);
 
         return list;
     }

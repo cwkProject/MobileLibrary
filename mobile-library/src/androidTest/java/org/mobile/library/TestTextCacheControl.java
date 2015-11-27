@@ -48,8 +48,6 @@ public class TestTextCacheControl {
     @Before
     public void setUp() throws Exception {
 
-        CacheManager.clear();
-
         CacheManager.autoClear();
         // 缓存工具
         CacheTool cacheTool = CacheManager.getCacheTool(LEVEL_KEY);
@@ -212,19 +210,20 @@ public class TestTextCacheControl {
 
         final String key = "test";
 
-        // 多线程执行一千次
-        for (int i = 0; i < 1000; i++) {
+        // 多线程执行一百次
+        for (int i = 0; i < 100; i++) {
 
             final int finalI = i;
             taskExecutor.submit(new Runnable() {
                 @Override
                 public void run() {
-                    CacheManager.getCacheTool(LEVEL_KEY).put(key + finalI, TEXT);
+                    CacheManager.getCacheTool(LEVEL_KEY).put(key + finalI, TEXT+finalI,CacheManager
+                            .ONLY_FILE_CACHE);
 
                     assertTrue(CacheManager.getCacheTool(LEVEL_KEY).getForFile(key + finalI)
                             .exists());
 
-                    assertEquals(TEXT, CacheManager.getCacheTool(LEVEL_KEY).getForText(key +
+                    assertEquals(TEXT+finalI, CacheManager.getCacheTool(LEVEL_KEY).getForText(key +
                             finalI));
                 }
             });
@@ -234,7 +233,7 @@ public class TestTextCacheControl {
 
         while (true) {
             if (taskExecutor.isTerminated()) {
-                assertTrue(CacheManager.getCacheTool(LEVEL_KEY).getForTexts().length >= 1000);
+                assertTrue(CacheManager.getCacheTool(LEVEL_KEY).getForTexts().length >= 100);
                 break;
             }
             Thread.sleep(1000);

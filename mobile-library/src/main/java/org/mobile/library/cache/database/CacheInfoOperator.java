@@ -109,7 +109,7 @@ public class CacheInfoOperator extends BaseOperator<CacheInfo> {
 
         // 关闭数据库
         cursor.close();
-        close();
+        close(sqLiteHelper);
 
         return list;
     }
@@ -268,7 +268,7 @@ public class CacheInfoOperator extends BaseOperator<CacheInfo> {
      * @param key      缓存key
      * @param levelKey 缓存层级key
      */
-    public synchronized void delete(String key, String levelKey) {
+    public void delete(String key, String levelKey) {
         // 得到数据库写对象
         SQLiteDatabase dbWriter = writeSqLiteHelper.getWritableDatabase();
 
@@ -283,7 +283,7 @@ public class CacheInfoOperator extends BaseOperator<CacheInfo> {
 
         Log.i(LOG_TAG + "delete", "delete row count is " + rowCount);
 
-        close();
+        close(writeSqLiteHelper);
     }
 
     /**
@@ -291,7 +291,7 @@ public class CacheInfoOperator extends BaseOperator<CacheInfo> {
      *
      * @param levelKey 缓存层级key
      */
-    public synchronized void delete(String levelKey) {
+    public void delete(String levelKey) {
         // 得到数据库写对象
         SQLiteDatabase dbWriter = writeSqLiteHelper.getWritableDatabase();
 
@@ -306,7 +306,7 @@ public class CacheInfoOperator extends BaseOperator<CacheInfo> {
 
         Log.i(LOG_TAG + "delete", "delete row count is " + rowCount);
 
-        close();
+        close(writeSqLiteHelper);
     }
 
 

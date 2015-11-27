@@ -3,8 +3,10 @@ package org.mobile.library.cache.util;
  * Created by 超悟空 on 2015/11/14.
  */
 
+import android.support.annotation.Nullable;
 import android.util.Log;
 
+import org.jetbrains.annotations.NotNull;
 import org.mobile.library.cache.util.convert.BitmapCacheConvert;
 import org.mobile.library.cache.util.convert.InputStreamCacheConvert;
 import org.mobile.library.cache.util.convert.TextCacheConvert;
@@ -144,13 +146,22 @@ public class CacheManager {
     public static final String ROOT = "root";
 
     /**
+     * 获取根缓存工具，缓存文件会被直接存放到程序包缓存目录中
+     *
+     * @return 缓存工具
+     */
+    public static CacheTool getCacheTool() {
+        return getCacheTool(ROOT);
+    }
+
+    /**
      * 获取一个缓存工具，key指定缓存分级标签，没有会被新建，在文件系统中为一个目录
      *
      * @param key 层级标签
      *
      * @return 缓存工具
      */
-    public static CacheTool getCacheTool(String key) {
+    public static CacheTool getCacheTool(@NotNull String key) {
         return getCacheTool(key, null);
     }
 
@@ -162,7 +173,7 @@ public class CacheManager {
      *
      * @return 缓存工具
      */
-    public static CacheTool getCacheTool(String key, CacheTool cacheTool) {
+    public static CacheTool getCacheTool(@NotNull String key,@Nullable CacheTool cacheTool) {
 
         if (!cacheToolMap.containsKey(key)) {
             Log.i(LOG_TAG + "getCacheTool", "new CacheTool " + key);

@@ -156,7 +156,7 @@ public abstract class BaseOperator<DataModel> {
      *
      * @return 受影响的行数
      */
-    public synchronized final int update(DataModel data) {
+    public final int update(DataModel data) {
         Log.i(LOG_TAG + "update", "update is invoked");
 
         if (data == null) {
@@ -179,7 +179,7 @@ public abstract class BaseOperator<DataModel> {
 
         Log.i(LOG_TAG + "update", "update row count is " + rowCount);
 
-        close();
+        close(writeSqLiteHelper);
 
         return rowCount;
     }
@@ -191,7 +191,7 @@ public abstract class BaseOperator<DataModel> {
      *
      * @return 删除的记录数
      */
-    public synchronized final int delete(DataModel data) {
+    public final int delete(DataModel data) {
         Log.i(LOG_TAG + "delete", "delete is invoked");
 
         if (data == null) {
@@ -212,7 +212,7 @@ public abstract class BaseOperator<DataModel> {
 
         Log.i(LOG_TAG + "delete", "delete row count is " + rowCount);
 
-        close();
+        close(writeSqLiteHelper);
 
         return rowCount;
     }
@@ -222,13 +222,13 @@ public abstract class BaseOperator<DataModel> {
      *
      * @return 删除的行数
      */
-    public synchronized final int clear() {
+    public final int clear() {
         Log.i(LOG_TAG + "clear", "clear is invoked");
 
         // 执行删除
         int rowCount = writeSqLiteHelper.getWritableDatabase().delete(tableName, null, null);
 
-        close();
+        close(writeSqLiteHelper);
 
         Log.i(LOG_TAG + "clear", "delete row count is " + rowCount);
 
@@ -240,7 +240,7 @@ public abstract class BaseOperator<DataModel> {
      *
      * @return 全部数据集
      */
-    public synchronized final List<DataModel> queryAll() {
+    public final List<DataModel> queryAll() {
         Log.i(LOG_TAG + "queryAll", "query is invoked");
 
         final String sql = "select * from " + tableName;
@@ -278,7 +278,7 @@ public abstract class BaseOperator<DataModel> {
      *
      * @return 成功插入的新行id
      */
-    public synchronized final List<Long> insert(List<DataModel> dataList) {
+    public final List<Long> insert(List<DataModel> dataList) {
         Log.i(LOG_TAG + "insert", "insert is invoked");
 
         if (dataList == null || dataList.size() == 0) {
@@ -297,7 +297,7 @@ public abstract class BaseOperator<DataModel> {
             }
         }
 
-        close();
+        close(writeSqLiteHelper);
 
         return idList;
     }
@@ -309,7 +309,7 @@ public abstract class BaseOperator<DataModel> {
      *
      * @return 成功插入的新行id，插入失败返回-1
      */
-    public synchronized final long insert(DataModel data) {
+    public final long insert(DataModel data) {
         Log.i(LOG_TAG + "insert", "insert is invoked");
 
         if (data == null) {
@@ -322,7 +322,7 @@ public abstract class BaseOperator<DataModel> {
 
         long id = dbWriter.insert(tableName, null, onFillData(data));
 
-        close();
+        close(writeSqLiteHelper);
 
         return id;
     }
@@ -335,7 +335,7 @@ public abstract class BaseOperator<DataModel> {
     public synchronized final boolean isEmpty() {
         final String sql = "select count(*) from " + tableName;
 
-        Cursor cursor = writeSqLiteHelper.getReadableDatabase().rawQuery(sql, null);
+        Cursor cursor = sqLiteHelper.getReadableDatabase().rawQuery(sql, null);
 
         if (cursor.moveToNext()) {
             if (cursor.getInt(0) > 0) {
@@ -346,7 +346,7 @@ public abstract class BaseOperator<DataModel> {
         }
 
         cursor.close();
-        close();
+        close(sqLiteHelper);
         return true;
     }
 
@@ -358,7 +358,7 @@ public abstract class BaseOperator<DataModel> {
     public synchronized final boolean isExist() {
         final String sql = String.format("select count(*) from sqlite_master where type='table' " +
                 "and " + "name='%s'", tableName);
-        Cursor cursor = writeSqLiteHelper.getReadableDatabase().rawQuery(sql, null);
+        Cursor cursor = sqLiteHelper.getReadableDatabase().rawQuery(sql, null);
         if (cursor.moveToNext()) {
             if (cursor.getInt(0) > 0) {
                 cursor.close();
@@ -367,15 +367,24 @@ public abstract class BaseOperator<DataModel> {
             }
         }
         cursor.close();
-        close();
+        close(sqLiteHelper);
         return false;
     }
 
     /**
      * 关闭数据库
+     *
+     * @param sqLiteHelper 要关闭的数据库
      */
-    public final void close() {
-        writeSqLiteHelper.close();
+    public final void close(SQLiteOpenHelper sqLiteHelper) {
+        sqLiteHelper.close();
     }
 
+    /**
+     * 关闭数据库
+     */
+    protected final void close() {
+        writeSqLiteHelper.close();
+        sqLiteHelper.close();
+    }
 }

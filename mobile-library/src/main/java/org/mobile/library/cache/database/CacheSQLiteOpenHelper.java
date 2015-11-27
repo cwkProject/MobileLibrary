@@ -82,6 +82,8 @@ public class CacheSQLiteOpenHelper extends SQLiteOpenHelper {
         // 计数加一
         openCounter.incrementAndGet();
 
+        Log.i(LOG_TAG + "getWritableDatabase", "now open database count is " + openCounter.get());
+
         return super.getWritableDatabase();
     }
 
@@ -89,6 +91,8 @@ public class CacheSQLiteOpenHelper extends SQLiteOpenHelper {
     public SQLiteDatabase getReadableDatabase() {
         // 计数加一
         openCounter.incrementAndGet();
+
+        Log.i(LOG_TAG + "getReadableDatabase", "now open database count is " + openCounter.get());
 
         return super.getReadableDatabase();
     }
@@ -99,6 +103,8 @@ public class CacheSQLiteOpenHelper extends SQLiteOpenHelper {
         if (openCounter.decrementAndGet() == 0) {
             super.close();
         }
+
+        Log.i(LOG_TAG + "close", "now open database count is " + openCounter.get());
     }
 
     @Override

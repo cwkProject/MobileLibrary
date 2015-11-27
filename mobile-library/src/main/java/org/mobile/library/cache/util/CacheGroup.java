@@ -6,11 +6,13 @@ package org.mobile.library.cache.util;
 import android.graphics.Bitmap;
 import android.util.Log;
 
+import org.jetbrains.annotations.NotNull;
 import org.mobile.library.cache.util.convert.CacheConvert;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,7 +62,8 @@ public class CacheGroup {
      * @param key    本缓存组key
      * @param parent 父缓存工具引用
      */
-    public CacheGroup(String key, CacheTool parent, CacheLevel cacheLevel) {
+    public CacheGroup(@NotNull String key, @NotNull CacheTool parent, @NotNull CacheLevel
+            cacheLevel) {
         this.key = key;
         this.parent = parent;
         this.cacheLevel = cacheLevel;
@@ -79,7 +82,7 @@ public class CacheGroup {
      * {@link CacheManager#MAGNITUDE_MONTH}做乘法计算
      * <example>
      * // 设置超时时间为3天
-     * cacheLevel.setTimeOut(3*CacheManager.MAGNITUDE_DAY);
+     * cacheGroup.setTimeOut(3*CacheManager.MAGNITUDE_DAY);
      * </example>
      *
      * @param timeout 超时时间，0表示无限制
@@ -112,7 +115,7 @@ public class CacheGroup {
      *
      * @param bitmap 图片对象
      */
-    public void put(Bitmap bitmap) {
+    public void put(@NotNull Bitmap bitmap) {
         put(bitmap, CacheManager.getBitmapCacheConvert(), CacheManager.FILE_TYPE_IMAGE);
     }
 
@@ -121,7 +124,7 @@ public class CacheGroup {
      *
      * @param text 文本对象
      */
-    public void put(String text) {
+    public void put(@NotNull String text) {
         put(text, CacheManager.getTextCacheConvert(), CacheManager.FILE_TYPE_TEXT);
     }
 
@@ -130,7 +133,7 @@ public class CacheGroup {
      *
      * @param file 文件缓存
      */
-    public void put(File file) {
+    public void put(@NotNull File file) {
         try {
             put(new FileInputStream(file));
         } catch (FileNotFoundException e) {
@@ -143,7 +146,7 @@ public class CacheGroup {
      *
      * @param inputStream 输入流
      */
-    public void put(InputStream inputStream) {
+    public void put(@NotNull InputStream inputStream) {
         put(inputStream, CacheManager.getInputStreamCacheConvert(), CacheManager.FILE_TYPE_FILE);
     }
 
@@ -155,12 +158,28 @@ public class CacheGroup {
      * @param type         缓存类型
      * @param <T>          实际缓存类型
      */
-    private <T> void put(T cacheObject, CacheConvert<T> cacheConvert, int type) {
+    private <T> void put(@NotNull T cacheObject, @NotNull CacheConvert<T> cacheConvert, int type) {
         // 写入文件缓存
         Log.i(LOG_TAG + "put", "group key:" + key + " , cacheMode:only file cache , timeout:" +
                 timeout + " , type:" + type);
         cacheConvert.saveFile(CacheManager.getCacheFileUtil().put(cacheLevel, key, timeout, type,
                 true), cacheObject);
+    }
+
+    /**
+     * 手动写入缓存文件<br>
+     * 直接保存缓存到文件系统，
+     * 获取一个缓存控制系统中创建好的文件输出流，
+     * 自行向输出流写入缓存文件并主动关闭输出流。<br>
+     *
+     * @return 用于写入缓存的文件输出流
+     */
+    public FileOutputStream putAndBack() {
+        Log.i(LOG_TAG + "putAndBack", "group key:" + key + " timeout:" +
+                timeout + " put file cache");
+        // 写入文件缓存
+        return CacheManager.getCacheFileUtil().put(cacheLevel, key, timeout, CacheManager
+                .FILE_TYPE_FILE, true);
     }
 
     /**
@@ -221,8 +240,7 @@ public class CacheGroup {
      * @return 文本数组
      */
     public File[] getForFiles() {
-        String[] paths = CacheManager.getCacheFileUtil().getGroupPath(key, cacheLevel,
-                CacheManager.FILE_TYPE_FILE);
+        String[] paths = CacheManager.getCacheFileUtil().getGroupPath(key, cacheLevel);
         Log.i(LOG_TAG + "getForFiles", "get group key " + key + " all file path count is " +
                 paths.length);
         List<File> list = new ArrayList<>();

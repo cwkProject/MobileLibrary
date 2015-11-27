@@ -4,13 +4,16 @@ package org.mobile.library.cache.util;
  */
 
 import android.graphics.Bitmap;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
+import org.jetbrains.annotations.NotNull;
 import org.mobile.library.cache.util.convert.CacheConvert;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +53,7 @@ public class CacheTool {
      * @param key    本缓存工具key
      * @param parent 父缓存工具引用
      */
-    public CacheTool(String key, CacheTool parent) {
+    public CacheTool(@NotNull String key, @Nullable CacheTool parent) {
         Log.i(LOG_TAG + "CacheTool", "key is " + key);
         Log.i(LOG_TAG + "CacheTool", "parent is " + (parent == null ? null : parent.getKey()));
         this.levelKey = key;
@@ -139,7 +142,7 @@ public class CacheTool {
      *
      * @return 子缓存工具
      */
-    public CacheTool getChildCacheTool(String key) {
+    public CacheTool getChildCacheTool(@NotNull String key) {
         Log.i(LOG_TAG + "getChildCacheTool", "create child CacheTool " + key);
         return CacheManager.getCacheTool(key, this);
     }
@@ -151,7 +154,7 @@ public class CacheTool {
      *
      * @return 缓存组对象
      */
-    public CacheGroup getCacheGroup(String key) {
+    public CacheGroup getCacheGroup(@NotNull String key) {
         return new CacheGroup(key, this, cacheLevel);
     }
 
@@ -161,7 +164,7 @@ public class CacheTool {
      * @param key    缓存标签
      * @param bitmap 图片对象
      */
-    public void put(String key, Bitmap bitmap) {
+    public void put(@NotNull String key, @NotNull Bitmap bitmap) {
         put(key, bitmap, cacheLevel.getTimeOut());
     }
 
@@ -172,7 +175,7 @@ public class CacheTool {
      * @param bitmap  图片对象
      * @param timeout 超时时间，覆盖工具默认设定，0表示无限制
      */
-    public void put(String key, Bitmap bitmap, long timeout) {
+    public void put(@NotNull String key, @NotNull Bitmap bitmap, long timeout) {
         put(key, bitmap, CacheManager.MEMORY_WITH_FILE, timeout);
     }
 
@@ -186,7 +189,7 @@ public class CacheTool {
      *                  可选有{@link CacheManager#ONLY_MEMORY_CACHE}，
      *                  {@link CacheManager#ONLY_FILE_CACHE}
      */
-    public void put(String key, Bitmap bitmap, int cacheMode) {
+    public void put(@NotNull String key, @NotNull Bitmap bitmap, int cacheMode) {
         put(key, bitmap, cacheMode, cacheLevel.getTimeOut());
     }
 
@@ -201,7 +204,7 @@ public class CacheTool {
      *                  {@link CacheManager#ONLY_FILE_CACHE}
      * @param timeout   超时时间，覆盖工具默认设定，0表示无限制
      */
-    public void put(String key, Bitmap bitmap, int cacheMode, long timeout) {
+    public void put(@NotNull String key, @NotNull Bitmap bitmap, int cacheMode, long timeout) {
         put(key, bitmap, CacheManager.getBitmapCacheConvert(), cacheMode, timeout, CacheManager
                 .FILE_TYPE_IMAGE);
     }
@@ -212,7 +215,7 @@ public class CacheTool {
      * @param key  缓存标签
      * @param text 文本对象
      */
-    public void put(String key, String text) {
+    public void put(@NotNull String key, @NotNull String text) {
         put(key, text, cacheLevel.getTimeOut());
     }
 
@@ -226,7 +229,7 @@ public class CacheTool {
      *                  可选有{@link CacheManager#ONLY_MEMORY_CACHE}，
      *                  {@link CacheManager#ONLY_FILE_CACHE}
      */
-    public void put(String key, String text, int cacheMode) {
+    public void put(@NotNull String key, @NotNull String text, int cacheMode) {
         put(key, text, cacheMode, cacheLevel.getTimeOut());
     }
 
@@ -237,7 +240,7 @@ public class CacheTool {
      * @param text    文本对象
      * @param timeout 超时时间，覆盖工具默认设定，0表示无限制
      */
-    public void put(String key, String text, long timeout) {
+    public void put(@NotNull String key, @NotNull String text, long timeout) {
         put(key, text, CacheManager.MEMORY_WITH_FILE, timeout);
     }
 
@@ -252,7 +255,7 @@ public class CacheTool {
      *                  {@link CacheManager#ONLY_FILE_CACHE}
      * @param timeout   超时时间，覆盖工具默认设定，0表示无限制
      */
-    public void put(String key, String text, int cacheMode, long timeout) {
+    public void put(@NotNull String key, @NotNull String text, int cacheMode, long timeout) {
         put(key, text, CacheManager.getTextCacheConvert(), cacheMode, timeout, CacheManager
                 .FILE_TYPE_TEXT);
     }
@@ -263,7 +266,7 @@ public class CacheTool {
      * @param key  缓存标签
      * @param file 文件缓存
      */
-    public void put(String key, File file) {
+    public void put(@NotNull String key, @NotNull File file) {
         put(key, file, cacheLevel.getTimeOut());
     }
 
@@ -274,7 +277,7 @@ public class CacheTool {
      * @param file    文件缓存
      * @param timeout 超时时间，覆盖工具默认设定，0表示无限制
      */
-    public void put(String key, File file, long timeout) {
+    public void put(@NotNull String key, @NotNull File file, long timeout) {
         try {
             put(key, new FileInputStream(file), timeout);
         } catch (FileNotFoundException e) {
@@ -288,7 +291,7 @@ public class CacheTool {
      * @param key         缓存标签
      * @param inputStream 输入流
      */
-    public void put(String key, InputStream inputStream) {
+    public void put(@NotNull String key, @NotNull InputStream inputStream) {
         put(key, inputStream, cacheLevel.getTimeOut());
     }
 
@@ -299,7 +302,7 @@ public class CacheTool {
      * @param inputStream 输入流
      * @param timeout     超时时间，覆盖工具默认设定，0表示无限制
      */
-    public void put(String key, InputStream inputStream, long timeout) {
+    public void put(@NotNull String key, @NotNull InputStream inputStream, long timeout) {
         put(key, inputStream, CacheManager.getInputStreamCacheConvert(), CacheManager
                 .ONLY_FILE_CACHE, timeout, CacheManager.FILE_TYPE_FILE);
     }
@@ -311,7 +314,7 @@ public class CacheTool {
      * @param cacheObject  缓存对象
      * @param cacheConvert 缓存转换器
      */
-    public <T> void put(String key, T cacheObject, CacheConvert<T> cacheConvert) {
+    public <T> void put(@NotNull String key, @NotNull T cacheObject, CacheConvert<T> cacheConvert) {
         put(key, cacheObject, cacheConvert, cacheLevel.getTimeOut());
     }
 
@@ -323,7 +326,8 @@ public class CacheTool {
      * @param cacheConvert 缓存转换器
      * @param timeout      超时时间，覆盖工具默认设定，0表示无限制
      */
-    public <T> void put(String key, T cacheObject, CacheConvert<T> cacheConvert, long timeout) {
+    public <T> void put(@NotNull String key, @NotNull T cacheObject, CacheConvert<T>
+            cacheConvert, long timeout) {
         put(key, cacheObject, cacheConvert, CacheManager.MEMORY_WITH_FILE, timeout);
     }
 
@@ -338,7 +342,8 @@ public class CacheTool {
      *                     可选有{@link CacheManager#ONLY_MEMORY_CACHE}，
      *                     {@link CacheManager#ONLY_FILE_CACHE}
      */
-    public <T> void put(String key, T cacheObject, CacheConvert<T> cacheConvert, int cacheMode) {
+    public <T> void put(@NotNull String key, @NotNull T cacheObject, CacheConvert<T>
+            cacheConvert, int cacheMode) {
         put(key, cacheObject, cacheConvert, cacheMode, cacheLevel.getTimeOut());
     }
 
@@ -354,8 +359,8 @@ public class CacheTool {
      *                     {@link CacheManager#ONLY_FILE_CACHE}
      * @param timeout      超时时间，覆盖工具默认设定，0表示无限制
      */
-    public <T> void put(String key, T cacheObject, CacheConvert<T> cacheConvert, int cacheMode,
-                        long timeout) {
+    public <T> void put(@NotNull String key, @NotNull T cacheObject, @NotNull CacheConvert<T>
+            cacheConvert, int cacheMode, long timeout) {
         put(key, cacheObject, cacheConvert, cacheMode, timeout, CacheManager
                 .FILE_TYPE_CACHE_OBJECT);
     }
@@ -373,8 +378,8 @@ public class CacheTool {
      * @param timeout      超时时间，覆盖工具默认设定，0表示无限制
      * @param type         缓存类型
      */
-    private <T> void put(String key, T cacheObject, CacheConvert<T> cacheConvert, int cacheMode,
-                         long timeout, int type) {
+    private <T> void put(@NotNull String key, @NotNull T cacheObject, @NotNull CacheConvert<T>
+            cacheConvert, int cacheMode, long timeout, int type) {
         Log.i(LOG_TAG + "put", "key:" + key + " , cacheMode:" + cacheMode + " , timeout:" +
                 timeout + " , type:" + type);
 
@@ -400,13 +405,48 @@ public class CacheTool {
     }
 
     /**
+     * 手动写入缓存文件<br>
+     * 直接保存缓存到文件系统，
+     * 通过指定{@code key}来获取一个缓存控制系统中创建好的文件输出流，
+     * 自行向输出流写入缓存文件并主动关闭输出流。<br>
+     * 如果key已存在则输出流会覆盖原缓存文件。
+     *
+     * @param key 缓存标签
+     *
+     * @return 用于写入缓存的文件输出流
+     */
+    public FileOutputStream putAndBack(@NotNull String key) {
+        return putAndBack(key, cacheLevel.getTimeOut());
+    }
+
+    /**
+     * 手动写入缓存文件<br>
+     * 直接保存缓存到文件系统，
+     * 通过指定{@code key}来获取一个缓存控制系统中创建好的文件输出流，
+     * 自行向输出流写入缓存文件并主动关闭输出流。<br>
+     * 如果key已存在则输出流会覆盖原缓存文件。
+     *
+     * @param key     缓存标签
+     * @param timeout 超时时间，覆盖工具默认设定，0表示无限制
+     *
+     * @return 用于写入缓存的文件输出流
+     */
+    public FileOutputStream putAndBack(@NotNull String key, long timeout) {
+        Log.i(LOG_TAG + "putAndBack", "key:" + key + " timeout:" +
+                timeout + " put file cache");
+        // 写入文件缓存
+        return CacheManager.getCacheFileUtil().put(cacheLevel, key, timeout, CacheManager
+                .FILE_TYPE_FILE);
+    }
+
+    /**
      * 提取一个图片缓存
      *
      * @param key 缓存key
      *
      * @return 图片对象
      */
-    public Bitmap getForBitmap(String key) {
+    public Bitmap getForBitmap(@NotNull String key) {
         Log.i(LOG_TAG + "getForBitmap", "key is " + key);
         // 尝试从内存缓存获取
         Log.i(LOG_TAG + "getForBitmap", "from memory read " + key);
@@ -438,7 +478,7 @@ public class CacheTool {
      *
      * @return 文本对象
      */
-    public String getForText(String key) {
+    public String getForText(@NotNull String key) {
         Log.i(LOG_TAG + "getForText", "key is " + key);
         // 尝试从内存缓存获取
         Log.i(LOG_TAG + "getForText", "from memory read " + key);
@@ -470,7 +510,7 @@ public class CacheTool {
      *
      * @return 文件对象，如果缓存未保存到文件系统则返回null，如过文件已被清除则文件可能不存在
      */
-    public File getForFile(String key) {
+    public File getForFile(@NotNull String key) {
         Log.i(LOG_TAG + "getForFile", "key is " + key);
 
         String path = CacheManager.getCacheFileUtil().getPath(key, cacheLevel);
@@ -488,7 +528,7 @@ public class CacheTool {
      *
      * @return 输入流
      */
-    public InputStream getInputStream(String key) {
+    public InputStream getInputStream(@NotNull String key) {
         Log.i(LOG_TAG + "getInputStream", "key is " + key);
         return CacheManager.getInputStreamCacheConvert().toCache(CacheManager.getCacheFileUtil()
                 .getPath(key, cacheLevel));
@@ -502,7 +542,7 @@ public class CacheTool {
      *
      * @return 缓存对象
      */
-    public <T> T getForCacheConvert(String key, CacheConvert<T> cacheConvert) {
+    public <T> T getForCacheConvert(@NotNull String key, @NotNull CacheConvert<T> cacheConvert) {
         Log.i(LOG_TAG + "getForCacheConvert", "key is " + key);
         // 尝试从内存缓存获取
         Log.i(LOG_TAG + "getForCacheConvert", "from memory read " + key);
@@ -576,8 +616,7 @@ public class CacheTool {
      * @return 文件数组
      */
     public File[] getForFiles() {
-        String[] paths = CacheManager.getCacheFileUtil().getPath(cacheLevel, CacheManager
-                .FILE_TYPE_FILE);
+        String[] paths = CacheManager.getCacheFileUtil().getPath(cacheLevel);
         Log.i(LOG_TAG + "getForFiles", "get level " + levelKey + " all file path count is " +
                 paths.length);
 
@@ -602,7 +641,7 @@ public class CacheTool {
      *
      * @param key 缓存key
      */
-    public void remove(String key) {
+    public void remove(@NotNull String key) {
         Log.i(LOG_TAG + "remove", "remove cache " + key);
 
         // 尝试移除内存缓存
