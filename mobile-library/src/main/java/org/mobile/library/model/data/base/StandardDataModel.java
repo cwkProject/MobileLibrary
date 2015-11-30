@@ -45,12 +45,12 @@ public abstract class StandardDataModel<Handle, Response, Value> implements
      * @return true表示成功，false表示失败
      */
     @Override
-    public boolean isSuccess() {
+    public final boolean isSuccess() {
         return success;
     }
 
     @Override
-    public String getMessage() {
+    public final String getMessage() {
         return message;
     }
 
@@ -59,12 +59,12 @@ public abstract class StandardDataModel<Handle, Response, Value> implements
      *
      * @param message 消息字符串
      */
-    protected void setMessage(String message) {
+    protected final void setMessage(String message) {
         this.message = message;
     }
 
     @Override
-    public Map<String, Value> serialization() {
+    public final Map<String, Value> serialization() {
         Log.i(LOG_TAG + "serialization", "serialization start");
         // 序列化后的参数集
         Map<String, Value> dataMap = new HashMap<>();
@@ -84,7 +84,7 @@ public abstract class StandardDataModel<Handle, Response, Value> implements
     protected abstract void onFillRequestParameters(Map<String, Value> dataMap);
 
     @Override
-    public boolean parse(Response response) {
+    public final boolean parse(Response response) {
         Log.i(LOG_TAG + "parse", "parse start");
         Log.i(LOG_TAG + "parse", "result is " + response);
         if (!onCheckResponse(response)) {

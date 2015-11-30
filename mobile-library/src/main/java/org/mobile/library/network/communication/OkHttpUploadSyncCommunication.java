@@ -11,6 +11,7 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
+import com.squareup.okhttp.ResponseBody;
 
 import org.mobile.library.global.GlobalApplication;
 import org.mobile.library.network.util.NetworkProgressListener;
@@ -60,9 +61,9 @@ public class OkHttpUploadSyncCommunication implements SyncCommunication<Map<Stri
     protected int timeout = -1;
 
     /**
-     * 要返回的响应结果
+     * 要返回的响应体
      */
-    private String response = null;
+    private ResponseBody response = null;
 
     /**
      * 标识请求是否成功
@@ -133,13 +134,13 @@ public class OkHttpUploadSyncCommunication implements SyncCommunication<Map<Stri
             // 发起同步请求
             Response response = okHttpClient.newCall(request).execute();
 
-            Log.i(LOG_TAG + "Request", "onResponse response code is " + response.code());
-            Log.i(LOG_TAG + "Request", "onResponse response message is " + response.message());
+            Log.i(LOG_TAG + "Request", "response code is " + response.code());
+            Log.i(LOG_TAG + "Request", "response message is " + response.message());
 
             if (response.isSuccessful()) {
                 Log.i(LOG_TAG + "Request", "request is success");
                 this.success = true;
-                this.response = response.body().string();
+                this.response = response.body();
                 Log.i(LOG_TAG + "Request", "response is " + this.response);
             } else {
                 Log.i(LOG_TAG + "Request", "request is failed");
@@ -148,8 +149,8 @@ public class OkHttpUploadSyncCommunication implements SyncCommunication<Map<Stri
             }
 
         } catch (IOException e) {
-            Log.e(LOG_TAG + "Request", "onFailure IOException type is " + e.toString());
-            Log.e(LOG_TAG + "Request", "onFailure IOException message is " + e.getMessage());
+            Log.e(LOG_TAG + "Request", "IOException type is " + e.toString());
+            Log.e(LOG_TAG + "Request", "IOException message is " + e.getMessage());
 
             this.success = false;
             response = null;
@@ -220,12 +221,27 @@ public class OkHttpUploadSyncCommunication implements SyncCommunication<Map<Stri
 
     @Override
     public String Response() {
-        return response;
+        try {
+            return response == null ? null : response.string();
+        } catch (IOException e) {
+            Log.e(LOG_TAG + "Response", "IOException type is " + e.toString());
+            Log.e(LOG_TAG + "Response", "IOException message is " + e.getMessage());
+            return null;
+        }
     }
 
     @Override
     public void close() {
+        if (response == null) {
+            return;
+        }
 
+        try {
+            response.close();
+        } catch (IOException e) {
+            Log.e(LOG_TAG + "close", "IOException type is " + e.toString());
+            Log.e(LOG_TAG + "close", "IOException message is " + e.getMessage());
+        }
     }
 
     @Override

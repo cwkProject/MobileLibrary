@@ -122,9 +122,8 @@ public abstract class DefaultWorkModel<Parameters, Result, DataModelType extends
                             // 解析响应数据
                             boolean success = onParseResult(data, result, response);
 
-                            Log.i(LOG_TAG + "onDoWork", "onStopWork(boolean , String , Object) is" +
-                                    " " +
-                                    "" + "invoked");
+                            Log.i(LOG_TAG + "onDoWork", "onStopWork(boolean , String , Object) "
+                                    + "is invoked");
                             // 执行后继任务
                             onStopWork(success, getMessage(), getResult());
                         }
@@ -271,7 +270,7 @@ public abstract class DefaultWorkModel<Parameters, Result, DataModelType extends
     }
 
     @Override
-    protected void onStartWork() {
+    protected final void onStartWork() {
         Log.i(LOG_TAG + "onStartWork", "work start");
         if (isAsync) {
             // 新建通讯工具
@@ -323,7 +322,8 @@ public abstract class DefaultWorkModel<Parameters, Result, DataModelType extends
     }
 
     @Override
-    protected void onStopWork(final boolean state, final String message, final Result result) {
+    protected final void onStopWork(final boolean state, final String message, final Result
+            result) {
         Log.i(LOG_TAG + "onStopWork", "work stop");
         // 如果设置了回调接口则执行回调方法
         if (this.workEndListener != null) {
@@ -578,8 +578,8 @@ public abstract class DefaultWorkModel<Parameters, Result, DataModelType extends
      *                                false表示在当前线程回调，
      *                                默认为true
      */
-    public void setProgressListener(NetworkProgressListener networkProgressListener, boolean
-            isUiThread) {
+    public final void setProgressListener(NetworkProgressListener networkProgressListener,
+                                          boolean isUiThread) {
         this.networkProgressListener = networkProgressListener;
         this.isProgressUiThread = isUiThread;
     }

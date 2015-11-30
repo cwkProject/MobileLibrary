@@ -151,6 +151,8 @@ public class OkHttpPostAsyncCommunication implements AsyncCommunication<Map<Stri
                         String responseString = response.body().string();
                         Log.i(LOG_TAG + "Request", "response is " + responseString);
                         callback.onFinish(true, responseString);
+                        // 关闭流
+                        response.body().close();
                     } else {
                         Log.i(LOG_TAG + "Request", "request is failed");
                         callback.onFinish(false, null);

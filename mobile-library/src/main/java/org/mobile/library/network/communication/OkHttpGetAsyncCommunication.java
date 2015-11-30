@@ -124,7 +124,7 @@ public class OkHttpGetAsyncCommunication implements AsyncCommunication<Map<Strin
 
 
         // 最终请求地址
-        String finalUrl = url + "?" + params;
+        String finalUrl = params.length() == 0 ? url : url + "?" + params;
         Log.i(LOG_TAG + "Request", "final url is " + finalUrl);
 
         // 得到okHttpClient对象
@@ -169,6 +169,8 @@ public class OkHttpGetAsyncCommunication implements AsyncCommunication<Map<Strin
                         String responseString = response.body().string();
                         Log.i(LOG_TAG + "Request", "response is " + responseString);
                         callback.onFinish(true, responseString);
+                        // 关闭流
+                        response.body().close();
                     } else {
                         Log.i(LOG_TAG + "Request", "request is failed");
                         callback.onFinish(false, null);

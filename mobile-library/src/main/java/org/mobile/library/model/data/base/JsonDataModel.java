@@ -7,7 +7,7 @@ import org.json.JSONObject;
 
 /**
  * 解析响应结果为Json字符串的数据模型基类<br>
- * 请求数据为纯文本内容
+ * 请求参数为纯文本内容
  *
  * @author 超悟空
  * @version 2.0 2015/11/3

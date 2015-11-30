@@ -3,6 +3,8 @@ package org.mobile.library.network.factory;
  * Created by 超悟空 on 2015/4/23.
  */
 
+import org.mobile.library.network.communication.OkHttpDownloadAsyncCommunication;
+import org.mobile.library.network.communication.OkHttpDownloadSyncCommunication;
 import org.mobile.library.network.communication.OkHttpGetAsyncCommunication;
 import org.mobile.library.network.communication.OkHttpGetSyncCommunication;
 import org.mobile.library.network.communication.OkHttpPostAsyncCommunication;
@@ -41,6 +43,9 @@ public class CommunicationFactory {
             case UPLOAD:
                 // HttpUpload请求对象
                 return new OkHttpUploadSyncCommunication();
+            case DOWNLOAD:
+                // HttpDownload请求对象
+                return new OkHttpDownloadSyncCommunication();
             default:
                 throw new UnsupportedOperationException("network protocol not implemented");
         }
@@ -64,6 +69,9 @@ public class CommunicationFactory {
             case UPLOAD:
                 // HttpUpload请求对象
                 return new OkHttpUploadAsyncCommunication();
+            case DOWNLOAD:
+                // HttpDownload请求对象
+                return new OkHttpDownloadAsyncCommunication();
             default:
                 throw new UnsupportedOperationException("network protocol not implemented");
         }

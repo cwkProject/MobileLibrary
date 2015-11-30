@@ -58,9 +58,9 @@ public class InputStreamCacheConvert implements CacheConvert<InputStream> {
     public void saveFile(FileOutputStream outputStream, InputStream cache) {
         try {
 
-            byte[] buffer = new byte[400000];
+            byte[] buffer = new byte[102400];
             int count = 0;
-            while ((count = cache.read(buffer)) > 0) {
+            while ((count = cache.read(buffer)) != -1) {
                 outputStream.write(buffer, 0, count);
             }
 

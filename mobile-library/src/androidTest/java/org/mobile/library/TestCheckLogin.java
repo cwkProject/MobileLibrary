@@ -32,7 +32,7 @@ public class TestCheckLogin {
             }
         });
 
-        login.execute("xuehui", "123456", "LHGL");
+        login.execute("xuehui", "123456", "HMW");
     }
 
     @Test
@@ -47,7 +47,7 @@ public class TestCheckLogin {
             }
         });
 
-        login.execute("xuehui", "1234", "LHGL");
+        login.execute("xuehui", "1234", "HMW");
     }
 
     @Test
@@ -62,7 +62,7 @@ public class TestCheckLogin {
             }
         });
 
-        login.execute("xuehui", "1234", "LHGL");
+        login.execute("xuehui", "1234", "HMW");
     }
 
     @Test
@@ -76,7 +76,7 @@ public class TestCheckLogin {
             }
         });
 
-        login.execute("xuehui", "123456", "LHGL");
+        login.execute("xuehui", "123456", "HMW");
 
     }
 
@@ -84,7 +84,7 @@ public class TestCheckLogin {
     public void successStatus() throws Exception {
         CheckLogin login = new CheckLogin();
 
-        login.execute("xuehui", "123456", "LHGL");
+        login.execute("xuehui", "123456", "HMW");
 
         LoginStatus status = GlobalApplication.getGlobal().getLoginStatus();
 
@@ -116,7 +116,7 @@ public class TestCheckLogin {
             }
         });
 
-        login.beginExecute("xuehui", "123456", "LHGL");
+        login.beginExecute("xuehui", "123456", "HMW");
 
         synchronized (LOCK) {
             LOCK.wait();
