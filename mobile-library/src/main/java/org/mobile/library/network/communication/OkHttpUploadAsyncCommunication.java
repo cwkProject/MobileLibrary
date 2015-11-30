@@ -18,6 +18,7 @@ import org.mobile.library.network.util.AsyncCommunication;
 import org.mobile.library.network.util.NetworkCallback;
 import org.mobile.library.network.util.NetworkProgressListener;
 import org.mobile.library.network.util.NetworkRefreshProgressHandler;
+import org.mobile.library.network.util.NetworkTimeoutHandler;
 import org.mobile.library.network.util.ProgressRequestBody;
 import org.mobile.library.struct.FileInfo;
 import org.mobile.library.util.MIMEUtil;
@@ -39,7 +40,7 @@ import java.util.concurrent.TimeUnit;
  * @since 1.0
  */
 public class OkHttpUploadAsyncCommunication implements AsyncCommunication<Map<String, Object>,
-        String>, NetworkRefreshProgressHandler {
+        String>, NetworkRefreshProgressHandler, NetworkTimeoutHandler {
 
     /**
      * 日志标签前缀
@@ -76,6 +77,7 @@ public class OkHttpUploadAsyncCommunication implements AsyncCommunication<Map<St
      *
      * @param readTimeout 超时时间，单位毫秒
      */
+    @Override
     public void setReadTimeout(int readTimeout) {
         Log.i(LOG_TAG + "setReadTimeout", "readTimeout is " + readTimeout);
         this.readTimeout = readTimeout;
@@ -86,6 +88,7 @@ public class OkHttpUploadAsyncCommunication implements AsyncCommunication<Map<St
      *
      * @param timeout 超时时间，单位毫秒
      */
+    @Override
     public void setTimeout(int timeout) {
         Log.i(LOG_TAG + "setTimeout", "timeout is " + timeout);
         this.timeout = timeout;

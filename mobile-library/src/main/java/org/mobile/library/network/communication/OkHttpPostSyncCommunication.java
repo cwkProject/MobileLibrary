@@ -13,6 +13,7 @@ import com.squareup.okhttp.Response;
 import com.squareup.okhttp.ResponseBody;
 
 import org.mobile.library.global.GlobalApplication;
+import org.mobile.library.network.util.NetworkTimeoutHandler;
 import org.mobile.library.network.util.SyncCommunication;
 
 import java.io.IOException;
@@ -30,7 +31,8 @@ import java.util.concurrent.TimeUnit;
  * @version 1.0 2015/11/2
  * @since 1.0
  */
-public class OkHttpPostSyncCommunication implements SyncCommunication<Map<String, String>, String> {
+public class OkHttpPostSyncCommunication implements SyncCommunication<Map<String, String>,
+        String>, NetworkTimeoutHandler {
 
     /**
      * 日志标签前缀
@@ -72,6 +74,7 @@ public class OkHttpPostSyncCommunication implements SyncCommunication<Map<String
      *
      * @param readTimeout 超时时间，单位毫秒
      */
+    @Override
     public void setReadTimeout(int readTimeout) {
         Log.i(LOG_TAG + "setReadTimeout", "readTimeout is " + readTimeout);
         this.readTimeout = readTimeout;
@@ -82,6 +85,7 @@ public class OkHttpPostSyncCommunication implements SyncCommunication<Map<String
      *
      * @param timeout 超时时间，单位毫秒
      */
+    @Override
     public void setTimeout(int timeout) {
         Log.i(LOG_TAG + "setTimeout", "timeout is " + timeout);
         this.timeout = timeout;
