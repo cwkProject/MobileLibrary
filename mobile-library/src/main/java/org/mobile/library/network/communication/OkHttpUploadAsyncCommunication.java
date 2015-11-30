@@ -67,6 +67,21 @@ public class OkHttpUploadAsyncCommunication implements AsyncCommunication<Map<St
     private NetworkProgressListener progressListener = null;
 
     /**
+     * 读取超时时间
+     */
+    protected int readTimeout = -1;
+
+    /**
+     * 设置读取超时时间
+     *
+     * @param readTimeout 超时时间，单位毫秒
+     */
+    public void setReadTimeout(int readTimeout) {
+        Log.i(LOG_TAG + "setReadTimeout", "readTimeout is " + readTimeout);
+        this.readTimeout = readTimeout;
+    }
+
+    /**
      * 设置超时时间
      *
      * @param timeout 超时时间，单位毫秒
@@ -113,9 +128,16 @@ public class OkHttpUploadAsyncCommunication implements AsyncCommunication<Map<St
         Request request = new Request.Builder().tag(tag).url(url).post(body).build();
 
         // 判断是否需要克隆
-        if (timeout > -1) {
+        if (timeout + readTimeout > -2) {
             okHttpClient = okHttpClient.clone();
-            okHttpClient.setConnectTimeout(timeout, TimeUnit.MILLISECONDS);
+
+            if (timeout > -1) {
+                okHttpClient.setConnectTimeout(timeout, TimeUnit.MILLISECONDS);
+            }
+
+            if (readTimeout > -1) {
+                okHttpClient.setReadTimeout(readTimeout, TimeUnit.MILLISECONDS);
+            }
         }
 
         // 发送请求

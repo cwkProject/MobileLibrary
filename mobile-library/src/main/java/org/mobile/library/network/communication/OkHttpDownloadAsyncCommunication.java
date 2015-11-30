@@ -69,6 +69,21 @@ public class OkHttpDownloadAsyncCommunication implements AsyncCommunication<Map<
      */
     private NetworkProgressListener progressListener = null;
 
+    /**
+     * 读取超时时间
+     */
+    protected int readTimeout = -1;
+
+    /**
+     * 设置读取超时时间
+     *
+     * @param readTimeout 超时时间，单位毫秒
+     */
+    public void setReadTimeout(int readTimeout) {
+        Log.i(LOG_TAG + "setReadTimeout", "readTimeout is " + readTimeout);
+        this.readTimeout = readTimeout;
+    }
+
     @Override
     public void setNetworkProgressListener(NetworkProgressListener networkProgressListener) {
         this.progressListener = networkProgressListener;
@@ -156,12 +171,19 @@ public class OkHttpDownloadAsyncCommunication implements AsyncCommunication<Map<
         }
 
         // 判断是否需要设置超时
-        if (timeout > -1) {
+        if (timeout + readTimeout > -2) {
             // 判断是否需要克隆
             if (!clone) {
                 okHttpClient = okHttpClient.clone();
             }
-            okHttpClient.setConnectTimeout(timeout, TimeUnit.MILLISECONDS);
+
+            if (timeout > -1) {
+                okHttpClient.setConnectTimeout(timeout, TimeUnit.MILLISECONDS);
+            }
+
+            if (readTimeout > -1) {
+                okHttpClient.setReadTimeout(readTimeout, TimeUnit.MILLISECONDS);
+            }
         }
 
         // 发送请求
