@@ -33,35 +33,35 @@ public class TestBitmapCacheControl {
     /**
      * 图片路径1.88MB
      */
-    private static final File imageFile = new File(Environment.getExternalStoragePublicDirectory
-            (Environment.DIRECTORY_DCIM), "Camera/IMG_20151127_094916.jpg");
+    private File imageFile = new File(Environment.getExternalStoragePublicDirectory(Environment
+            .DIRECTORY_DCIM), "Camera/IMG_20151127_094916.jpg");
 
     /**
      * 图片路径1.88MB
      */
-    private static final File imageFile2 = new File(Environment.getExternalStoragePublicDirectory
-            (Environment.DIRECTORY_DCIM), "Camera/IMG_20151127_094916.jpg");
+    private File imageFile2 = new File(Environment.getExternalStoragePublicDirectory(Environment
+            .DIRECTORY_DCIM), "Camera/IMG_20151127_094916.jpg");
 
     /**
      * 图片路径1.88MB
      */
-    private static final File imageFile3 = new File(Environment.getExternalStoragePublicDirectory
-            (Environment.DIRECTORY_DCIM), "Camera/IMG_20151127_094916.jpg");
+    private File imageFile3 = new File(Environment.getExternalStoragePublicDirectory(Environment
+            .DIRECTORY_DCIM), "Camera/IMG_20151127_094916.jpg");
 
     /**
      * 缓存工具key
      */
-    private static String LEVEL_KEY = "BitmapTest";
+    private String LEVEL_KEY = "BitmapTest";
 
     /**
      * 线程池线程数
      */
-    private static final int POOL_COUNT = Runtime.getRuntime().availableProcessors() * 2 + 2;
+    private int POOL_COUNT = Runtime.getRuntime().availableProcessors() * 2 + 2;
 
     /**
      * 线程池
      */
-    private static ExecutorService taskExecutor = Executors.newFixedThreadPool(POOL_COUNT);
+    private ExecutorService taskExecutor = Executors.newFixedThreadPool(POOL_COUNT);
 
     @Before
     public void setUp() throws Exception {

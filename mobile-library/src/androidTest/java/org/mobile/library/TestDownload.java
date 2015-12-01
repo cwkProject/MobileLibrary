@@ -40,13 +40,13 @@ public class TestDownload {
     /**
      * 一个安装包地址
      */
-    private static final String url = "http://218.92.115.55/Mobile_App/hmw/Android/hmw.apk";
+    private String url = "http://218.92.115.55/Mobile_App/hmw/Android/hmw.apk";
 
     /**
      * 存放文件路径
      */
-    private static final File imageFile = new File(Environment.getExternalStoragePublicDirectory
-            (Environment.DIRECTORY_DOWNLOADS), "hmw.apk");
+    private File imageFile = new File(Environment.getExternalStoragePublicDirectory(Environment
+            .DIRECTORY_DOWNLOADS), "hmw.apk");
 
     /**
      * 异步下载

@@ -32,12 +32,13 @@ public class TestBitmapStreamCacheControl {
     /**
      * 图片路径1.88MB
      */
-    private static final File imageFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM), "Camera/IMG_20151127_094916.jpg");
+    private File imageFile = new File(Environment.getExternalStoragePublicDirectory(Environment
+            .DIRECTORY_DCIM), "Camera/IMG_20151127_094916.jpg");
 
     /**
      * 缓存工具key
      */
-    private static String LEVEL_KEY = "BitmapTest";
+    private String LEVEL_KEY = "BitmapTest";
 
     @Before
     public void setUp() throws Exception {
@@ -50,27 +51,29 @@ public class TestBitmapStreamCacheControl {
         cacheTool.setTimeout(100000);
     }
 
-//    /**
-//     * 批量测试
-//     * @throws Exception
-//     */
-//    @Test
-//    public void batch() throws Exception {
-//
-//        String key = "test";
-//
-//        for (int i=0;i<30;i++){
-//            CacheManager.getCacheTool(LEVEL_KEY).put(key + i, BitmapFactory
-//                    .decodeFile(imageFile.getPath()));
-//        }
-//
-//        for (int i=0;i<30;i++){
-//            assertTrue(CacheManager.getCacheTool(LEVEL_KEY).getForBitmap(key+i) instanceof Bitmap);
-//        }
-//    }
+    //    /**
+    //     * 批量测试
+    //     * @throws Exception
+    //     */
+    //    @Test
+    //    public void batch() throws Exception {
+    //
+    //        String key = "test";
+    //
+    //        for (int i=0;i<30;i++){
+    //            CacheManager.getCacheTool(LEVEL_KEY).put(key + i, BitmapFactory
+    //                    .decodeFile(imageFile.getPath()));
+    //        }
+    //
+    //        for (int i=0;i<30;i++){
+    //            assertTrue(CacheManager.getCacheTool(LEVEL_KEY).getForBitmap(key+i) instanceof
+    // Bitmap);
+    //        }
+    //    }
 
     /**
      * 主动写入流测试
+     *
      * @throws Exception
      */
     @Test
@@ -78,14 +81,14 @@ public class TestBitmapStreamCacheControl {
 
         String key = "test";
 
-        OutputStream outputStream= CacheManager.getCacheTool(LEVEL_KEY).putAndBack(key);
+        OutputStream outputStream = CacheManager.getCacheTool(LEVEL_KEY).putAndBack(key);
 
         BitmapFactory.decodeFile(imageFile.getPath()).compress(Bitmap.CompressFormat.JPEG, 30,
                 outputStream);
 
-        InputStream inputStream=CacheManager.getCacheTool(LEVEL_KEY).getInputStream(key);
+        InputStream inputStream = CacheManager.getCacheTool(LEVEL_KEY).getInputStream(key);
 
-        Log.i("TestBitmapStreamCacheControl.writeStream","inputStream size is "+inputStream
+        Log.i("TestBitmapStreamCacheControl.writeStream", "inputStream size is " + inputStream
                 .available());
 
         assertTrue(CacheManager.getCacheTool(LEVEL_KEY).getForBitmap(key) instanceof Bitmap);

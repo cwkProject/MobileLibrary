@@ -29,8 +29,8 @@ public class TestCacheGroupControl {
     /**
      * 图片路径1.88MB
      */
-    private static final File imageFile = new File(Environment.getExternalStoragePublicDirectory
-            (Environment.DIRECTORY_DCIM), "Camera/IMG_20151127_094916.jpg");
+    private File imageFile = new File(Environment.getExternalStoragePublicDirectory(Environment
+            .DIRECTORY_DCIM), "Camera/IMG_20151127_094916.jpg");
 
     /**
      * 添加一个文本
@@ -42,7 +42,7 @@ public class TestCacheGroupControl {
     /**
      * 缓存工具key
      */
-    private static String LEVEL_KEY = "BitmapTest";
+    private String LEVEL_KEY = "BitmapTest";
 
     @Before
     public void setUp() throws Exception {
@@ -57,12 +57,13 @@ public class TestCacheGroupControl {
 
     /**
      * 批量数据
+     *
      * @throws Exception
      */
     @Test
     public void batch() throws Exception {
 
-        CacheGroup cacheGroup=CacheManager.getCacheTool(LEVEL_KEY).getCacheGroup("testGroup");
+        CacheGroup cacheGroup = CacheManager.getCacheTool(LEVEL_KEY).getCacheGroup("testGroup");
 
         cacheGroup.put(imageFile);
 
@@ -70,11 +71,11 @@ public class TestCacheGroupControl {
 
         cacheGroup.put(new FileInputStream(imageFile));
 
-        for (int i=0;i<10;i++) {
+        for (int i = 0; i < 10; i++) {
             cacheGroup.put(TEXT);
         }
 
         assertTrue(CacheManager.getCacheTool(LEVEL_KEY).getCacheGroup("testGroup").getForFiles()
-                .length>=13);
+                .length >= 13);
     }
 }

@@ -33,12 +33,12 @@ public class TestTextCacheControl {
     /**
      * 线程池线程数
      */
-    private static final int POOL_COUNT = Runtime.getRuntime().availableProcessors() * 2 + 2;
+    private int POOL_COUNT = Runtime.getRuntime().availableProcessors() * 2 + 2;
 
     /**
      * 线程池
      */
-    private static ExecutorService taskExecutor = Executors.newFixedThreadPool(POOL_COUNT);
+    private ExecutorService taskExecutor = Executors.newFixedThreadPool(POOL_COUNT);
 
     /**
      * 缓存工具key
@@ -67,13 +67,13 @@ public class TestTextCacheControl {
         // 缓存工具
         CacheTool cacheTool = CacheManager.getCacheTool(LEVEL_KEY);
 
-        CacheTool cacheTool2=cacheTool.getChildCacheTool(LEVEL_KEY+"2");
+        CacheTool cacheTool2 = cacheTool.getChildCacheTool(LEVEL_KEY + "2");
 
         String key = "test";
 
         cacheTool.put(key, TEXT);
 
-        cacheTool2.put(key,TEXT);
+        cacheTool2.put(key, TEXT);
 
         assertTrue(cacheTool.getForFile(key).exists());
 
@@ -217,14 +217,14 @@ public class TestTextCacheControl {
             taskExecutor.submit(new Runnable() {
                 @Override
                 public void run() {
-                    CacheManager.getCacheTool(LEVEL_KEY).put(key + finalI, TEXT+finalI,CacheManager
-                            .ONLY_FILE_CACHE);
+                    CacheManager.getCacheTool(LEVEL_KEY).put(key + finalI, TEXT + finalI,
+                            CacheManager.ONLY_FILE_CACHE);
 
                     assertTrue(CacheManager.getCacheTool(LEVEL_KEY).getForFile(key + finalI)
                             .exists());
 
-                    assertEquals(TEXT+finalI, CacheManager.getCacheTool(LEVEL_KEY).getForText(key +
-                            finalI));
+                    assertEquals(TEXT + finalI, CacheManager.getCacheTool(LEVEL_KEY).getForText
+                            (key + finalI));
                 }
             });
         }
