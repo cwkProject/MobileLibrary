@@ -340,7 +340,7 @@ public abstract class BaseOperator<DataModel> {
         if (cursor.moveToNext()) {
             if (cursor.getInt(0) > 0) {
                 cursor.close();
-                close();
+                close(sqLiteHelper);
                 return false;
             }
         }
@@ -362,7 +362,7 @@ public abstract class BaseOperator<DataModel> {
         if (cursor.moveToNext()) {
             if (cursor.getInt(0) > 0) {
                 cursor.close();
-                close();
+                close(sqLiteHelper);
                 return true;
             }
         }

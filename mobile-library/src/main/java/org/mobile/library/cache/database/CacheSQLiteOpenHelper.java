@@ -100,7 +100,7 @@ public class CacheSQLiteOpenHelper extends SQLiteOpenHelper {
     @Override
     public synchronized void close() {
         // 计数减一
-        if (openCounter.decrementAndGet() == 0) {
+        if (openCounter.decrementAndGet() <= 0) {
             super.close();
         }
 
