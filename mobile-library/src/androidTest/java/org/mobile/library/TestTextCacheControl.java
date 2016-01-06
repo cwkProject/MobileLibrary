@@ -208,7 +208,7 @@ public class TestTextCacheControl {
     @Test
     public void textMultithreadingCache() throws Exception {
 
-        final String key = "test";
+        final String key = "testMultithread";
 
         // 多线程执行一百次
         for (int i = 0; i < 100; i++) {
@@ -217,11 +217,11 @@ public class TestTextCacheControl {
             taskExecutor.submit(new Runnable() {
                 @Override
                 public void run() {
+
                     CacheManager.getCacheTool(LEVEL_KEY).put(key + finalI, TEXT + finalI,
                             CacheManager.ONLY_FILE_CACHE);
 
-                    assertTrue(CacheManager.getCacheTool(LEVEL_KEY).getForFile(key + finalI)
-                            .exists());
+                    assertTrue(CacheManager.getCacheTool(LEVEL_KEY).getForFile(key + finalI).exists());
 
                     assertEquals(TEXT + finalI, CacheManager.getCacheTool(LEVEL_KEY).getForText
                             (key + finalI));
@@ -233,7 +233,12 @@ public class TestTextCacheControl {
 
         while (true) {
             if (taskExecutor.isTerminated()) {
-                assertTrue(CacheManager.getCacheTool(LEVEL_KEY).getForTexts().length >= 100);
+
+                for (int i = 0; i < 100; i++) {
+                    assertEquals(TEXT + i, CacheManager.getCacheTool(LEVEL_KEY).getForText(key +
+                            i));
+                }
+
                 break;
             }
             Thread.sleep(1000);

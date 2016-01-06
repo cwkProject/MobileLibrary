@@ -25,12 +25,11 @@ public class InputStreamCacheConvert implements CacheConvert<InputStream> {
     /**
      * 日志标签前缀
      */
-    private static final String LOG_TAG = "TextCacheConvert.";
+    private static final String LOG_TAG = "InputStreamCacheConvert.";
 
     @Override
     public CacheObject<InputStream> toCacheObject(InputStream cache) {
         throw new UnsupportedOperationException("File not take up memory");
-
     }
 
     @Override
@@ -40,7 +39,6 @@ public class InputStreamCacheConvert implements CacheConvert<InputStream> {
 
     @Override
     public InputStream toCache(String path) {
-
         if (path == null) {
             Log.d(LOG_TAG + "toCache", "path is null");
             return null;
@@ -56,19 +54,19 @@ public class InputStreamCacheConvert implements CacheConvert<InputStream> {
 
     @Override
     public void saveFile(FileOutputStream outputStream, InputStream cache) {
-        try {
+        if (cache != null && outputStream != null) {
+            try {
+                byte[] buffer = new byte[102400];
+                int count = 0;
+                while ((count = cache.read(buffer)) != -1) {
+                    outputStream.write(buffer, 0, count);
+                }
 
-            byte[] buffer = new byte[102400];
-            int count = 0;
-            while ((count = cache.read(buffer)) != -1) {
-                outputStream.write(buffer, 0, count);
+                cache.close();
+                outputStream.close();
+            } catch (IOException e) {
+                Log.d(LOG_TAG + "saveFile", "IOException is " + e.getMessage());
             }
-
-            cache.close();
-
-            outputStream.close();
-        } catch (IOException e) {
-            Log.d(LOG_TAG + "saveFile", "IOException is " + e.getMessage());
         }
     }
 }

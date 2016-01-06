@@ -7,6 +7,9 @@ import android.content.Context;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.googlecode.concurrentlinkedhashmap.ConcurrentLinkedHashMap;
+import com.googlecode.concurrentlinkedhashmap.Weighers;
+
 import org.mobile.library.cache.database.CacheInfoOperator;
 import org.mobile.library.cache.database.CacheLevelOperator;
 
@@ -37,6 +40,11 @@ public class CacheFileUtil {
     private static final String LOG_TAG = "CacheFileUtil.";
 
     /**
+     * 默认100缓存空间
+     */
+    private static final int CACHE_MAP_SIZE = 100;
+
+    /**
      * 缓存层级数据库工具
      */
     private CacheLevelOperator cacheLevelOperator = null;
@@ -45,6 +53,11 @@ public class CacheFileUtil {
      * 缓存文件信息数据库工具
      */
     private CacheInfoOperator cacheInfoOperator = null;
+
+    /**
+     * 记录查询缓存
+     */
+    private Map<String, CacheInfo> cacheInfoMap = null;
 
     /**
      * 外部缓存根路径
@@ -67,9 +80,10 @@ public class CacheFileUtil {
      * @param context 上下文
      */
     public CacheFileUtil(Context context) {
-
         this.cacheLevelOperator = new CacheLevelOperator(context);
         this.cacheInfoOperator = new CacheInfoOperator(context);
+        this.cacheInfoMap = new ConcurrentLinkedHashMap.Builder<String, CacheInfo>()
+                .maximumWeightedCapacity(CACHE_MAP_SIZE).weigher(Weighers.singleton()).build();
 
         // 获取缓存根目录
         File file = context.getExternalCacheDir();
@@ -98,8 +112,9 @@ public class CacheFileUtil {
      *
      * @return 返回文件输出流用于写缓存文件，如果文件系统存在异常则返回null
      */
-    public FileOutputStream put(CacheLevel cacheLevel, String cacheKey, long timeout, int type) {
-        return put(cacheLevel, cacheKey, timeout, type, false);
+    public FileOutputStream putBackStream(CacheLevel cacheLevel, String cacheKey, long timeout,
+                                          int type) {
+        return putBackStream(cacheLevel, cacheKey, timeout, type, false);
     }
 
     /**
@@ -113,15 +128,98 @@ public class CacheFileUtil {
      *
      * @return 返回文件输出流用于写缓存文件，如果文件系统存在异常则返回null
      */
-    public FileOutputStream put(CacheLevel cacheLevel, String cacheKey, long timeout, int type,
-                                boolean group) {
-        Log.i(LOG_TAG + "put", "cache key:" + cacheKey + " , level key:" + cacheLevel.getKey() +
-                " , " +
-                "timeout:" + timeout + " , type:" + type + " , group:" + group);
+    public FileOutputStream putBackStream(CacheLevel cacheLevel, String cacheKey, long timeout,
+                                          int type, boolean group) {
+        File file = putBackFile(cacheLevel, cacheKey, timeout, type, group);
+
+        if (file == null) {
+            Log.d(LOG_TAG + "putBackStream", "file is null");
+            return null;
+        }
+
+        try {
+            return new FileOutputStream(file);
+        } catch (IOException e) {
+            Log.e(LOG_TAG + "putBackStream", "IOException is " + e.getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * 保存一个缓存文件信息到索引数据库
+     *
+     * @param cacheLevel 缓存层级对象
+     * @param cacheKey   缓存文件key
+     * @param timeout    超时时间
+     * @param type       缓存文件类型
+     *
+     * @return 返回文件对象用于写缓存文件，如果文件系统存在异常则返回null
+     */
+    public File putBackFile(CacheLevel cacheLevel, String cacheKey, long timeout, int type) {
+        return putBackFile(cacheLevel, cacheKey, timeout, type, false);
+    }
+
+    /**
+     * 保存一个缓存文件
+     *
+     * @param cacheLevel 缓存层级对象
+     * @param cacheKey   缓存文件key
+     * @param timeout    超时时间
+     * @param type       缓存文件类型
+     * @param group      标识是否为组
+     *
+     * @return 返回文件对象用于写缓存文件，如果文件系统存在异常则返回null
+     */
+    public File putBackFile(CacheLevel cacheLevel, String cacheKey, long timeout, int type,
+                            boolean group) {
+        File file = new File(putBackPath(cacheLevel, cacheKey, timeout, type, group));
+
+        try {
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+
+            return file;
+        } catch (IOException e) {
+            Log.e(LOG_TAG + "putBackFile", "IOException is " + e.getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * 保存一个缓存文件信息到索引数据库
+     *
+     * @param cacheLevel 缓存层级对象
+     * @param cacheKey   缓存文件key
+     * @param timeout    超时时间
+     * @param type       缓存文件类型
+     *
+     * @return 返回文件路径用于写入缓存文件
+     */
+    public String putBackPath(CacheLevel cacheLevel, String cacheKey, long timeout, int type) {
+        return putBackPath(cacheLevel, cacheKey, timeout, type, false);
+    }
+
+    /**
+     * 保存一个缓存文件
+     *
+     * @param cacheLevel 缓存层级对象
+     * @param cacheKey   缓存文件key
+     * @param timeout    超时时间
+     * @param type       缓存文件类型
+     * @param group      标识是否为组
+     *
+     * @return 返回文件路径用于写入缓存文件
+     */
+    public String putBackPath(CacheLevel cacheLevel, String cacheKey, long timeout, int type,
+                              boolean group) {
+        Log.i(LOG_TAG + "putBackPath", "cache key:" + cacheKey + " , level key:" + cacheLevel
+                .getKey() +
+                " , timeout:" + timeout + " , type:" + type + " , group:" + group);
 
         // 层级路径
         String levelPath = cacheLevel.getRealPath();
-        Log.i(LOG_TAG + "put", "level " + cacheLevel.getKey() + " path is " + levelPath);
+        Log.i(LOG_TAG + "putBackPath", "level " + cacheLevel.getKey() + " path is " + levelPath);
         // 尝试获取存在的缓存信息
         CacheInfo cacheInfo = cacheInfoOperator.queryCacheInfo(cacheKey, cacheLevel.getKey());
         // 标识文件是否存在
@@ -129,11 +227,11 @@ public class CacheFileUtil {
 
         if (group || cacheInfo == null) {
             // 组缓存或不存在则新建
-            Log.i(LOG_TAG + "put", cacheKey + " not exist");
+            Log.i(LOG_TAG + "putBackPath", cacheKey + " not exist");
             cacheInfo = new CacheInfo(cacheKey, UUID.randomUUID().toString(), cacheLevel.getKey());
         } else {
             // 已存在，不需要新建
-            Log.i(LOG_TAG + "put", cacheKey + " exist");
+            Log.i(LOG_TAG + "putBackPath", cacheKey + " exist");
             exist = true;
         }
 
@@ -151,6 +249,9 @@ public class CacheFileUtil {
         cacheInfo.setGroupTag(group);
         cacheInfo.setExternal(external);
 
+        // 加入缓存
+        this.cacheInfoMap.put(cacheLevel.getKey() + cacheKey, cacheInfo);
+
         // 保存索引信息到数据库
         if (exist) {
             cacheInfoOperator.update(cacheInfo);
@@ -158,19 +259,7 @@ public class CacheFileUtil {
             cacheInfoOperator.insert(cacheInfo);
         }
 
-        // 刷新文件
-        file = new File(buildPath(levelPath, cacheInfo));
-
-        try {
-            if (!file.exists()) {
-                file.createNewFile();
-            }
-
-            return new FileOutputStream(file);
-        } catch (IOException e) {
-            Log.e(LOG_TAG + "put", "IOException is " + e.getMessage());
-            return null;
-        }
+        return buildPath(levelPath, cacheInfo);
     }
 
     /**
@@ -239,9 +328,25 @@ public class CacheFileUtil {
     public String getPath(String cacheKey, CacheLevel cacheLevel) {
         Log.i(LOG_TAG + "getPath", "cache key:" + cacheKey + " , level key:" + cacheLevel.getKey());
 
-        CacheInfo cacheInfo = cacheInfoOperator.queryCacheInfo(cacheKey, cacheLevel.getKey());
+        // 尝试从缓存获取
+        CacheInfo cacheInfo = this.cacheInfoMap.get(cacheLevel.getKey() + cacheKey);
 
         if (cacheInfo != null) {
+            Log.i(LOG_TAG + "getPath", "cache key:" + cacheKey + " , level key:" + cacheLevel
+                    .getKey() + " cacheInfoMap hit");
+
+            // 层级路径
+            String levelPath = cacheLevel.getRealPath();
+
+            return buildPath(levelPath, cacheInfo);
+        }
+
+        cacheInfo = cacheInfoOperator.queryCacheInfo(cacheKey, cacheLevel.getKey());
+
+        if (cacheInfo != null) {
+            // 加入缓存
+            this.cacheInfoMap.put(cacheLevel.getKey() + cacheKey, cacheInfo);
+
             // 层级路径
             String levelPath = cacheLevel.getRealPath();
 
@@ -380,6 +485,9 @@ public class CacheFileUtil {
 
         // 先删除文件
         String cachePath = getPath(cacheKey, cacheLevel);
+        // 删除缓存
+        this.cacheInfoMap.remove(cacheLevel.getKey() + cacheKey);
+
         if (cachePath != null) {
             File file = new File(cachePath);
             deleteFile(file);
@@ -408,6 +516,10 @@ public class CacheFileUtil {
      */
     public void clear() {
         Log.i(LOG_TAG + "delete", "clear all");
+
+        // 清除缓存
+        this.cacheInfoMap.clear();
+
         deleteFile(new File(internalCacheRootPath));
 
         if (external) {
@@ -424,6 +536,9 @@ public class CacheFileUtil {
      */
     public void clear(CacheLevel cacheLevel) {
         Log.i(LOG_TAG + "clear", "level key is " + cacheLevel.getKey());
+
+        // 清除缓存
+        this.cacheInfoMap.clear();
 
         // 层级路径
         String levelPath = cacheLevel.getRealPath();

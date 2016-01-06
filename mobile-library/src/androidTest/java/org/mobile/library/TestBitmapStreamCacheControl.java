@@ -81,7 +81,7 @@ public class TestBitmapStreamCacheControl {
 
         String key = "test";
 
-        OutputStream outputStream = CacheManager.getCacheTool(LEVEL_KEY).putAndBack(key);
+        OutputStream outputStream = CacheManager.getCacheTool(LEVEL_KEY).putBackStream(key);
 
         BitmapFactory.decodeFile(imageFile.getPath()).compress(Bitmap.CompressFormat.JPEG, 30,
                 outputStream);

@@ -102,7 +102,7 @@ public abstract class BaseLoginActivity extends Activity {
         setContentView(onActivityLoginLayout());
 
         // 重置用户登录参数
-        GlobalApplication.getGlobal().getLoginStatus().Reset();
+        GlobalApplication.getLoginStatus().Reset();
 
         // 初始化界面
         init();
@@ -162,16 +162,14 @@ public abstract class BaseLoginActivity extends Activity {
             // 获取保存密码复选框
             loginSaveCheck = (CheckBox) findViewById(loginSaveCheckID);
             // 设置复选框初状态
-            loginSaveCheck.setChecked(GlobalApplication.getGlobal().getApplicationConfig()
-                    .isLoginSave());
+            loginSaveCheck.setChecked(GlobalApplication.getApplicationConfig().isLoginSave());
         }
 
         if (loginAutoCheckID > 0) {
             // 获取自动登录复选框
             loginAutoCheck = (CheckBox) findViewById(loginAutoCheckID);
             // 设置复选框初状态
-            loginAutoCheck.setChecked(GlobalApplication.getGlobal().getApplicationConfig()
-                    .isLoginAuto());
+            loginAutoCheck.setChecked(GlobalApplication.getApplicationConfig().isLoginAuto());
         }
 
         // 如果同时存在
@@ -223,16 +221,14 @@ public abstract class BaseLoginActivity extends Activity {
         passwordEditText = (EditText) findViewById(onPasswordEditTextID());
 
         // 尝试填充数据
-        if (GlobalApplication.getGlobal().getApplicationConfig().getUserName() != null) {
+        if (GlobalApplication.getApplicationConfig().getUserName() != null) {
             // 填充用户
-            userNameEditText.setText(GlobalApplication.getGlobal().getApplicationConfig()
-                    .getUserName());
+            userNameEditText.setText(GlobalApplication.getApplicationConfig().getUserName());
 
             if ((loginSaveCheck != null && loginSaveCheck.isChecked()) || (loginAutoCheck != null
                     && loginAutoCheck.isChecked())) {
                 // 记住密码状态或自动登录状态，填充密码
-                passwordEditText.setText(GlobalApplication.getGlobal().getApplicationConfig()
-                        .getPassword());
+                passwordEditText.setText(GlobalApplication.getApplicationConfig().getPassword());
             } else {
                 // 让密码框拥有焦点
                 setSoftInput(passwordEditText);
@@ -332,7 +328,7 @@ public abstract class BaseLoginActivity extends Activity {
                     // 登录成功
 
                     // 保存当前设置
-                    ApplicationConfig config = GlobalApplication.getGlobal().getApplicationConfig();
+                    ApplicationConfig config = GlobalApplication.getApplicationConfig();
                     config.setUserName(userName);
                     if (loginAutoCheck != null) {
                         config.setLoginAuto(loginAutoCheck.isChecked());
@@ -363,11 +359,11 @@ public abstract class BaseLoginActivity extends Activity {
         startProgressDialog();
 
         // 设置应用相关参数
-        onApplicationAttribute(GlobalApplication.getGlobal().getApplicationAttribute());
+        onApplicationAttribute(GlobalApplication.getApplicationAttribute());
 
         // 执行登录任务
-        login.beginExecute(userName, password, onAppName(), GlobalApplication.getGlobal()
-                .getApplicationAttribute().getDeviceToken(), GlobalApplication.getGlobal()
+        login.beginExecute(userName, password, onAppName(), GlobalApplication
+                .getApplicationAttribute().getDeviceToken(), GlobalApplication
                 .getApplicationAttribute().getDeviceType());
     }
 

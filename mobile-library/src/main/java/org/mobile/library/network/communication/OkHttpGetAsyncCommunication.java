@@ -131,7 +131,7 @@ public class OkHttpGetAsyncCommunication implements AsyncCommunication<Map<Strin
         Log.i(LOG_TAG + "Request", "final url is " + finalUrl);
 
         // 得到okHttpClient对象
-        OkHttpClient okHttpClient = GlobalApplication.getGlobal().getOkHttpClient();
+        OkHttpClient okHttpClient = GlobalApplication.getOkHttpClient();
 
         // 创建请求
         Request request = new Request.Builder().tag(tag).url(finalUrl).build();
@@ -225,6 +225,6 @@ public class OkHttpGetAsyncCommunication implements AsyncCommunication<Map<Strin
 
     @Override
     public void cancel() {
-        GlobalApplication.getGlobal().getOkHttpClient().cancel(tag);
+        GlobalApplication.getOkHttpClient().cancel(tag);
     }
 }

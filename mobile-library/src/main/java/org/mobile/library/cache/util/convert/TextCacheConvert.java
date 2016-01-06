@@ -31,7 +31,11 @@ public class TextCacheConvert implements CacheConvert<String> {
 
     @Override
     public CacheObject<String> toCacheObject(String cache) {
-        return new CacheObject<>(cache, cache.length() * 2);
+        if (cache != null) {
+            return new CacheObject<>(cache, cache.length() * 2);
+        } else {
+            return null;
+        }
     }
 
     @Override
@@ -79,17 +83,18 @@ public class TextCacheConvert implements CacheConvert<String> {
 
     @Override
     public void saveFile(FileOutputStream outputStream, String cache) {
+        if (cache != null && outputStream != null) {
+            try {
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outputStream));
 
-        try {
-            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outputStream));
+                writer.write(cache);
 
-            writer.write(cache);
+                writer.flush();
 
-            writer.flush();
-
-            writer.close();
-        } catch (IOException e) {
-            Log.e(LOG_TAG + "saveFile", "IOException is " + e.getMessage());
+                writer.close();
+            } catch (IOException e) {
+                Log.e(LOG_TAG + "saveFile", "IOException is " + e.getMessage());
+            }
         }
     }
 }

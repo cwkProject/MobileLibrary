@@ -392,8 +392,8 @@ public class CacheTool {
             case CacheManager.ONLY_FILE_CACHE:
                 Log.i(LOG_TAG + "put", key + " put file cache");
                 // 写入文件缓存
-                cacheConvert.saveFile(CacheManager.getCacheFileUtil().put(cacheLevel, key,
-                        timeout, type), cacheObject);
+                cacheConvert.saveFile(CacheManager.getCacheFileUtil().putBackStream(cacheLevel,
+                        key, timeout, type), cacheObject);
                 break;
             case CacheManager.ONLY_MEMORY_CACHE:
                 Log.i(LOG_TAG + "put", key + " only put memory cache");
@@ -415,8 +415,8 @@ public class CacheTool {
      *
      * @return 用于写入缓存的文件输出流
      */
-    public FileOutputStream putAndBack(@NotNull String key) {
-        return putAndBack(key, cacheLevel.getTimeOut());
+    public FileOutputStream putBackStream(@NotNull String key) {
+        return putBackStream(key, cacheLevel.getTimeOut());
     }
 
     /**
@@ -431,11 +431,81 @@ public class CacheTool {
      *
      * @return 用于写入缓存的文件输出流
      */
-    public FileOutputStream putAndBack(@NotNull String key, long timeout) {
+    public FileOutputStream putBackStream(@NotNull String key, long timeout) {
         Log.i(LOG_TAG + "putAndBack", "key:" + key + " timeout:" +
                 timeout + " put file cache");
         // 写入文件缓存
-        return CacheManager.getCacheFileUtil().put(cacheLevel, key, timeout, CacheManager
+        return CacheManager.getCacheFileUtil().putBackStream(cacheLevel, key, timeout,
+                CacheManager.FILE_TYPE_FILE);
+    }
+
+    /**
+     * 手动写入缓存文件<br>
+     * 直接保存缓存到文件系统，
+     * 通过指定{@code key}来获取一个缓存控制系统中创建好的文件对象，
+     * 自行向输出流写入缓存文件并主动关闭输出流。<br>
+     * 如果key已存在则输出流会覆盖原缓存文件。
+     *
+     * @param key 缓存标签
+     *
+     * @return 用于写入缓存的文件对象
+     */
+    public File putBackFile(@NotNull String key) {
+        return putBackFile(key, cacheLevel.getTimeOut());
+    }
+
+    /**
+     * 手动写入缓存文件<br>
+     * 直接保存缓存到文件系统，
+     * 通过指定{@code key}来获取一个缓存控制系统中创建好的文件对象，
+     * 自行向输出流写入缓存文件并主动关闭输出流。<br>
+     * 如果key已存在则输出流会覆盖原缓存文件。
+     *
+     * @param key     缓存标签
+     * @param timeout 超时时间，覆盖工具默认设定，0表示无限制
+     *
+     * @return 用于写入缓存的文件对象
+     */
+    public File putBackFile(@NotNull String key, long timeout) {
+        Log.i(LOG_TAG + "putAndBack", "key:" + key + " timeout:" +
+                timeout + " put file cache");
+        // 写入文件缓存
+        return CacheManager.getCacheFileUtil().putBackFile(cacheLevel, key, timeout, CacheManager
+                .FILE_TYPE_FILE);
+    }
+
+    /**
+     * 手动写入缓存文件<br>
+     * 直接保存缓存到文件系统，
+     * 通过指定{@code key}来获取一个缓存控制系统中创建好的文件路径，
+     * 自行向输出流写入缓存文件并主动关闭输出流。<br>
+     * 如果key已存在则输出流会覆盖原缓存文件。
+     *
+     * @param key 缓存标签
+     *
+     * @return 用于写入缓存的文件路径
+     */
+    public String putBackPath(@NotNull String key) {
+        return putBackPath(key, cacheLevel.getTimeOut());
+    }
+
+    /**
+     * 手动写入缓存文件<br>
+     * 直接保存缓存到文件系统，
+     * 通过指定{@code key}来获取一个缓存控制系统中创建好的文件路径，
+     * 自行向输出流写入缓存文件并主动关闭输出流。<br>
+     * 如果key已存在则输出流会覆盖原缓存文件。
+     *
+     * @param key     缓存标签
+     * @param timeout 超时时间，覆盖工具默认设定，0表示无限制
+     *
+     * @return 用于写入缓存的文件路径
+     */
+    public String putBackPath(@NotNull String key, long timeout) {
+        Log.i(LOG_TAG + "putAndBack", "key:" + key + " timeout:" +
+                timeout + " put file cache");
+        // 写入文件缓存
+        return CacheManager.getCacheFileUtil().putBackPath(cacheLevel, key, timeout, CacheManager
                 .FILE_TYPE_FILE);
     }
 
@@ -508,7 +578,7 @@ public class CacheTool {
      *
      * @param key 缓存key
      *
-     * @return 文件对象，如果缓存未保存到文件系统则返回null，如过文件已被清除则文件可能不存在
+     * @return 文件对象，如果缓存未保存到文件系统则返回null，如果文件已被清除则文件可能不存在
      */
     public File getForFile(@NotNull String key) {
         Log.i(LOG_TAG + "getForFile", "key is " + key);

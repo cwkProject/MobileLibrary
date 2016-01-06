@@ -34,12 +34,15 @@ public class BitmapCacheConvert implements CacheConvert<Bitmap> {
 
     @Override
     public CacheObject<Bitmap> toCacheObject(Bitmap cache) {
-
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB_MR1) {
-            return new CacheObject<>(cache, cache.getRowBytes() * cache.getHeight());
-        } else {
-            return new CacheObject<>(cache, cache.getByteCount());
+        if (cache != null) {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB_MR1) {
+                return new CacheObject<>(cache, cache.getRowBytes() * cache.getHeight());
+            } else {
+                return new CacheObject<>(cache, cache.getByteCount());
+            }
         }
+
+        return null;
     }
 
     @Override

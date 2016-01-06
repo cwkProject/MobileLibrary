@@ -39,7 +39,7 @@ public class VersionUpdateDialog {
 
         // 设置提示
         dialog.setMessage(context.getString(R.string.update_now_version_alert) + ":" +
-                GlobalApplication.getGlobal().getApplicationVersion().getLatestVersionName());
+                GlobalApplication.getApplicationVersion().getLatestVersionName());
 
         // 设置确认监听器
         dialog.setPositiveButton(R.string.button_ok, new DialogInterface.OnClickListener() {
@@ -50,7 +50,7 @@ public class VersionUpdateDialog {
                     // 启动下载服务
                     context.startService(new Intent(context, VersionUpdateService.class));
                 } else {
-                    Uri uri = Uri.parse(GlobalApplication.getGlobal().getApplicationVersion()
+                    Uri uri = Uri.parse(GlobalApplication.getApplicationVersion()
                             .getLatestVersionUrl());
                     Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                     context.startActivity(intent);

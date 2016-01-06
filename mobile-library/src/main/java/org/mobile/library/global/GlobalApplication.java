@@ -68,8 +68,8 @@ public class GlobalApplication extends Application {
      *
      * @return 带默认设置的OkHttpClient对象
      */
-    public OkHttpClient getOkHttpClient() {
-        return okHttpClient;
+    public static OkHttpClient getOkHttpClient() {
+        return globalApplication.okHttpClient;
     }
 
     /**
@@ -77,8 +77,8 @@ public class GlobalApplication extends Application {
      *
      * @return 全局持久化配置对象
      */
-    public ApplicationConfig getApplicationConfig() {
-        return applicationConfig;
+    public static ApplicationConfig getApplicationConfig() {
+        return globalApplication.applicationConfig;
     }
 
     /**
@@ -86,8 +86,8 @@ public class GlobalApplication extends Application {
      *
      * @return 返回应用相关参数对象
      */
-    public ApplicationAttribute getApplicationAttribute() {
-        return applicationAttribute;
+    public static ApplicationAttribute getApplicationAttribute() {
+        return globalApplication.applicationAttribute;
     }
 
     /**
@@ -95,8 +95,8 @@ public class GlobalApplication extends Application {
      *
      * @return 返回应用版本信息对象
      */
-    public ApplicationVersion getApplicationVersion() {
-        return applicationVersion;
+    public static ApplicationVersion getApplicationVersion() {
+        return globalApplication.applicationVersion;
     }
 
     /**
@@ -104,8 +104,8 @@ public class GlobalApplication extends Application {
      *
      * @return 登录状态数据数据对象
      */
-    public LoginStatus getLoginStatus() {
-        return loginStatus;
+    public static LoginStatus getLoginStatus() {
+        return globalApplication.loginStatus;
     }
 
     /**
@@ -113,8 +113,8 @@ public class GlobalApplication extends Application {
      *
      * @return UI线程Handler
      */
-    public Handler getUiHandler() {
-        return handler;
+    public static Handler getUiHandler() {
+        return globalApplication.handler;
     }
 
     @Override

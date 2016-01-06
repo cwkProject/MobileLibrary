@@ -12,8 +12,8 @@ import org.mobile.library.cache.util.convert.InputStreamCacheConvert;
 import org.mobile.library.cache.util.convert.TextCacheConvert;
 import org.mobile.library.global.GlobalApplication;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 缓存数据管理工具<br>
@@ -101,16 +101,6 @@ public class CacheManager {
     public static final long MAGNITUDE_MONTH = 30 * MAGNITUDE_DAY;
 
     /**
-     * 默认10M硬缓存空间
-     */
-    private static final int LRU_CACHE_SIZE = 10 * 1024 * 1024;
-
-    /**
-     * 默认40软缓存空间
-     */
-    private static final int SOFT_CACHE_SIZE = 40;
-
-    /**
      * 内存缓存
      */
     private static MemoryCache memoryCache = null;
@@ -123,7 +113,7 @@ public class CacheManager {
     /**
      * 存放缓存工具的集合
      */
-    private static Map<String, CacheTool> cacheToolMap = new HashMap<>();
+    private static Map<String, CacheTool> cacheToolMap = new ConcurrentHashMap<>();
 
     /**
      * 图片对象转换器
@@ -173,7 +163,7 @@ public class CacheManager {
      *
      * @return 缓存工具
      */
-    public static CacheTool getCacheTool(@NotNull String key,@Nullable CacheTool cacheTool) {
+    public static CacheTool getCacheTool(@NotNull String key, @Nullable CacheTool cacheTool) {
 
         if (!cacheToolMap.containsKey(key)) {
             Log.i(LOG_TAG + "getCacheTool", "new CacheTool " + key);

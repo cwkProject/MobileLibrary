@@ -125,7 +125,7 @@ public class OkHttpUploadAsyncCommunication implements AsyncCommunication<Map<St
         RequestBody body = onBuildForm(sendData);
 
         // 得到okHttpClient对象
-        OkHttpClient okHttpClient = GlobalApplication.getGlobal().getOkHttpClient();
+        OkHttpClient okHttpClient = GlobalApplication.getOkHttpClient();
 
         // 创建请求
         Request request = new Request.Builder().tag(tag).url(url).post(body).build();
@@ -236,7 +236,7 @@ public class OkHttpUploadAsyncCommunication implements AsyncCommunication<Map<St
 
     @Override
     public void cancel() {
-        GlobalApplication.getGlobal().getOkHttpClient().cancel(tag);
+        GlobalApplication.getOkHttpClient().cancel(tag);
     }
 
     @Override

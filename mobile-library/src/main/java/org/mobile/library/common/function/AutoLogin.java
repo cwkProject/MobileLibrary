@@ -38,7 +38,7 @@ public class AutoLogin {
         Log.i(LOG_TAG + "autoLogin", "autoLogin() is invoked");
 
         // 判断是否自动登录
-        if (GlobalApplication.getGlobal().getApplicationConfig().isLoginAuto()) {
+        if (GlobalApplication.getApplicationConfig().isLoginAuto()) {
             Log.i(LOG_TAG + "autoLogin", "auto login");
 
             // 进行登录验证
@@ -46,11 +46,10 @@ public class AutoLogin {
             // 执行登录任务
             Log.i(LOG_TAG + "autoLogin", "auto login begin");
 
-            login.beginExecute(GlobalApplication.getGlobal().getApplicationConfig().getUserName()
-                    , GlobalApplication.getGlobal().getApplicationConfig().getPassword(),
-                    appCode, GlobalApplication.getGlobal().getApplicationAttribute()
-                            .getDeviceToken(), GlobalApplication.getGlobal()
-                            .getApplicationAttribute().getDeviceType());
+            login.beginExecute(GlobalApplication.getApplicationConfig().getUserName(),
+                    GlobalApplication.getApplicationConfig().getPassword(), appCode,
+                    GlobalApplication.getApplicationAttribute().getDeviceToken(),
+                    GlobalApplication.getApplicationAttribute().getDeviceType());
         } else {
             Log.i(LOG_TAG + "autoLogin", "no auto login");
             // 发送登录状态改变广播，标识一个加载动作结束

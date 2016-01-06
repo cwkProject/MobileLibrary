@@ -42,7 +42,7 @@ public abstract class BaseOperator<DataModel> {
     /**
      * 数据库表名
      */
-    private String tableName = null;
+    protected String tableName = null;
 
     /**
      * 构造函数

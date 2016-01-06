@@ -5,6 +5,7 @@ package org.mobile.library;
 
 import android.os.Environment;
 import android.util.Log;
+import android.webkit.MimeTypeMap;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -14,6 +15,7 @@ import org.mobile.library.network.util.AsyncCommunication;
 import org.mobile.library.network.util.NetworkCallback;
 import org.mobile.library.network.util.NetworkProgressListener;
 import org.mobile.library.network.util.NetworkRefreshProgressHandler;
+import org.mobile.library.struct.FileInfo;
 
 import java.io.File;
 import java.util.HashMap;
@@ -34,12 +36,12 @@ public class TestUpload {
     /**
      * 文件上传地址
      */
-    private String URL = "http://10.199.10.220:8080/Service/Handover/UploadFile.aspx";
+    private String URL = "http://218.92.115.55/M_Lhgl/Service/Handover/UploadFile.aspx";
 
     /**
-     * 文件参数名
+     * 参数名
      */
-    private String NAME = "fileName";
+    private String NAME = "CodeToken";
 
     /**
      * 日志标签前缀
@@ -98,10 +100,11 @@ public class TestUpload {
         Log.d(LOG_TAG + "asyncUpload", "file is " + file);
         // 参数
         Map<String, Object> map = new HashMap<>();
-        map.put(NAME, "image.jpg");
+        map.put(NAME, "201554080154189826");
 
         // 加入文件
-        map.put("file", file);
+        map.put("file", new FileInfo(file, "kmPlugins", MimeTypeMap.getSingleton()
+                .getMimeTypeFromExtension("jpg")));
 
         AsyncCommunication communication = CommunicationFactory.CreateAsyncCommunication
                 (NetworkType.UPLOAD);
@@ -232,7 +235,8 @@ public class TestUpload {
     //            public void onFinish(boolean result, Object response) {
     //                assertFalse(result);
     //                assertNull(response);
-    //                Log.i(LOG_TAG + "upload", "upload end cast time " + (System.currentTimeMillis() -
+    //                Log.i(LOG_TAG + "upload", "upload end cast time " + (System
+    // .currentTimeMillis() -
     //                        startTime));
     //
     //                synchronized (LOCK) {

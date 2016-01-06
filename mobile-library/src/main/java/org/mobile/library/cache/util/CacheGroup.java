@@ -162,8 +162,8 @@ public class CacheGroup {
         // 写入文件缓存
         Log.i(LOG_TAG + "put", "group key:" + key + " , cacheMode:only file cache , timeout:" +
                 timeout + " , type:" + type);
-        cacheConvert.saveFile(CacheManager.getCacheFileUtil().put(cacheLevel, key, timeout, type,
-                true), cacheObject);
+        cacheConvert.saveFile(CacheManager.getCacheFileUtil().putBackStream(cacheLevel, key,
+                timeout, type, true), cacheObject);
     }
 
     /**
@@ -174,11 +174,43 @@ public class CacheGroup {
      *
      * @return 用于写入缓存的文件输出流
      */
-    public FileOutputStream putAndBack() {
+    public FileOutputStream putBackStream() {
         Log.i(LOG_TAG + "putAndBack", "group key:" + key + " timeout:" +
                 timeout + " put file cache");
         // 写入文件缓存
-        return CacheManager.getCacheFileUtil().put(cacheLevel, key, timeout, CacheManager
+        return CacheManager.getCacheFileUtil().putBackStream(cacheLevel, key, timeout,
+                CacheManager.FILE_TYPE_FILE, true);
+    }
+
+    /**
+     * 手动写入缓存文件<br>
+     * 直接保存缓存到文件系统，
+     * 获取一个缓存控制系统中创建好的文件路径，
+     * 自行向输出流写入缓存文件并主动关闭输出流。<br>
+     *
+     * @return 用于写入缓存的文件路径
+     */
+    public String putBackPath() {
+        Log.i(LOG_TAG + "putAndBack", "group key:" + key + " timeout:" +
+                timeout + " put file cache");
+        // 写入文件缓存
+        return CacheManager.getCacheFileUtil().putBackPath(cacheLevel, key, timeout, CacheManager
+                .FILE_TYPE_FILE, true);
+    }
+
+    /**
+     * 手动写入缓存文件<br>
+     * 直接保存缓存到文件系统，
+     * 获取一个缓存控制系统中创建好的文件对象，
+     * 自行向输出流写入缓存文件并主动关闭输出流。<br>
+     *
+     * @return 用于写入缓存的文件对象
+     */
+    public File putBackFile() {
+        Log.i(LOG_TAG + "putAndBack", "group key:" + key + " timeout:" +
+                timeout + " put file cache");
+        // 写入文件缓存
+        return CacheManager.getCacheFileUtil().putBackFile(cacheLevel, key, timeout, CacheManager
                 .FILE_TYPE_FILE, true);
     }
 

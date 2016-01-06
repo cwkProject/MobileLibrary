@@ -154,20 +154,7 @@ public class TestBitmapCacheControl {
                 }
             });
 
-            taskExecutor.submit(new Runnable() {
-                @Override
-                public void run() {
-
-                    synchronized (imageFile3) {
-
-                        CacheManager.getCacheTool(LEVEL_KEY).put(key + (finalI + 2),
-                                BitmapFactory.decodeFile(imageFile3.getPath()));
-
-                    }
-                }
-            });
-
-            i += 3;
+            i += 2;
         }
 
         taskExecutor.shutdown();

@@ -32,9 +32,9 @@ public class TestRootCacheControl {
 
         String key = "test";
 
-        assertTrue(cacheTool.getForFile(key).exists());
+        cacheTool.put(key, TEXT);
 
-        assertEquals(TEXT, cacheTool.getForText(key));
+        assertTrue(cacheTool.getForFile(key).exists());
 
         assertEquals(TEXT, cacheTool.getForText(key));
     }

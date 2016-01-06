@@ -82,7 +82,7 @@ public class OkHttpDownloadSyncCommunication implements SyncCommunication<Map<St
     /**
      * 读取超时时间
      */
-    protected int readTimeout = -1;
+    protected int readTimeout = 0;
 
     /**
      * 设置读取超时时间
@@ -154,16 +154,18 @@ public class OkHttpDownloadSyncCommunication implements SyncCommunication<Map<St
         Log.i(LOG_TAG + "Request", "final url is " + finalUrl);
 
         // 得到okHttpClient对象
-        OkHttpClient okHttpClient = GlobalApplication.getGlobal().getOkHttpClient();
+        OkHttpClient okHttpClient = GlobalApplication.getOkHttpClient();
 
         // 创建请求
         Request request = new Request.Builder().tag(tag).url(finalUrl).build();
 
-        // 克隆状态标记
-        boolean clone = false;
+        okHttpClient = okHttpClient.clone();
+        // 设置读取超时时间
+        if (timeout > -1) {
+            okHttpClient.setReadTimeout(readTimeout, TimeUnit.MILLISECONDS);
+        }
 
         if (progressListener != null) {
-            okHttpClient = okHttpClient.clone();
             // 增加拦截器监听下载进度
             okHttpClient.networkInterceptors().add(new Interceptor() {
                 @Override
@@ -173,25 +175,11 @@ public class OkHttpDownloadSyncCommunication implements SyncCommunication<Map<St
                             (originalResponse.body(), progressListener)).build();
                 }
             });
-
-            // 标记为已克隆
-            clone = true;
         }
 
         // 判断是否需要设置超时
-        if (timeout + readTimeout > -2) {
-            // 判断是否需要克隆
-            if (!clone) {
-                okHttpClient = okHttpClient.clone();
-            }
-
-            if (timeout > -1) {
-                okHttpClient.setConnectTimeout(timeout, TimeUnit.MILLISECONDS);
-            }
-
-            if (readTimeout > -1) {
-                okHttpClient.setReadTimeout(readTimeout, TimeUnit.MILLISECONDS);
-            }
+        if (timeout > -1) {
+            okHttpClient.setConnectTimeout(timeout, TimeUnit.MILLISECONDS);
         }
 
         try {
@@ -253,6 +241,7 @@ public class OkHttpDownloadSyncCommunication implements SyncCommunication<Map<St
         } catch (UnsupportedEncodingException e) {
             Log.e(LOG_TAG + "onBuildParameter", "response error IOException class is " + e
                     .toString());
+
             Log.e(LOG_TAG + "onBuildParameter", "response error IOException message is " + e
                     .getMessage());
         }
@@ -291,6 +280,6 @@ public class OkHttpDownloadSyncCommunication implements SyncCommunication<Map<St
 
     @Override
     public void cancel() {
-        GlobalApplication.getGlobal().getOkHttpClient().cancel(tag);
+        GlobalApplication.getOkHttpClient().cancel(tag);
     }
 }

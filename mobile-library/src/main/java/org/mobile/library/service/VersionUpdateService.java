@@ -64,10 +64,9 @@ public class VersionUpdateService extends Service {
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
-
         // 注销广播接收者
         unregisterReceiver(receiver);
+        super.onDestroy();
     }
 
     /**
@@ -76,8 +75,7 @@ public class VersionUpdateService extends Service {
     @TargetApi(Build.VERSION_CODES.GINGERBREAD)
     private void onStartDownload() {
         // 下载地址
-        String downloadUrl = GlobalApplication.getGlobal().getApplicationVersion()
-                .getLatestVersionUrl();
+        String downloadUrl = GlobalApplication.getApplicationVersion().getLatestVersionUrl();
 
         if (downloadUrl == null) {
             Log.d(LOG_TAG + "onStartDownload", "downloadUrl is null");

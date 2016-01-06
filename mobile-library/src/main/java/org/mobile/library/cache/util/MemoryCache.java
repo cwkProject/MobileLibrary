@@ -6,8 +6,10 @@ package org.mobile.library.cache.util;
 import android.support.v4.util.LruCache;
 import android.util.Log;
 
+import com.googlecode.concurrentlinkedhashmap.ConcurrentLinkedHashMap;
+import com.googlecode.concurrentlinkedhashmap.Weighers;
+
 import java.lang.ref.SoftReference;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -28,12 +30,12 @@ public class MemoryCache {
     /**
      * 默认10M硬缓存空间
      */
-    private static final int LRU_CACHE_SIZE = 10 * 1024 * 1024;
+    private static final int LRU_CACHE_SIZE = 50 * 1024 * 1024;
 
     /**
-     * 默认40软缓存空间
+     * 默认48软缓存空间
      */
-    private static final int SOFT_CACHE_SIZE = 40;
+    private static final int SOFT_CACHE_SIZE = 48;
 
     /**
      * 硬缓存
@@ -63,22 +65,13 @@ public class MemoryCache {
     }
 
     /**
-     * 新建10M硬缓存
+     * 新建内存缓存
      */
     private synchronized void createMemoryCache() {
         if (softCache == null) {
             Log.i(LOG_TAG + "createMemoryCache", "create soft reference");
-            softCache = new LinkedHashMap<String, SoftReference<CacheObject>>(SOFT_CACHE_SIZE, 0.75f, true) {
-                @Override
-                protected boolean removeEldestEntry(Entry<String, SoftReference<CacheObject>>
-                        eldest) {
-                    if (size() > SOFT_CACHE_SIZE) {
-                        Log.i(LOG_TAG + "createMemoryCache", "Soft Reference limit , purge one");
-                        return true;
-                    }
-                    return false;
-                }
-            };
+            softCache = new ConcurrentLinkedHashMap.Builder<String, SoftReference<CacheObject>>()
+                    .maximumWeightedCapacity(SOFT_CACHE_SIZE).weigher(Weighers.singleton()).build();
         }
 
         if (lruCache == null) {
@@ -136,22 +129,21 @@ public class MemoryCache {
                 return cache;
             }
 
-            synchronized (softCache) {
+            SoftReference<CacheObject> softReference = softCache.get(key);
 
-                if (softCache.containsKey(key)) {
-                    cache = softCache.get(key).get();
+            if (softReference != null) {
+                cache = softReference.get();
 
-                    if (cache == null) {
-                        // 已被回收
-                        Log.i(LOG_TAG + "get", "soft reference cache " + key + " is recycled");
-                        softCache.remove(key);
-                    } else {
-                        Log.i(LOG_TAG + "get", "hit " + key + " in soft reference");
-                        return cache;
-                    }
+                if (cache == null) {
+                    // 已被回收
+                    Log.i(LOG_TAG + "get", "soft reference cache " + key + " is recycled");
+                    softCache.remove(key);
                 } else {
-                    Log.i(LOG_TAG + "get", "memory cache not exist " + key);
+                    Log.i(LOG_TAG + "get", "hit " + key + " in soft reference");
+                    return cache;
                 }
+            } else {
+                Log.i(LOG_TAG + "get", "memory cache not exist " + key);
             }
         }
 
@@ -169,12 +161,8 @@ public class MemoryCache {
             Log.i(LOG_TAG + "remove", "remove " + key + " in hard cache");
             lruCache.remove(key);
 
-            synchronized (softCache) {
-                if (softCache.containsKey(key)) {
-                    Log.i(LOG_TAG + "remove", "remove " + key + " in soft reference");
-                    softCache.remove(key);
-                }
-            }
+            Log.i(LOG_TAG + "remove", "remove " + key + " in soft reference");
+            softCache.remove(key);
         }
     }
 }

@@ -6,8 +6,8 @@ android {
     defaultConfig {
         minSdkVersion 8
         targetSdkVersion 23
-        versionCode 16
-        versionName '0.6.6'
+        versionCode 17
+        versionName '0.6.7'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -34,6 +34,7 @@ dependencies {
     compile 'com.squareup.okhttp:okhttp:2.6.0'
     compile 'org.jetbrains:annotations:13.0'
     compile 'com.android.support:appcompat-v7:23.1.1'
+    compile 'com.googlecode.concurrentlinkedhashmap:concurrentlinkedhashmap-lru:1.4.2'
 }
 
 apply from: "bintrayUpload.gradle"
