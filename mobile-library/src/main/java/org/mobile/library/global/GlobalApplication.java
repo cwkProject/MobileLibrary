@@ -1,23 +1,37 @@
 package org.mobile.library.global;
 
 import android.app.Application;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
-import com.squareup.okhttp.OkHttpClient;
-
+import org.mobile.library.BuildConfig;
 import org.mobile.library.R;
 
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
+
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * 全局Application，用于在任意位置使用应用程序资源
  *
  * @author 超悟空
- * @version 2.0 2015/10/30
+ * @version 3.0 2016/3/7
  * @since 1.0
  */
 public class GlobalApplication extends Application {
+
+    /**
+     * 日志标签前缀
+     */
+    private static final String LOG_TAG = "GlobalApplication.";
 
     /**
      * 自身静态全局实例
@@ -126,13 +140,79 @@ public class GlobalApplication extends Application {
         applicationVersion = new ApplicationVersion();
         loginStatus = new LoginStatus();
         handler = new Handler(Looper.getMainLooper());
-        okHttpClient = new OkHttpClient();
-        // 设置默认连接超时时间
-        okHttpClient.setConnectTimeout(getResources().getInteger(R.integer
-                .http_default_connect_timeout), TimeUnit.MILLISECONDS);
 
-        // 设置默认读取超时时间
-        okHttpClient.setReadTimeout(getResources().getInteger(R.integer
-                .http_default_read_timeout), TimeUnit.MILLISECONDS);
+        // 网络请求用户代理字符串
+        final StringBuilder userAgentBuilder = new StringBuilder();
+
+        userAgentBuilder.append(ApplicationStaticValue.DEVICE_TYPE);
+        userAgentBuilder.append("/");
+        // 制造商
+        userAgentBuilder.append(Build.BRAND);
+        userAgentBuilder.append("/");
+        // 设备型号
+        userAgentBuilder.append(Build.MODEL);
+        userAgentBuilder.append("(");
+        userAgentBuilder.append(Build.ID);
+        userAgentBuilder.append(")");
+        userAgentBuilder.append("/");
+
+        // 系统版本
+        userAgentBuilder.append(Build.VERSION.SDK_INT);
+        userAgentBuilder.append("(");
+        userAgentBuilder.append(Build.VERSION.RELEASE);
+        userAgentBuilder.append(")");
+        userAgentBuilder.append("/");
+
+        // 框架版本
+        userAgentBuilder.append(BuildConfig.VERSION_CODE);
+        userAgentBuilder.append("(");
+        userAgentBuilder.append(BuildConfig.VERSION_NAME);
+        userAgentBuilder.append(")");
+        userAgentBuilder.append("/");
+
+        try {
+            // 包信息
+            PackageInfo info = getPackageManager().getPackageInfo(getPackageName(), 0);
+            // 应用id
+            userAgentBuilder.append(getPackageName());
+            userAgentBuilder.append("/");
+
+            // 应用版本
+            userAgentBuilder.append(info.versionCode);
+            userAgentBuilder.append("(");
+            userAgentBuilder.append(info.versionName);
+            userAgentBuilder.append(")");
+            userAgentBuilder.append(".");
+
+        } catch (PackageManager.NameNotFoundException e) {
+            Log.e(LOG_TAG + "onFillRequestParameters", "PackageManager.NameNotFoundException is "
+                    + e.getMessage());
+        }
+
+        okHttpClient = new OkHttpClient.Builder()
+                // 设置默认连接超时时间
+                .connectTimeout(getResources().getInteger(R.integer.http_default_connect_timeout)
+                        , TimeUnit.MILLISECONDS)
+                        // 设置默认读取超时时间
+                .readTimeout(getResources().getInteger(R.integer.http_default_read_timeout),
+                        TimeUnit.MILLISECONDS)
+                        // 设置默认写入超时时间
+                .writeTimeout(getResources().getInteger(R.integer.http_default_write_timeout),
+                        TimeUnit.MILLISECONDS)
+                        // 设置用户代理信息拦截器
+                .addNetworkInterceptor(new Interceptor() {
+
+                    private static final String USER_AGENT_HEADER_NAME = "User-Agent";
+
+                    @Override
+                    public Response intercept(Chain chain) throws IOException {
+                        final Request originalRequest = chain.request();
+                        final Request requestWithUserAgent = originalRequest.newBuilder()
+                                .removeHeader(USER_AGENT_HEADER_NAME).addHeader
+                                        (USER_AGENT_HEADER_NAME, userAgentBuilder.toString())
+                                .build();
+                        return chain.proceed(requestWithUserAgent);
+                    }
+                }).build();
     }
 }

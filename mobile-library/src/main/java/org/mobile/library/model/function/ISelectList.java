@@ -6,13 +6,49 @@ package org.mobile.library.model.function;
 /**
  * 选择列表接口
  *
+ * @param <Source> 供选择的数据列表类型
+ * @param <Result> 选择完成返回的结果
+ *
  * @author 超悟空
- * @version 1.0 2015/7/22
+ * @version 2.0 2016/3/4
  * @since 1.0
  */
-public interface ISelectList {
+public interface ISelectList<Source, Result> {
+
     /**
-     * 配置选择列表并绑定选择事件
+     * 选择结束接口
+     *
+     * @param <Source> 供选择的数据列表类型
+     * @param <Result> 选择完成返回的结果
      */
-    void selectSetting();
+    interface OnSelectedListener<Source, Result> {
+
+        /**
+         * 完成选择
+         *
+         * @param result 选择结果
+         */
+        void onFinish(Result result);
+
+        /**
+         * 取消选择
+         *
+         * @param source 选择列表控件
+         */
+        void onCancel(Source source);
+    }
+
+    /**
+     * 设置选择完成的监听器
+     *
+     * @param onSelectedListener 选择完成监听器实例
+     */
+    void setOnSelectedListener(OnSelectedListener<Source, Result> onSelectedListener);
+
+    /**
+     * 加载选择列表
+     *
+     * @return 选择列表控件
+     */
+    Source loadSelect();
 }

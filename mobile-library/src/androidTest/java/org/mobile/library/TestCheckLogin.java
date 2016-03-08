@@ -86,7 +86,7 @@ public class TestCheckLogin {
 
         login.execute("xuehui", "123456", "HMW");
 
-        LoginStatus status = GlobalApplication.getGlobal().getLoginStatus();
+        LoginStatus status = GlobalApplication.getLoginStatus();
 
         assertEquals("227", status.getUserID());
         assertEquals("薛辉", status.getNickname());
@@ -103,7 +103,7 @@ public class TestCheckLogin {
         login.setWorkEndListener(new WorkBack<String>() {
             @Override
             public void doEndWork(boolean state, String data) {
-                LoginStatus status = GlobalApplication.getGlobal().getLoginStatus();
+                LoginStatus status = GlobalApplication.getLoginStatus();
 
                 assertEquals("227", status.getUserID());
                 assertEquals("薛辉", status.getNickname());

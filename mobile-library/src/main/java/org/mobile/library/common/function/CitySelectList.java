@@ -1,369 +1,350 @@
 package org.mobile.library.common.function;
 /**
- * Created by 超悟空 on 2015/7/18.
+ * Created by 超悟空 on 2016/3/7.
  */
 
 import android.content.Context;
+import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 
 import org.mobile.library.R;
-import org.mobile.library.database.city.CityConst;
+import org.mobile.library.database.bean.City;
+import org.mobile.library.database.bean.District;
+import org.mobile.library.database.bean.Province;
 import org.mobile.library.database.city.CityOperator;
 import org.mobile.library.model.function.ISelectList;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
- * 城市选择列表
+ * 城市选择功能
  *
  * @author 超悟空
- * @version 1.0 2015/7/18
+ * @version 1.0 2016/3/7
  * @since 1.0
  */
-public class CitySelectList implements ISelectList {
+public class CitySelectList implements ISelectList<Fragment, String> {
 
     /**
-     * 日志标签前缀
+     * 选择结束监听器
      */
-    private static final String LOG_TAG = "CitySelectDrawer.";
+    private OnSelectedListener<Fragment, String> onSelectedListener = null;
 
     /**
-     * 表示选中第一条，及父级选项的代码
+     * 城市数据库工具
      */
-    private static final int FIRST_SELECT = 0;
+    private CityOperator operator = null;
 
     /**
-     * 表示选中返回的代码
+     * 城市列表
      */
-    private static final int BACK_SELECT = -1;
+    private Map<Integer, List<City>> cityMap = new HashMap<>();
 
     /**
-     * 子控件集合
-     *
-     * @author 超悟空
-     * @version 1.0 2015/7/17
-     * @since 1.0
+     * 省份列表
      */
-    private class ViewHolder {
-
-        /**
-         * 选择列表
-         */
-        public ListView selectListView = null;
-
-        /**
-         * 已选择的省
-         */
-        public Map<String, Object> province = null;
-
-        /**
-         * 已选择的市
-         */
-        public Map<String, Object> city = null;
-
-        /**
-         * 已选择的区
-         */
-        public Map<String, Object> district = null;
-
-        /**
-         * 省份数据适配器
-         */
-        private SimpleAdapter provinceAdapter = null;
-
-        /**
-         * 城市数据库工具
-         */
-        private CityOperator cityOperator = null;
-    }
+    private List<Province> provinceList = new ArrayList<>();
 
     /**
-     * 城市选择完成回调
-     *
-     * @author 超悟空
-     * @version 1.0 2015/7/17
-     * @since 1.0
+     * 区县列表
      */
-    public interface CitySelectFinishedListener {
-        /**
-         * 城市选择完成
-         *
-         * @param province 省
-         * @param city     市
-         * @param district 区
-         */
-        void onCitySelectFinish(String province, @Nullable String city, @Nullable String district);
-    }
+    private Map<Integer, List<District>> districtMap = new HashMap<>();
 
     /**
-     * 上下文
+     * 选择工具依托的选择布局
      */
-    private Context context = null;
-
-    /**
-     * 子控件集合对象
-     */
-    private ViewHolder viewHolder = new ViewHolder();
-
-    /**
-     * 城市选择完成回调
-     */
-    private CitySelectFinishedListener citySelectFinishedListener = null;
+    private CitySelectFragment fragment = null;
 
     /**
      * 构造函数
      *
-     * @param context        上下文
-     * @param selectListView 选择列表
+     * @param context 上下文
      */
-    public CitySelectList(Context context, ListView selectListView) {
-        this.context = context;
-        // 选择列表
-        viewHolder.selectListView = selectListView;
-
-        // 初始化
-        init();
+    public CitySelectList(Context context) {
+        operator = new CityOperator(context);
     }
 
-    /**
-     * 设置城市选择完成监听器
-     *
-     * @param citySelectFinishedListener 监听器实例
-     */
-    public void setCitySelectFinishedListener(CitySelectFinishedListener
-                                                      citySelectFinishedListener) {
-        this.citySelectFinishedListener = citySelectFinishedListener;
-    }
-
-    /**
-     * 初始化
-     */
-    private void init() {
-        // 初始化控件集
-        initViewHolder();
-    }
-
-    /**
-     * 初始化控件集引用
-     */
-    private void initViewHolder() {
-
-        // 数据库工具
-        viewHolder.cityOperator = new CityOperator(context);
-
-        // 省份数据集
-        List<Map<String, Object>> provinceList = viewHolder.cityOperator.getProvinceList();
-        // 加入头数据
-        Map<String, Object> map = new HashMap<>();
-
-        map.put(CityConst.NAME, context.getString(R.string.entire_country));
-        map.put(CityConst.CODE, FIRST_SELECT);
-        provinceList.add(0, map);
-
-        // 省份数据适配器
-        viewHolder.provinceAdapter = new SimpleAdapter(context, provinceList, R.layout
-                .only_text_list_item, new String[]{CityConst.NAME}, new int[]{R.id.only_text_list_item_textView});
-    }
-
-    /**
-     * 配置选择列表并绑定选择事件
-     */
     @Override
-    public void selectSetting() {
-        Log.i(LOG_TAG + "selectSetting", "Select start");
-
-        // 选择省设置
-        selectProvince();
+    public void setOnSelectedListener(OnSelectedListener<Fragment, String> onSelectedListener) {
+        this.onSelectedListener = onSelectedListener;
     }
 
-    /**
-     * 选择省
-     */
-    private void selectProvince() {
-        Log.i(LOG_TAG + "selectProvince", "select province is invoked");
-        // 初始化参数
-        viewHolder.province = null;
-        viewHolder.city = null;
-        viewHolder.district = null;
+    @Override
+    public Fragment loadSelect() {
+        if (fragment == null) {
+            fragment = CitySelectFragment.getInstance(this);
+        }
 
-        // 重置列表适配器
-        viewHolder.selectListView.setAdapter(viewHolder.provinceAdapter);
-
-        // 重置选中事件
-        viewHolder.selectListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                if (position == 0) {
-                    Log.i(LOG_TAG + "selectProvince", "list head is clicked");
-                    // 选择结束
-                    selectFinish();
-                }
-
-                // 设置文本结果
-                viewHolder.province = (Map<String, Object>) viewHolder.provinceAdapter.getItem
-                        (position);
-                Log.i(LOG_TAG + "selectProvince", "select position is " + position);
-                Log.i(LOG_TAG + "selectProvince", "select province reference is " + viewHolder
-                        .province.hashCode());
-
-                // 选择市
-                selectCity();
-            }
-        });
-    }
-
-    /**
-     * 选择城市
-     */
-    private void selectCity() {
-        Log.i(LOG_TAG + "selectCity", "select city is invoked");
-        int code = (int) viewHolder.province.get(CityConst.CODE);
-        String name = (String) viewHolder.province.get(CityConst.NAME);
-
-        // 初始化参数
-        viewHolder.city = null;
-        viewHolder.district = null;
-
-        // 省份数据集
-        List<Map<String, Object>> cityList = viewHolder.cityOperator.getCityList(code);
-
-        // 加入头数据
-        Map<String, Object> map = new HashMap<>();
-
-        map.put(CityConst.NAME, name);
-        map.put(CityConst.CODE, FIRST_SELECT);
-        cityList.add(0, map);
-
-        // 加入尾数据
-        map = new HashMap<>();
-
-        map.put(CityConst.NAME, context.getString(R.string.back));
-        map.put(CityConst.CODE, BACK_SELECT);
-        cityList.add(map);
-
-        // 获取数据源适配器
-        final SimpleAdapter adapter = new SimpleAdapter(context, cityList, R.layout
-                .only_text_list_item, new String[]{CityConst.NAME}, new int[]{R.id.only_text_list_item_textView});
-
-        Log.i(LOG_TAG + "selectCity", "adapter reference is " + adapter.hashCode());
-
-        // 重置列表适配器
-        viewHolder.selectListView.setAdapter(adapter);
-
-        // 重置选中事件
-        viewHolder.selectListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (position == 0) {
-                    Log.i(LOG_TAG + "selectCity", "list head is clicked");
-                    // 选择结束
-                    selectFinish();
-                    return;
-                }
-
-                if (position == parent.getCount() - 1) {
-                    // 返回省份列表
-                    selectProvince();
-                    return;
-                }
-
-                // 设置文本结果
-                viewHolder.city = (Map<String, Object>) adapter.getItem(position);
-                Log.i(LOG_TAG + "selectCity", "select position is " + position);
-                Log.i(LOG_TAG + "selectCity", "select city reference is " + viewHolder.city
-                        .hashCode());
-                // 选择区
-                selectDistrict();
-            }
-        });
-    }
-
-    /**
-     * 选择区
-     */
-    private void selectDistrict() {
-        Log.i(LOG_TAG + "selectDistrict", "select district is invoked");
-        int code = (int) viewHolder.city.get(CityConst.CODE);
-        String name = (String) viewHolder.city.get(CityConst.NAME);
-
-        // 初始化参数
-        viewHolder.district = null;
-
-        // 省份数据集
-        List<Map<String, Object>> districtList = viewHolder.cityOperator.getDistrictList(code);
-
-        // 加入头数据
-        Map<String, Object> map = new HashMap<>();
-
-        map.put(CityConst.NAME, name);
-        map.put(CityConst.CODE, FIRST_SELECT);
-        districtList.add(0, map);
-
-        // 加入尾数据
-        map = new HashMap<>();
-
-        map.put(CityConst.NAME, context.getString(R.string.back));
-        map.put(CityConst.CODE, BACK_SELECT);
-        districtList.add(map);
-
-        // 获取数据源适配器
-        final SimpleAdapter adapter = new SimpleAdapter(context, districtList, R.layout
-                .only_text_list_item, new String[]{CityConst.NAME}, new int[]{R.id.only_text_list_item_textView});
-
-        Log.i(LOG_TAG + "selectCity", "adapter reference is " + adapter.hashCode());
-
-        // 重置列表适配器
-        viewHolder.selectListView.setAdapter(adapter);
-
-        // 重置选中事件
-        viewHolder.selectListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                if (position == 0) {
-                    Log.i(LOG_TAG + "selectCity", "list head is clicked");
-                    // 选择结束
-                    selectFinish();
-                    return;
-                }
-
-                if (position == parent.getCount() - 1) {
-                    // 返回城市列表
-                    selectCity();
-                    return;
-                }
-
-                // 设置文本结果
-                viewHolder.district = (Map<String, Object>) adapter.getItem(position);
-                Log.i(LOG_TAG + "selectDistrict", "select position is " + position);
-                Log.i(LOG_TAG + "selectDistrict", "select district reference is " + viewHolder
-                        .district.hashCode());
-
-                // 选择结束
-                selectFinish();
-            }
-        });
+        return fragment;
     }
 
     /**
      * 选择完成
+     *
+     * @param result 选取的结果
      */
-    private void selectFinish() {
+    private void onFinish(String result) {
+        if (onSelectedListener != null) {
+            onSelectedListener.onFinish(result);
+        }
+    }
 
-        if (citySelectFinishedListener != null) {
-            citySelectFinishedListener.onCitySelectFinish(viewHolder.province != null ? (String)
-                    viewHolder.province.get(CityConst.NAME) : context.getString(R.string
-                    .entire_country), viewHolder.city != null ? (String) viewHolder.city.get
-                    (CityConst.NAME) : null, viewHolder.district != null ? (String) viewHolder
-                    .district.get(CityConst.NAME) : null);
+    /**
+     * 城市选择列表布局
+     */
+    public static class CitySelectFragment extends Fragment {
+
+        /**
+         * 控件工具
+         */
+        private class ViewHolder {
+
+            /**
+             * 省数据适配器
+             */
+            public ArrayAdapter<String> provinceAdapter = null;
+
+            /**
+             * 城市数据适配器
+             */
+            public ArrayAdapter<String> cityAdapter = null;
+
+            /**
+             * 区县数据适配器
+             */
+            public ArrayAdapter<String> districtAdapter = null;
+
+            /**
+             * 省数据列表
+             */
+            public ListView provinceListView = null;
+
+            /**
+             * 城市数据列表
+             */
+            public ListView cityListView = null;
+
+            /**
+             * 区县数据列表
+             */
+            public ListView districtListView = null;
+
+            /**
+             * 当前状态已选择的省份
+             */
+            public Province province = null;
+
+            /**
+             * 当前状态已选择的城市
+             */
+            public City city = null;
+        }
+
+        /**
+         * 控件工具
+         */
+        private ViewHolder viewHolder = new ViewHolder();
+
+        /**
+         * 城市选择功能实例
+         */
+        private CitySelectList citySelectList = null;
+
+        /**
+         * 获取一个布局实例
+         *
+         * @param citySelectList 城市选择功能实例
+         *
+         * @return Fragment实例
+         */
+        public static CitySelectFragment getInstance(CitySelectList citySelectList) {
+            CitySelectFragment fragment = new CitySelectFragment();
+            fragment.citySelectList = citySelectList;
+            return fragment;
+        }
+
+        @Nullable
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle
+                savedInstanceState) {
+            // 根布局
+            View rootView = inflater.inflate(R.layout.fragment_city_select, container, false);
+
+            // 初始化布局
+            onInitView(rootView);
+
+            // 初始化事件绑定
+            onInitEvent();
+
+            // 初始化数据
+            onInitData();
+
+            return rootView;
+        }
+
+        /**
+         * 初始化布局
+         *
+         * @param rootView 根布局
+         */
+        private void onInitView(View rootView) {
+            viewHolder.provinceListView = (ListView) rootView.findViewById(R.id
+                    .fragment_city_select_province_listView);
+            viewHolder.cityListView = (ListView) rootView.findViewById(R.id
+                    .fragment_city_select_city_listView);
+            viewHolder.districtListView = (ListView) rootView.findViewById(R.id
+                    .fragment_city_select_district_listView);
+
+            viewHolder.provinceAdapter = new ArrayAdapter<>(getActivity(), android.R.layout
+                    .simple_list_item_activated_1);
+
+            viewHolder.cityAdapter = new ArrayAdapter<>(getActivity(), android.R.layout
+                    .simple_list_item_activated_1);
+
+            viewHolder.districtAdapter = new ArrayAdapter<>(getActivity(), android.R.layout
+                    .simple_list_item_activated_1);
+
+            viewHolder.provinceListView.setAdapter(viewHolder.provinceAdapter);
+
+            viewHolder.cityListView.setAdapter(viewHolder.cityAdapter);
+
+            viewHolder.districtListView.setAdapter(viewHolder.districtAdapter);
+        }
+
+        /**
+         * 初始化事件绑定
+         */
+        private void onInitEvent() {
+            // 省份列表点击事件
+            viewHolder.provinceListView.setOnItemClickListener(new AdapterView
+                    .OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    viewHolder.province = null;
+                    viewHolder.city = null;
+
+                    if (position == 0) {
+                        // 点击了全国标签
+                        // 选择完成
+                        citySelectList.onFinish((String) parent.getItemAtPosition(0));
+                    } else {
+                        viewHolder.province = citySelectList.provinceList.get(position - 1);
+                        viewHolder.cityAdapter.clear();
+                        viewHolder.districtAdapter.clear();
+
+                        // 选中的省份编码
+                        int code = viewHolder.province.getCode();
+
+                        if (!citySelectList.cityMap.containsKey(code)) {
+                            // 装载数据
+                            citySelectList.cityMap.put(code, citySelectList.operator.getCityList
+                                    (code));
+                        }
+
+                        // 加入头
+                        viewHolder.cityAdapter.add(getString(R.string.any));
+
+                        // 加入城市数据
+                        for (City city : citySelectList.cityMap.get(code)) {
+                            viewHolder.cityAdapter.add(city.getName());
+                        }
+
+                        viewHolder.cityAdapter.notifyDataSetChanged();
+                        viewHolder.districtAdapter.notifyDataSetChanged();
+                    }
+                }
+            });
+
+            // 城市列表点击事件
+            viewHolder.cityListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    viewHolder.city = null;
+
+                    if (position == 0) {
+                        // 点击了不限标签
+                        // 选择完成
+                        citySelectList.onFinish(viewHolder.province.getName());
+                    } else {
+                        viewHolder.city = citySelectList.cityMap.get(viewHolder.province.getCode
+                                ()).get(position - 1);
+                        viewHolder.districtAdapter.clear();
+
+                        // 选中的城市编码
+                        int code = viewHolder.city.getCode();
+
+                        if (!citySelectList.districtMap.containsKey(code)) {
+                            // 装载数据
+                            citySelectList.districtMap.put(code, citySelectList.operator
+                                    .getDistrictList(code));
+                        }
+
+                        // 加入头
+                        viewHolder.districtAdapter.add(getString(R.string.any));
+
+                        // 加入区县数据
+                        for (District district : citySelectList.districtMap.get(code)) {
+                            viewHolder.districtAdapter.add(district.getName());
+                        }
+
+                        viewHolder.districtAdapter.notifyDataSetChanged();
+                    }
+                }
+            });
+
+            // 区县列表点击事件
+            viewHolder.districtListView.setOnItemClickListener(new AdapterView
+                    .OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    if (position == 0) {
+                        // 点击了不限标签
+                        // 选择完成
+                        citySelectList.onFinish(viewHolder.province.getName() + "-" + viewHolder
+                                .city.getName());
+                    } else {
+                        // 选择完成
+                        citySelectList.onFinish(viewHolder.province.getName() + "-" + viewHolder
+                                .city.getName() + "-" + parent.getItemAtPosition(position));
+                    }
+                }
+            });
+        }
+
+        /**
+         * 初始化数据
+         */
+        private void onInitData() {
+            viewHolder.provinceAdapter.clear();
+            viewHolder.cityAdapter.clear();
+            viewHolder.districtAdapter.clear();
+
+            if (citySelectList.provinceList.isEmpty()) {
+                // 装载数据
+                citySelectList.provinceList.addAll(citySelectList.operator.getProvinceList());
+            }
+
+            // 加入头
+            viewHolder.provinceAdapter.add(getString(R.string.all_country));
+
+            // 加入省份数据
+            for (Province province : citySelectList.provinceList) {
+                viewHolder.provinceAdapter.add(province.getName());
+            }
+
+            viewHolder.provinceAdapter.notifyDataSetChanged();
+            viewHolder.cityAdapter.notifyDataSetChanged();
+            viewHolder.districtAdapter.notifyDataSetChanged();
         }
     }
 }

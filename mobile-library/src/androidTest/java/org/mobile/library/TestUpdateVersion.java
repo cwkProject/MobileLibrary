@@ -43,9 +43,8 @@ public class TestUpdateVersion {
         checkVersion.execute(ApplicationStaticValue.DEVICE_TYPE, "HMW", ApplicationStaticValue
                 .UPDATE_REQUEST_URL);
 
-        assertEquals(false, GlobalApplication.getGlobal().getApplicationVersion().isLatestVersion
-                ());
-        assertNotNull(GlobalApplication.getGlobal().getApplicationVersion().getLatestVersionUrl());
-        assertNotNull(GlobalApplication.getGlobal().getApplicationVersion().getLatestVersionName());
+        assertEquals(false, GlobalApplication.getApplicationVersion().isLatestVersion());
+        assertNotNull(GlobalApplication.getApplicationVersion().getLatestVersionUrl());
+        assertNotNull(GlobalApplication.getApplicationVersion().getLatestVersionName());
     }
 }

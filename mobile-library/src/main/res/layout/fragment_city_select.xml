@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="horizontal">
+
+    <ListView
+        android:id="@+id/fragment_city_select_province_listView"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:choiceMode="singleChoice"
+        android:drawSelectorOnTop="true"/>
+
+    <ListView
+        android:id="@+id/fragment_city_select_city_listView"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:choiceMode="singleChoice"
+        android:drawSelectorOnTop="true"/>
+
+    <ListView
+        android:id="@+id/fragment_city_select_district_listView"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:choiceMode="singleChoice"
+        android:drawSelectorOnTop="true"/>
+
+</LinearLayout>

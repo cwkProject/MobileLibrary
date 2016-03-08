@@ -309,7 +309,6 @@ public class CacheInfoOperator extends BaseOperator<CacheInfo> {
         close(writeSqLiteHelper);
     }
 
-
     @Override
     protected String onWhereSql(CacheInfo data) {
         return String.format("%s='%s'", CacheDatabaseConst.CACHE_INFO.REAL_FILE_NAME, data

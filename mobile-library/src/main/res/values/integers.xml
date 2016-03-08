@@ -2,5 +2,6 @@
 <resources>
     <integer name="http_default_connect_timeout">5000</integer>
     <integer name="http_default_read_timeout">10000</integer>
+    <integer name="http_default_write_timeout">10000</integer>
 
 </resources>

@@ -3,11 +3,11 @@ package org.mobile.library.network.util;
  * Created by 超悟空 on 2015/11/4.
  */
 
-import com.squareup.okhttp.MediaType;
-import com.squareup.okhttp.RequestBody;
 
 import java.io.IOException;
 
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 import okio.Buffer;
 import okio.BufferedSink;
 import okio.ForwardingSink;
@@ -19,7 +19,7 @@ import okio.Sink;
  * 带上传进度处理
  *
  * @author 超悟空
- * @version 1.0 2015/11/4
+ * @version 2.0 2016/3/7
  * @since 1.0
  */
 public class ProgressRequestBody extends RequestBody {

@@ -3,11 +3,11 @@ package org.mobile.library.network.util;
  * Created by 超悟空 on 2015/11/27.
  */
 
-import com.squareup.okhttp.MediaType;
-import com.squareup.okhttp.ResponseBody;
 
 import java.io.IOException;
 
+import okhttp3.MediaType;
+import okhttp3.ResponseBody;
 import okio.Buffer;
 import okio.BufferedSource;
 import okio.ForwardingSource;
@@ -19,7 +19,7 @@ import okio.Source;
  * 带下载进度处理
  *
  * @author 超悟空
- * @version 1.0 2015/11/27
+ * @version 2.0 2016/3/7
  * @since 1.0
  */
 public class ProgressResponseBody extends ResponseBody {
@@ -57,12 +57,12 @@ public class ProgressResponseBody extends ResponseBody {
     }
 
     @Override
-    public long contentLength() throws IOException {
+    public long contentLength() {
         return responseBody.contentLength();
     }
 
     @Override
-    public BufferedSource source() throws IOException {
+    public BufferedSource source() {
         if (bufferedSource == null) {
             bufferedSource = Okio.buffer(source(responseBody.source()));
         }

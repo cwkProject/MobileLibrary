@@ -6,11 +6,6 @@ package org.mobile.library.network.communication;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
-
 import org.mobile.library.global.GlobalApplication;
 import org.mobile.library.network.util.AsyncCommunication;
 import org.mobile.library.network.util.NetworkCallback;
@@ -20,14 +15,19 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * 基于OkHttp实现的异步Get请求通讯组件类
  *
  * @author 超悟空
- * @version 1.0 2015/10/30
+ * @version 2.0 2016/3/7
  * @since 1.0
  */
 public class OkHttpGetAsyncCommunication implements AsyncCommunication<Map<String, String>,
@@ -37,11 +37,6 @@ public class OkHttpGetAsyncCommunication implements AsyncCommunication<Map<Strin
      * 日志标签前缀
      */
     private static final String LOG_TAG = "OkHttpGetAsyncCommunication.";
-
-    /**
-     * 当前网络请求标签
-     */
-    private String tag = UUID.randomUUID().toString();
 
     /**
      * 请求地址的完整路径
@@ -64,21 +59,27 @@ public class OkHttpGetAsyncCommunication implements AsyncCommunication<Map<Strin
     protected int readTimeout = -1;
 
     /**
-     * 设置读取超时时间
-     *
-     * @param readTimeout 超时时间，单位毫秒
+     * 写入超时时间
      */
+    protected int writeTimeout = -1;
+
+    /**
+     * 一个请求对象
+     */
+    private Call call = null;
+
     @Override
     public void setReadTimeout(int readTimeout) {
         Log.i(LOG_TAG + "setReadTimeout", "readTimeout is " + readTimeout);
         this.readTimeout = readTimeout;
     }
 
-    /**
-     * 设置超时时间
-     *
-     * @param timeout 超时时间，单位毫秒
-     */
+    @Override
+    public void setWriteTimeout(int writeTimeout) {
+        Log.i(LOG_TAG + "setWriteTimeout", "writeTimeout is " + writeTimeout);
+        this.writeTimeout = writeTimeout;
+    }
+
     @Override
     public void setTimeout(int timeout) {
         Log.i(LOG_TAG + "setTimeout", "timeout is " + timeout);
@@ -134,25 +135,32 @@ public class OkHttpGetAsyncCommunication implements AsyncCommunication<Map<Strin
         OkHttpClient okHttpClient = GlobalApplication.getOkHttpClient();
 
         // 创建请求
-        Request request = new Request.Builder().tag(tag).url(finalUrl).build();
+        Request request = new Request.Builder().url(finalUrl).build();
 
         // 判断是否需要克隆
-        if (timeout + readTimeout > -2) {
-            okHttpClient = okHttpClient.clone();
+        if (timeout + readTimeout + writeTimeout > -3) {
+            OkHttpClient.Builder builder = okHttpClient.newBuilder();
 
             if (timeout > -1) {
-                okHttpClient.setConnectTimeout(timeout, TimeUnit.MILLISECONDS);
+                builder.connectTimeout(timeout, TimeUnit.MILLISECONDS);
             }
 
             if (readTimeout > -1) {
-                okHttpClient.setReadTimeout(readTimeout, TimeUnit.MILLISECONDS);
+                builder.readTimeout(readTimeout, TimeUnit.MILLISECONDS);
             }
+
+            if (writeTimeout > -1) {
+                builder.writeTimeout(writeTimeout, TimeUnit.MILLISECONDS);
+            }
+
+            okHttpClient = builder.build();
         }
 
         // 发送请求
-        okHttpClient.newCall(request).enqueue(new Callback() {
+        call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
             @Override
-            public void onFailure(Request request, IOException e) {
+            public void onFailure(Call call, IOException e) {
                 Log.e(LOG_TAG + "Request", "onFailure IOException type is " + e.toString());
                 Log.e(LOG_TAG + "Request", "onFailure IOException message is " + e.getMessage());
 
@@ -162,7 +170,7 @@ public class OkHttpGetAsyncCommunication implements AsyncCommunication<Map<Strin
             }
 
             @Override
-            public void onResponse(Response response) throws IOException {
+            public void onResponse(Call call, Response response) throws IOException {
                 Log.i(LOG_TAG + "Request", "onResponse response code is " + response.code());
                 Log.i(LOG_TAG + "Request", "onResponse response message is " + response.message());
                 if (callback != null) {
@@ -225,6 +233,8 @@ public class OkHttpGetAsyncCommunication implements AsyncCommunication<Map<Strin
 
     @Override
     public void cancel() {
-        GlobalApplication.getOkHttpClient().cancel(tag);
+        if (call != null) {
+            call.cancel();
+        }
     }
 }

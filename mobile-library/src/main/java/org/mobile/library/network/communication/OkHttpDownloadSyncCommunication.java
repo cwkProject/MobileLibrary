@@ -6,12 +6,6 @@ package org.mobile.library.network.communication;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.squareup.okhttp.Interceptor;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
-import com.squareup.okhttp.ResponseBody;
-
 import org.mobile.library.global.GlobalApplication;
 import org.mobile.library.network.util.NetworkProgressListener;
 import org.mobile.library.network.util.NetworkRefreshProgressHandler;
@@ -24,8 +18,14 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+
+import okhttp3.Call;
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 /**
  * 基于OkHttp实现的同步文件下载请求通讯组件类，
@@ -33,7 +33,7 @@ import java.util.concurrent.TimeUnit;
  * 使用get请求访问下载地址
  *
  * @author 超悟空
- * @version 1.0 2015/11/30
+ * @version 2.0 2016/3/7
  * @since 1.0
  */
 public class OkHttpDownloadSyncCommunication implements SyncCommunication<Map<String, String>,
@@ -43,11 +43,6 @@ public class OkHttpDownloadSyncCommunication implements SyncCommunication<Map<St
      * 日志标签前缀
      */
     private static final String LOG_TAG = "OkHttpDownloadSyncCommunication.";
-
-    /**
-     * 当前网络请求标签
-     */
-    private String tag = UUID.randomUUID().toString();
 
     /**
      * 请求地址的完整路径
@@ -85,21 +80,27 @@ public class OkHttpDownloadSyncCommunication implements SyncCommunication<Map<St
     protected int readTimeout = 0;
 
     /**
-     * 设置读取超时时间
-     *
-     * @param readTimeout 超时时间，单位毫秒
+     * 写入超时时间
      */
+    protected int writeTimeout = -1;
+
+    /**
+     * 一个请求对象
+     */
+    private Call call = null;
+
     @Override
     public void setReadTimeout(int readTimeout) {
         Log.i(LOG_TAG + "setReadTimeout", "readTimeout is " + readTimeout);
         this.readTimeout = readTimeout;
     }
 
-    /**
-     * 设置超时时间
-     *
-     * @param timeout 超时时间，单位毫秒
-     */
+    @Override
+    public void setWriteTimeout(int writeTimeout) {
+        Log.i(LOG_TAG + "setWriteTimeout", "writeTimeout is " + writeTimeout);
+        this.writeTimeout = writeTimeout;
+    }
+
     @Override
     public void setTimeout(int timeout) {
         Log.i(LOG_TAG + "setTimeout", "timeout is " + timeout);
@@ -157,17 +158,26 @@ public class OkHttpDownloadSyncCommunication implements SyncCommunication<Map<St
         OkHttpClient okHttpClient = GlobalApplication.getOkHttpClient();
 
         // 创建请求
-        Request request = new Request.Builder().tag(tag).url(finalUrl).build();
+        Request request = new Request.Builder().url(finalUrl).build();
 
-        okHttpClient = okHttpClient.clone();
-        // 设置读取超时时间
+        OkHttpClient.Builder builder = okHttpClient.newBuilder();
+
+        // 判断是否需要设置超时时间
         if (timeout > -1) {
-            okHttpClient.setReadTimeout(readTimeout, TimeUnit.MILLISECONDS);
+            builder.connectTimeout(timeout, TimeUnit.MILLISECONDS);
+        }
+
+        if (readTimeout > -1) {
+            builder.readTimeout(readTimeout, TimeUnit.MILLISECONDS);
+        }
+
+        if (writeTimeout > -1) {
+            builder.writeTimeout(writeTimeout, TimeUnit.MILLISECONDS);
         }
 
         if (progressListener != null) {
             // 增加拦截器监听下载进度
-            okHttpClient.networkInterceptors().add(new Interceptor() {
+            builder.networkInterceptors().add(new Interceptor() {
                 @Override
                 public Response intercept(Chain chain) throws IOException {
                     Response originalResponse = chain.proceed(chain.request());
@@ -177,14 +187,12 @@ public class OkHttpDownloadSyncCommunication implements SyncCommunication<Map<St
             });
         }
 
-        // 判断是否需要设置超时
-        if (timeout > -1) {
-            okHttpClient.setConnectTimeout(timeout, TimeUnit.MILLISECONDS);
-        }
+        okHttpClient = builder.build();
 
         try {
             // 发起同步请求
-            Response response = okHttpClient.newCall(request).execute();
+            call = okHttpClient.newCall(request);
+            Response response = call.execute();
 
             Log.i(LOG_TAG + "Request", "response code is " + response.code());
             Log.i(LOG_TAG + "Request", "response message is " + response.message());
@@ -255,13 +263,7 @@ public class OkHttpDownloadSyncCommunication implements SyncCommunication<Map<St
 
     @Override
     public InputStream Response() {
-        try {
-            return response == null ? null : response.byteStream();
-        } catch (IOException e) {
-            Log.e(LOG_TAG + "Response", "IOException type is " + e.toString());
-            Log.e(LOG_TAG + "Response", "IOException message is " + e.getMessage());
-            return null;
-        }
+        return response == null ? null : response.byteStream();
     }
 
     @Override
@@ -270,16 +272,13 @@ public class OkHttpDownloadSyncCommunication implements SyncCommunication<Map<St
             return;
         }
 
-        try {
-            response.close();
-        } catch (IOException e) {
-            Log.e(LOG_TAG + "close", "IOException type is " + e.toString());
-            Log.e(LOG_TAG + "close", "IOException message is " + e.getMessage());
-        }
+        response.close();
     }
 
     @Override
     public void cancel() {
-        GlobalApplication.getOkHttpClient().cancel(tag);
+        if (call != null) {
+            call.cancel();
+        }
     }
 }

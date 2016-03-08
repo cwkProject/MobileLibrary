@@ -17,7 +17,8 @@
     <string name="button_cancel">取消</string>
     <string name="no_sdcard">SD卡不存在或不可写</string>
 
-    <string name="entire_country">全国</string>
+    <string name="all_country">全国</string>
+    <string name="any">不限</string>
     <string name="back">返回</string>
 
 </resources>
