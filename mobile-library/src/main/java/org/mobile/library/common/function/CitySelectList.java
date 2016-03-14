@@ -214,14 +214,17 @@ public class CitySelectList implements ISelectList<View, String> {
                 viewHolder.province = null;
                 viewHolder.city = null;
 
+                viewHolder.cityAdapter.clear();
+                viewHolder.districtAdapter.clear();
+
                 if (position == 0) {
                     // 点击了全国标签
+                    viewHolder.cityAdapter.notifyDataSetChanged();
+                    viewHolder.districtAdapter.notifyDataSetChanged();
                     // 选择完成
                     onFinish((String) parent.getItemAtPosition(0));
                 } else {
                     viewHolder.province = viewHolder.provinceList.get(position - 1);
-                    viewHolder.cityAdapter.clear();
-                    viewHolder.districtAdapter.clear();
 
                     // 选中的省份编码
                     int code = viewHolder.province.getCode();
@@ -250,15 +253,16 @@ public class CitySelectList implements ISelectList<View, String> {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 viewHolder.city = null;
+                viewHolder.districtAdapter.clear();
 
                 if (position == 0) {
                     // 点击了不限标签
+                    viewHolder.districtAdapter.notifyDataSetChanged();
                     // 选择完成
                     onFinish(viewHolder.province.getName());
                 } else {
                     viewHolder.city = viewHolder.cityMap.get(viewHolder.province.getCode()).get
                             (position - 1);
-                    viewHolder.districtAdapter.clear();
 
                     // 选中的城市编码
                     int code = viewHolder.city.getCode();
