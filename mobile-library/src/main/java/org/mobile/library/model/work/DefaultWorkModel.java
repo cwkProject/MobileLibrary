@@ -305,7 +305,7 @@ public abstract class DefaultWorkModel<Parameters, Result, DataModelType extends
                     @Override
                     public void onRefreshProgress(final long current, final long total, final
                     boolean done) {
-                        GlobalApplication.getGlobal().getUiHandler().post(new Runnable() {
+                        GlobalApplication.getUiHandler().post(new Runnable() {
                             @Override
                             public void run() {
                                 networkProgressListener.onRefreshProgress(current, total, done);
@@ -326,12 +326,12 @@ public abstract class DefaultWorkModel<Parameters, Result, DataModelType extends
             result) {
         Log.i(LOG_TAG + "onStopWork", "work stop");
         // 如果设置了回调接口则执行回调方法
-        if (this.workEndListener != null) {
+        if (!cancelMark && this.workEndListener != null) {
             Log.i(LOG_TAG + "onStopWork", "workEndListener.doEndWork(boolean , String , Object) " +
                     "is " + "invoked");
             if (isEndUiThread) {
                 // 发送到UI线程
-                GlobalApplication.getGlobal().getUiHandler().post(new Runnable() {
+                GlobalApplication.getUiHandler().post(new Runnable() {
                     @Override
                     public void run() {
                         workEndListener.doEndWork(state, message, result);
@@ -343,7 +343,19 @@ public abstract class DefaultWorkModel<Parameters, Result, DataModelType extends
             }
         }
 
+        if (!cancelMark) {
+            // 最后执行
+            onFinish();
+        }
+
         Log.i(LOG_TAG + "onStopWork", "work end");
+    }
+
+    /**
+     * 最后执行的一个方法，
+     * 即设置请求结果和返回数据之后，并且在回调任务发送后才执行此函数
+     */
+    protected void onFinish() {
     }
 
     /**

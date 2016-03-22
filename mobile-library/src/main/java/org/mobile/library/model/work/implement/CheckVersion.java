@@ -3,6 +3,7 @@ package org.mobile.library.model.work.implement;
  * Created by 超悟空 on 2015/4/23.
  */
 
+import org.mobile.library.global.ApplicationStaticValue;
 import org.mobile.library.model.data.implement.UpdateData;
 import org.mobile.library.model.work.DefaultWorkModel;
 import org.mobile.library.global.ApplicationVersion;
@@ -18,11 +19,6 @@ import org.mobile.library.global.GlobalApplication;
  * @since 1.0
  */
 public class CheckVersion extends DefaultWorkModel<String, String, UpdateData> {
-
-    /**
-     * 日志标签前缀
-     */
-    private static final String LOG_TAG = "CheckVersion.";
 
     @Override
     protected boolean onCheckParameters(String... parameters) {
@@ -43,7 +39,7 @@ public class CheckVersion extends DefaultWorkModel<String, String, UpdateData> {
     @Override
     protected void onParseSuccess(UpdateData data) {
         // 改变全局临时变量
-        ApplicationVersion config = GlobalApplication.getGlobal().getApplicationVersion();
+        ApplicationVersion config = GlobalApplication.getApplicationVersion();
         config.setLatestVersion(!data.isSuccess());
         config.setLatestVersionName(data.getVersionName());
         config.setLatestVersionUrl(data.getUrl());
@@ -84,7 +80,7 @@ public class CheckVersion extends DefaultWorkModel<String, String, UpdateData> {
      */
     private void sendBroadcast() {
         // 发送版本检查结果广播
-        BroadcastUtil.sendBroadcast(GlobalApplication.getGlobal(), BroadcastUtil
-                .APPLICATION_VERSION_STATE);
+        BroadcastUtil.sendBroadcast(GlobalApplication.getGlobal(), ApplicationStaticValue
+                .BroadcastAction.APPLICATION_VERSION_STATE);
     }
 }

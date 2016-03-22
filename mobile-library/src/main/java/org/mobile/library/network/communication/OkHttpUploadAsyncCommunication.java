@@ -12,18 +12,14 @@ import org.mobile.library.network.util.NetworkProgressListener;
 import org.mobile.library.network.util.NetworkRefreshProgressHandler;
 import org.mobile.library.network.util.NetworkTimeoutHandler;
 import org.mobile.library.network.util.ProgressRequestBody;
-import org.mobile.library.struct.FileInfo;
-import org.mobile.library.util.MIMEUtil;
+import org.mobile.library.network.util.RequestBodyBuilder;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
 import okhttp3.Callback;
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -123,7 +119,12 @@ public class OkHttpUploadAsyncCommunication implements AsyncCommunication<Map<St
         }
 
         // 拼接参数
-        RequestBody body = onBuildForm(sendData);
+        RequestBody body = RequestBodyBuilder.onBuildUploadForm(sendData);
+
+        // 考虑是否包装上传进度
+        if (progressListener != null) {
+            body = new ProgressRequestBody(body, progressListener);
+        }
 
         // 得到okHttpClient对象
         OkHttpClient okHttpClient = GlobalApplication.getOkHttpClient();
@@ -183,63 +184,6 @@ public class OkHttpUploadAsyncCommunication implements AsyncCommunication<Map<St
                 }
             }
         });
-    }
-
-    /**
-     * 创建提交表单
-     *
-     * @param sendData 要发送的参数对
-     *
-     * @return 装配好的表单
-     */
-    private RequestBody onBuildForm(Map<String, Object> sendData) {
-        MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
-
-        // 遍历sendData集合并加入请求参数对象
-        if (sendData != null && !sendData.isEmpty()) {
-            Log.i(LOG_TAG + "onBuildForm", "sendData count is " + sendData.size());
-            // 遍历并追加参数
-            for (Map.Entry<String, Object> dataEntry : sendData.entrySet()) {
-                Log.i(LOG_TAG + "onBuildForm", "pair is " + dataEntry.getKey() + "=" + dataEntry
-                        .getValue());
-
-                if (dataEntry.getValue() instanceof FileInfo) {
-                    // 参数是文件包装类型
-                    FileInfo value = (FileInfo) dataEntry.getValue();
-                    // 加入表单
-                    builder.addFormDataPart(dataEntry.getKey(), value.getFileName(), RequestBody
-                            .create(MediaType.parse(value.getMimeType()), value.getFile()));
-                    continue;
-                }
-
-                if (dataEntry.getValue() instanceof File) {
-                    // 参数是文件类型
-                    File value = (File) dataEntry.getValue();
-                    // 加入表单
-                    builder.addFormDataPart(dataEntry.getKey(), value.getName(), RequestBody
-                            .create(MediaType.parse(MIMEUtil.getMimeType(value)), value));
-                    continue;
-                }
-
-                // 处理剩余情况，包括String，Integer，Boolean等类型
-                String value = "";
-
-                if (dataEntry.getValue() != null) {
-                    // 参数不为空
-                    value += dataEntry.getValue();
-                }
-
-                // 加入表单
-                builder.addFormDataPart(dataEntry.getKey(), value);
-            }
-        }
-
-        // 考虑是否包装上传进度
-        if (progressListener != null) {
-            return new ProgressRequestBody(builder.build(), progressListener);
-        } else {
-            return builder.build();
-        }
     }
 
     @Override

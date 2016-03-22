@@ -7,8 +7,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-import org.mobile.library.global.GlobalApplication;
-
 import java.lang.reflect.Field;
 
 /**
@@ -187,19 +185,24 @@ public class PreferencesUtil {
             // 根据属性类型选择操作
             switch (field.getType().getName()) {
                 case "java.lang.String":
-                    field.set(obj, reader.getString(pre + "." + field.getName(), (String) field.get(obj)));
+                    field.set(obj, reader.getString(pre + "." + field.getName(), (String) field
+                            .get(obj)));
                     break;
                 case "int":
-                    field.setInt(obj, reader.getInt(pre + "." + field.getName(), field.getInt(obj)));
+                    field.setInt(obj, reader.getInt(pre + "." + field.getName(), field.getInt
+                            (obj)));
                     break;
                 case "boolean":
-                    field.setBoolean(obj, reader.getBoolean(pre + "." + field.getName(), field.getBoolean(obj)));
+                    field.setBoolean(obj, reader.getBoolean(pre + "." + field.getName(), field
+                            .getBoolean(obj)));
                     break;
                 case "float":
-                    field.setFloat(obj, reader.getFloat(pre + "." + field.getName(), field.getFloat(obj)));
+                    field.setFloat(obj, reader.getFloat(pre + "." + field.getName(), field
+                            .getFloat(obj)));
                     break;
                 case "long":
-                    field.setLong(obj, reader.getLong(pre + "." + field.getName(), field.getLong(obj)));
+                    field.setLong(obj, reader.getLong(pre + "." + field.getName(), field.getLong
+                            (obj)));
                     break;
             }
             Log.i(LOG_TAG + "push", "field value is " + field.get(obj));
@@ -247,7 +250,7 @@ public class PreferencesUtil {
      * @return SharedPreferences对象
      */
     public SharedPreferences getSharedPreferences() {
-        return this.context.getSharedPreferences(this.fileName, GlobalApplication.MODE_PRIVATE);
+        return this.context.getSharedPreferences(this.fileName, Context.MODE_PRIVATE);
     }
 
     /**

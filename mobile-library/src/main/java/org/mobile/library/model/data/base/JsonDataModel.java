@@ -4,13 +4,17 @@ package org.mobile.library.model.data.base;
  */
 
 import org.json.JSONObject;
+import org.mobile.library.global.GlobalApplication;
+import org.mobile.library.network.util.RequestSign;
+
+import java.util.Map;
 
 /**
  * 解析响应结果为Json字符串的数据模型基类<br>
  * 请求参数为纯文本内容
  *
  * @author 超悟空
- * @version 2.0 2015/11/3
+ * @version 3.0 2016/3/19
  * @since 1.0
  */
 public abstract class JsonDataModel extends StandardDataModel<JSONObject, String, String> {
@@ -23,5 +27,13 @@ public abstract class JsonDataModel extends StandardDataModel<JSONObject, String
     @Override
     protected final JSONObject onCreateHandle(String response) throws Exception {
         return new JSONObject(response);
+    }
+
+    @Override
+    protected void onRequestParametersSign(Map<String, String> dataMap) {
+        if (GlobalApplication.getApplicationAttribute().getAppCode() != null && GlobalApplication
+                .getApplicationAttribute().getAppToken() != null) {
+            RequestSign.signForText(dataMap);
+        }
     }
 }

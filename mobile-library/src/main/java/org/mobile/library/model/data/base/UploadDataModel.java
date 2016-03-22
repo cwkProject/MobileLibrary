@@ -14,7 +14,7 @@ import org.json.JSONObject;
  * 同时也可以发送普通的文本类型参数
  *
  * @author 超悟空
- * @version 1.0 2015/11/4
+ * @version 2.0 2016/3/19
  * @since 1.0
  */
 public abstract class UploadDataModel extends StandardDataModel<JSONObject, String, Object> {
@@ -27,5 +27,15 @@ public abstract class UploadDataModel extends StandardDataModel<JSONObject, Stri
     @Override
     protected final JSONObject onCreateHandle(String response) throws Exception {
         return new JSONObject(response);
+    }
+
+    /**
+     * 表示是否对请求参数进行校验签名
+     *
+     * @return true表示进行签名，默认为false
+     */
+    @Override
+    protected boolean onIsRequestSign() {
+        return false;
     }
 }

@@ -7,7 +7,6 @@ import android.util.Log;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
@@ -56,8 +55,6 @@ public class ParserUrlFileName {
             if (filename == null || filename.length() == 0) {
                 filename = absUrl.getFile();
             }
-        } catch (MalformedURLException e) {
-            Log.e(LOG_TAG + "getReallyFileName", e.getMessage());
         } catch (IOException e) {
             Log.e(LOG_TAG + "getReallyFileName", e.getMessage());
         } finally {

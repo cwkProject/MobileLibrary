@@ -6,11 +6,12 @@ package org.mobile.library.model.work.implement;
 import android.util.Log;
 
 import org.mobile.library.R;
+import org.mobile.library.global.ApplicationStaticValue;
+import org.mobile.library.global.GlobalApplication;
 import org.mobile.library.model.data.implement.LoginData;
 import org.mobile.library.model.work.DefaultWorkModel;
+import org.mobile.library.network.factory.NetworkType;
 import org.mobile.library.util.BroadcastUtil;
-import org.mobile.library.global.GlobalApplication;
-import org.mobile.library.global.LoginStatus;
 
 /**
  * 登录检查任务类
@@ -34,46 +35,28 @@ public class CheckLogin extends DefaultWorkModel<String, String, LoginData> {
 
     @Override
     protected String onTaskUri() {
-        return GlobalApplication.getGlobal().getLoginStatus().getLoginUrl();
+        return ApplicationStaticValue.Url.LOGIN_URL;
     }
 
     @Override
     protected void onParameterError(String... parameters) {
         Log.d(LOG_TAG + "onDoWork", "userName or password is null");
         setResult(GlobalApplication.getGlobal().getString(R.string.login_error_parameter));
-        sendBroadcast();
     }
 
     @Override
-    protected void onParseFailed(LoginData data) {
-        sendBroadcast();
+    protected String onParseSuccessSetMessage(boolean state, LoginData data) {
+        return data.getMessage();
     }
 
     @Override
-    protected String onParseFailedSetResult(LoginData data) {
-        return GlobalApplication.getGlobal().getString(R.string.login_error_field_required);
+    protected String onParseFailedSetMessage(LoginData data) {
+        return GlobalApplication.getGlobal().getString(R.string.login_error_parameter);
     }
 
     @Override
     protected String onRequestSuccessSetResult(LoginData data) {
-        // 登录相关临时参数
-        LoginStatus config = GlobalApplication.getGlobal().getLoginStatus();
-
-        // 登录成功设置参数
-        config.setLogin(true);
-        config.setUserID(data.getUserID());
-        config.setCodeCompany(data.getCompanyCode());
-        config.setCodeDepartment(data.getDepartmentCode());
-        config.setNickname(data.getNickname());
-
-        sendBroadcast();
-        return data.getMessage();
-    }
-
-    @Override
-    protected String onRequestFailedSetResult(LoginData data) {
-        sendBroadcast();
-        return data.getMessage();
+        return data.getUserID();
     }
 
     @Override
@@ -83,29 +66,18 @@ public class CheckLogin extends DefaultWorkModel<String, String, LoginData> {
         data.setUserName(parameters[0]);
         data.setPassword(parameters[1]);
 
-        if (parameters.length >= 3) {
-            // 设置应用标识
-            data.setAppName(parameters[2]);
-        }
-
-        if (parameters.length >= 4) {
-            // 设置设备UUID
-            data.setDeviceToken(parameters[3]);
-        }
-
-        if (parameters.length >= 5) {
-            // 设置设备类型
-            data.setDeviceType(parameters[4]);
-        }
-
         return data;
     }
 
-    /**
-     * 发送广播
-     */
-    private void sendBroadcast() {
-        BroadcastUtil.sendBroadcast(GlobalApplication.getGlobal(), BroadcastUtil
-                .MEMORY_STATE_LOGIN);
+    @Override
+    protected NetworkType onNetworkType() {
+        return NetworkType.HTTP_POST;
+    }
+
+    @Override
+    protected void onFinish() {
+        // 发送广播
+        BroadcastUtil.sendBroadcast(GlobalApplication.getGlobal(), ApplicationStaticValue
+                .BroadcastAction.LOGIN_STATE);
     }
 }

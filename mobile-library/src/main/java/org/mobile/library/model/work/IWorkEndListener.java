@@ -18,7 +18,7 @@ public interface IWorkEndListener<Result> {
      *
      * @param state   任务执行结果
      * @param message 结果消息
-     * @param result  结果数据
+     * @param data    结果数据
      */
-    void doEndWork(boolean state, String message, Result result);
+    void doEndWork(boolean state, String message, Result data);
 }

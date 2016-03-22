@@ -24,21 +24,6 @@ public class BroadcastUtil {
     private static final String LOG_TAG = "MemoryBroadcast.";
 
     /**
-     * 应用版本状态
-     */
-    public static final String APPLICATION_VERSION_STATE = "org.mobile.util.ApplicationVersion.latestVersion";
-
-    /**
-     * 登录状态
-     */
-    public static final String MEMORY_STATE_LOGIN = "org.mobile.util.LOGIN";
-
-    /**
-     * 用户标识状态
-     */
-    public static final String MEMORY_STATE_USER_ID = "org.mobile.util.userID";
-
-    /**
      * 发送广播
      *
      * @param context 上下文

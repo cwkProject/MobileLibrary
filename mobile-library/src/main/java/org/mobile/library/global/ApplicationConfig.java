@@ -18,16 +18,6 @@ import org.mobile.library.model.config.PersistenceConfigModel;
 public class ApplicationConfig extends PersistenceConfigModel {
 
     /**
-     * 标记是否保存用户名密码
-     */
-    private boolean loginSave = false;
-
-    /**
-     * 标记是否自动登录
-     */
-    private boolean loginAuto = false;
-
-    /**
      * 用户名
      */
     private String userName = null;
@@ -52,46 +42,8 @@ public class ApplicationConfig extends PersistenceConfigModel {
     @Override
     protected void onDefault() {
         super.onDefault();
-        loginSave = false;
-        loginAuto = false;
         userName = null;
         password = null;
-    }
-
-    /**
-     * 判断是否保存密码
-     *
-     * @return 返回标记
-     */
-    public boolean isLoginSave() {
-        return loginSave;
-    }
-
-    /**
-     * 设置记住密码状态
-     *
-     * @param flag 标记
-     */
-    public void setLoginSave(boolean flag) {
-        this.loginSave = flag;
-    }
-
-    /**
-     * 判断是否自动登录
-     *
-     * @return 返回标记
-     */
-    public boolean isLoginAuto() {
-        return loginAuto;
-    }
-
-    /**
-     * 设置自动登录状态
-     *
-     * @param flag 标记
-     */
-    public void setLoginAuto(boolean flag) {
-        this.loginAuto = flag;
     }
 
     /**

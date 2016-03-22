@@ -9,39 +9,36 @@ import org.mobile.library.model.config.TemporaryConfigModel;
  * 应用相关参数
  *
  * @author 超悟空
- * @version 2.0 2015/10/30
+ * @version 3.0 2016/3/19
  * @since 1.0
  */
 public class ApplicationAttribute extends TemporaryConfigModel {
 
     /**
-     * 设备UUID
+     * 设备类型，默认{@link org.mobile.library.global.ApplicationStaticValue.AppConfig#DEVICE_TYPE}
      */
-    private String deviceToken = null;
-
-    /**
-     * 设备类型，默认{@link ApplicationStaticValue#DEVICE_TYPE}
-     */
-    private String deviceType = ApplicationStaticValue.DEVICE_TYPE;
+    private String deviceType = ApplicationStaticValue.AppConfig.DEVICE_TYPE;
 
     /**
      * 应用标识
      */
-    private String appName = null;
+    private String appCode = null;
 
     /**
-     * 设置设备UUID
-     *
-     * @param deviceToken 唯一标识
+     * 应用令牌
      */
-    public void setDeviceToken(String deviceToken) {
-        this.deviceToken = deviceToken;
-    }
+    private String appToken = null;
+
+    /**
+     * 标识是否在全局范围内对应用的网络请求进行签名
+     */
+    private boolean requestSign = false;
 
     /**
      * 设置设备类型
      *
-     * @param deviceType 设备类型码，默认{@link ApplicationStaticValue#DEVICE_TYPE}
+     * @param deviceType 设备类型码，默认{@link org.mobile.library.global.ApplicationStaticValue
+     * .AppConfig#DEVICE_TYPE}
      */
     public void setDeviceType(String deviceType) {
         this.deviceType = deviceType;
@@ -50,25 +47,17 @@ public class ApplicationAttribute extends TemporaryConfigModel {
     /**
      * 设置应用标识
      *
-     * @param appName 应用标识码
+     * @param appCode 应用标识码
      */
-    public void setAppName(String appName) {
-        this.appName = appName;
-    }
-
-    /**
-     * 获取设备UUID
-     *
-     * @return 唯一标识
-     */
-    public String getDeviceToken() {
-        return deviceToken;
+    public void setAppCode(String appCode) {
+        this.appCode = appCode;
     }
 
     /**
      * 获取设备类型
      *
-     * @return 设备类型码，默认{@link ApplicationStaticValue#DEVICE_TYPE}
+     * @return 设备类型码，默认{@link org.mobile.library.global.ApplicationStaticValue
+     * .AppConfig#DEVICE_TYPE}
      */
     public String getDeviceType() {
         return deviceType;
@@ -79,8 +68,44 @@ public class ApplicationAttribute extends TemporaryConfigModel {
      *
      * @return 应用标识码
      */
-    public String getAppName() {
-        return appName;
+    public String getAppCode() {
+        return appCode;
+    }
+
+    /**
+     * 获取应用令牌
+     *
+     * @return 应用令牌
+     */
+    public String getAppToken() {
+        return appToken;
+    }
+
+    /**
+     * 设置应用令牌
+     *
+     * @param appToken 应用令牌
+     */
+    public void setAppToken(String appToken) {
+        this.appToken = appToken;
+    }
+
+    /**
+     * 是否对网络请求进行签名
+     *
+     * @return true表示需要签名
+     */
+    public boolean isRequestSign() {
+        return requestSign;
+    }
+
+    /**
+     * 设置应用全局范围内是否对网络请求进行签名
+     *
+     * @param requestSign true表示需要签名，默认为false
+     */
+    public void setRequestSign(boolean requestSign) {
+        this.requestSign = requestSign;
     }
 
     /**
@@ -92,8 +117,8 @@ public class ApplicationAttribute extends TemporaryConfigModel {
 
     @Override
     protected void onCreate() {
-        setDeviceType(ApplicationStaticValue.DEVICE_TYPE);
-        setDeviceToken(null);
-        setAppName(null);
+        setDeviceType(ApplicationStaticValue.AppConfig.DEVICE_TYPE);
+        setAppCode(null);
+        setAppToken(null);
     }
 }

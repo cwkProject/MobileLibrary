@@ -9,16 +9,20 @@ import org.json.JSONObject;
  * 根据现有网络协议简化的数据模型
  *
  * @author 超悟空
- * @version 1.0 2016/3/8
+ * @version 2.0 2016/3/19
  * @since 1.0
  */
 public abstract class SimpleJsonDataModel extends JsonDataModel {
+
+    /**
+     * 服务响应的业务数据的参数默认取值标签
+     */
+    protected static final String DATA_TAG = "Data";
+
     @Override
     protected boolean onRequestResult(JSONObject handleResult) throws Exception {
         // 得到执行结果
-        String resultState = handleResult.getString("IsSuccess");
-
-        return resultState != null && "yes".equals(resultState.trim().toLowerCase());
+        return handleResult.getBoolean("IsSuccess");
     }
 
     @Override
@@ -28,7 +32,7 @@ public abstract class SimpleJsonDataModel extends JsonDataModel {
 
     @Override
     protected void onRequestSuccess(JSONObject handleResult) throws Exception {
-        if (!handleResult.isNull("Data")) {
+        if (!handleResult.isNull(DATA_TAG)) {
             onExtractData(handleResult);
         }
     }

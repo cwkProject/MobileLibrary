@@ -7,7 +7,10 @@ import android.content.Context;
 import android.util.Log;
 
 import org.mobile.library.global.ApplicationAttribute;
+import org.mobile.library.global.ApplicationStaticValue;
 import org.mobile.library.global.GlobalApplication;
+import org.mobile.library.global.LoginStatus;
+import org.mobile.library.model.work.WorkBack;
 import org.mobile.library.model.work.implement.CheckLogin;
 import org.mobile.library.util.BroadcastUtil;
 
@@ -29,31 +32,42 @@ public class AutoLogin {
      * 检测自动登录，
      * 如果应用保存了自动登录状态则会执行自动登录，
      * 如果未保存则不会执行，
-     * 执行结束后会发送广播{@link BroadcastUtil#MEMORY_STATE_LOGIN},
+     * 执行结束后会发送广播{@link org.mobile.library.global.ApplicationStaticValue
+     * .BroadcastAction#LOGIN_STATE},
      * 如果需要配置登录参数则提前在{@link ApplicationAttribute}中设置
      *
      * @param appCode 应用代号
      */
     public static void checkAutoLogin(Context context, String appCode) {
-        Log.i(LOG_TAG + "autoLogin", "autoLogin() is invoked");
+        Log.i(LOG_TAG + "checkAutoLogin", "checkAutoLogin is invoked");
 
-        // 判断是否自动登录
-        if (GlobalApplication.getApplicationConfig().isLoginAuto()) {
-            Log.i(LOG_TAG + "autoLogin", "auto login");
+        // 判断是否有用户名密码
+        if (GlobalApplication.getApplicationConfig().getUserName() != null && GlobalApplication
+                .getApplicationConfig().getPassword() != null) {
+            Log.i(LOG_TAG + "checkAutoLogin", "auto login");
 
             // 进行登录验证
             CheckLogin login = new CheckLogin();
-            // 执行登录任务
-            Log.i(LOG_TAG + "autoLogin", "auto login begin");
 
+            login.setWorkEndListener(new WorkBack<String>() {
+                @Override
+                public void doEndWork(boolean state, String data) {
+                    LoginStatus loginStatus = GlobalApplication.getLoginStatus();
+
+                    loginStatus.setLogin(state);
+                    loginStatus.setUserID(data);
+                }
+            }, false);
+
+            // 执行登录任务
+            Log.i(LOG_TAG + "checkAutoLogin", "auto login begin");
             login.beginExecute(GlobalApplication.getApplicationConfig().getUserName(),
-                    GlobalApplication.getApplicationConfig().getPassword(), appCode,
-                    GlobalApplication.getApplicationAttribute().getDeviceToken(),
-                    GlobalApplication.getApplicationAttribute().getDeviceType());
+                    GlobalApplication.getApplicationConfig().getPassword());
         } else {
-            Log.i(LOG_TAG + "autoLogin", "no auto login");
+            Log.i(LOG_TAG + "checkAutoLogin", "no auto login");
             // 发送登录状态改变广播，标识一个加载动作结束
-            BroadcastUtil.sendBroadcast(context, BroadcastUtil.MEMORY_STATE_LOGIN);
+            BroadcastUtil.sendBroadcast(context, ApplicationStaticValue.BroadcastAction
+                    .LOGIN_STATE);
         }
     }
 }

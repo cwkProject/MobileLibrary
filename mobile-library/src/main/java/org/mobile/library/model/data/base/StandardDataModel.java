@@ -5,7 +5,9 @@ package org.mobile.library.model.data.base;
 
 import android.util.Log;
 
+import org.mobile.library.global.GlobalApplication;
 import org.mobile.library.model.data.IDefaultDataModel;
+import org.mobile.library.network.util.RequestSign;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,7 +20,7 @@ import java.util.Map;
  * @param <Value>    要序列化的Map值类型
  *
  * @author 超悟空
- * @version 1.0 2015/11/4
+ * @version 2.0 2016/3/19
  * @since 1.0
  */
 public abstract class StandardDataModel<Handle, Response, Value> implements
@@ -72,6 +74,13 @@ public abstract class StandardDataModel<Handle, Response, Value> implements
         // 调用填充方法
         onFillRequestParameters(dataMap);
         Log.i(LOG_TAG + "serialization", "serialization end");
+
+        if (onIsRequestSign()) {
+            // 对参数进行签名
+            Log.i(LOG_TAG + "serialization", "parameters sign");
+            onRequestParametersSign(dataMap);
+        }
+
         return dataMap;
     }
 
@@ -201,5 +210,30 @@ public abstract class StandardDataModel<Handle, Response, Value> implements
      */
     protected void onRequestFailed(Handle handleResult) throws Exception {
 
+    }
+
+    /**
+     * 表示是否对请求参数进行校验签名
+     *
+     * @return true表示进行签名，默认为true
+     */
+    protected boolean onIsRequestSign() {
+        return true;
+    }
+
+    /**
+     * 对参数进行签名，
+     * 需要在应用启动时对环境变量赋值，
+     * {@link org.mobile.library.global.ApplicationAttribute#setAppCode(String)}，
+     * {@link org.mobile.library.global.ApplicationAttribute#setAppToken(String)}
+     *
+     * @param dataMap 要发送的数据
+     */
+    protected void onRequestParametersSign(Map<String, Value> dataMap) {
+        if (GlobalApplication.getApplicationAttribute().getAppCode() != null && GlobalApplication
+                .getApplicationAttribute().getAppToken() != null) {
+            //noinspection unchecked
+            RequestSign.sign((Map<String, Object>) dataMap);
+        }
     }
 }

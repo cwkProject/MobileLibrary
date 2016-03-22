@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:layout_marginTop="@dimen/layout_toolbar_top_margin"
+              android:orientation="vertical">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/layout_default_horizontal_padding"
+        android:paddingRight="@dimen/layout_default_horizontal_padding">
+
+        <LinearLayout
+            android:id="@+id/register_content_layout_user_name_linearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/register_content_layout_user_name_editText"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/layout_default_mini_height"
+                android:background="@android:color/white"
+                android:hint="@string/login_user_name_hint"
+                android:singleLine="true"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/darker_gray"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/register_content_layout_mobile_linearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/register_content_layout_mobile_editText"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/layout_default_mini_height"
+                android:background="@android:color/white"
+                android:hint="@string/login_mobile_hint"
+                android:inputType="number"
+                android:maxLength="11"
+                android:singleLine="true"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/darker_gray"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/register_content_layout_verification_code_editText"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/layout_default_mini_height"
+                    android:layout_weight="1"
+                    android:background="@android:color/white"
+                    android:hint="@string/login_verification_code_hint"
+                    android:inputType="number"
+                    android:singleLine="true"/>
+
+                <android.support.v7.widget.AppCompatButton
+                    android:id="@+id/register_content_layout_verification_code_send_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/layout_default_spacing"
+                    android:text="@string/send_verification_code_button"
+                    android:textColor="@android:color/white"
+                    app:backgroundTint="?colorPrimary"/>
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/darker_gray"/>
+
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/register_content_layout_password1_editText"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/layout_default_mini_height"
+            android:background="@android:color/white"
+            android:hint="@string/password_edit_hint"
+            android:inputType="textPassword"
+            android:singleLine="true"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"/>
+
+        <EditText
+            android:id="@+id/register_content_layout_password2_editText"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/layout_default_mini_height"
+            android:background="@android:color/white"
+            android:hint="@string/password_edit_hint"
+            android:inputType="textPassword"
+            android:singleLine="true"/>
+
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"/>
+
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/register_content_layout_register_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/layout_default_horizontal_padding"
+        android:layout_marginRight="@dimen/layout_default_horizontal_padding"
+        android:layout_marginTop="@dimen/layout_default_vertical_margin"
+        android:onClick="onLoginClick"
+        android:text="@string/login_button"
+        android:textColor="@android:color/white"
+        app:backgroundTint="?colorPrimary"/>
+
+</LinearLayout>

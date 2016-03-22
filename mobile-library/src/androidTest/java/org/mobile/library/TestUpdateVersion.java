@@ -40,8 +40,8 @@ public class TestUpdateVersion {
         });
 
         // 执行任务
-        checkVersion.execute(ApplicationStaticValue.DEVICE_TYPE, "HMW", ApplicationStaticValue
-                .UPDATE_REQUEST_URL);
+        checkVersion.execute(ApplicationStaticValue.AppConfig.DEVICE_TYPE, "HMW", ApplicationStaticValue
+                .Url.UPDATE_REQUEST_URL);
 
         assertEquals(false, GlobalApplication.getApplicationVersion().isLatestVersion());
         assertNotNull(GlobalApplication.getApplicationVersion().getLatestVersionUrl());

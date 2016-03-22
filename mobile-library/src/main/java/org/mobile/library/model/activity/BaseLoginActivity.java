@@ -3,23 +3,23 @@ package org.mobile.library.model.activity;
  * Created by 超悟空 on 2015/6/11.
  */
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import org.mobile.library.R;
 import org.mobile.library.common.dialog.SimpleDialog;
-import org.mobile.library.global.ApplicationAttribute;
 import org.mobile.library.global.ApplicationConfig;
 import org.mobile.library.global.GlobalApplication;
-import org.mobile.library.model.work.WorkBack;
+import org.mobile.library.global.LoginStatus;
+import org.mobile.library.model.work.IWorkEndListener;
 import org.mobile.library.model.work.implement.CheckLogin;
 
 import java.util.Timer;
@@ -32,11 +32,7 @@ import java.util.TimerTask;
  * @version 1.0 2015/6/11
  * @since 1.0
  */
-public abstract class BaseLoginActivity extends Activity {
-    /**
-     * 日志标签前缀
-     */
-    private static final String LOG_TAG = "BaseLoginActivity.";
+public abstract class BaseLoginActivity extends AppCompatActivity {
 
     /**
      * 用户名编辑框
@@ -49,52 +45,9 @@ public abstract class BaseLoginActivity extends Activity {
     private EditText passwordEditText = null;
 
     /**
-     * 保存密码复选框
-     */
-    private CheckBox loginSaveCheck = null;
-
-    /**
-     * 自动登陆复选框
-     */
-    private CheckBox loginAutoCheck = null;
-
-    /**
-     * 保存密码复选框ID
-     */
-    private int loginSaveCheckID = 0;
-
-    /**
-     * 自动登陆复选框ID
-     */
-    private int loginAutoCheckID = 0;
-
-    /**
      * 进度条
      */
-    private ProgressDialog progressDialog = null;
-
-    /**
-     * 本地广播管理器
-     */
-    private LocalBroadcastManager localBroadcastManager = null;
-
-    /**
-     * 设置保存密码复选框ID
-     *
-     * @param loginSaveCheckID 保存密码复选框ID
-     */
-    protected void setLoginSaveCheckID(int loginSaveCheckID) {
-        this.loginSaveCheckID = loginSaveCheckID;
-    }
-
-    /**
-     * 设置自动登录复选框ID
-     *
-     * @param loginAutoCheckID 自动登录复选框ID
-     */
-    protected void setLoginAutoCheckID(int loginAutoCheckID) {
-        this.loginAutoCheckID = loginAutoCheckID;
-    }
+    protected ProgressDialog progressDialog = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,28 +64,99 @@ public abstract class BaseLoginActivity extends Activity {
     /**
      * 提供登录activity布局ID
      *
-     * @return activity布局文件ID
+     * @return activity布局文件ID，默认为{@link R.layout#activity_login}
      */
-    protected abstract int onActivityLoginLayout();
+    protected int onActivityLoginLayout() {
+        return R.layout.activity_login;
+    }
 
     /**
      * 初始化界面
      */
     private void init() {
-        // 初始化复选框
-        initCheck();
+        // 初始化Toolbar
+        initToolbar();
         // 初始化编辑框
         initEdit();
         // 初始化自定义登录按钮事件
         onCustomLoginButton();
+        // 初始化自定义注册按钮
+        onCustomRegister();
         // 自定义界面初始化
         onInitCustomView();
     }
 
     /**
-     * 初始化自定义登录按钮事件
+     * 初始化标题栏
+     */
+    protected void initToolbar() {
+        // 得到Toolbar标题栏
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        // 关联ActionBar
+        setSupportActionBar(toolbar);
+
+        if (onSetCenterTitle()) {
+            // 标题居中
+            // 取消原actionBar标题
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+            // 得到标题文本
+            TextView titleTextView = (TextView) findViewById(R.id.toolbar_title);
+
+            titleTextView.setText(R.string.title_login);
+
+            titleTextView.setVisibility(View.VISIBLE);
+        } else {
+            setTitle(R.string.title_login);
+        }
+
+        if (onSetHasNavigation()) {
+            // 显示后退
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // 与返回键相同
+                    onBackPressed();
+                }
+            });
+        }
+    }
+
+    /**
+     * 设置是否居中显示标题
+     *
+     * @return true表示居中，默认为false
+     */
+    protected boolean onSetCenterTitle() {
+        return false;
+    }
+
+    /**
+     * 设置是否带有返回导航
+     *
+     * @return true表示开启返回导航，默认为false
+     */
+    protected boolean onSetHasNavigation() {
+        return false;
+    }
+
+    /**
+     * 初始化自定义登录按钮事件，
+     * 登录按钮默认为{@link R.id#login_content_layout_login_button}，
+     * 按钮类型{@link android.support.v7.widget.AppCompatButton}
      */
     protected void onCustomLoginButton() {
+    }
+
+
+    /**
+     * 初始化自定义注册按钮
+     */
+    protected void onCustomRegister() {
+
     }
 
     /**
@@ -142,75 +166,22 @@ public abstract class BaseLoginActivity extends Activity {
     }
 
     /**
-     * 提供保存密码和自动登录复选框ID，
-     * 重写方法并在方法体中使用以下方法赋值
-     * {@link #setLoginSaveCheckID(int)},
-     * {@link #setLoginAutoCheckID(int)}
-     */
-    protected void onLoginCheckID() {
-    }
-
-    /**
-     * 初始化复选框
-     */
-    private void initCheck() {
-
-        // 尝获取复选框ID
-        onLoginCheckID();
-
-        if (loginSaveCheckID > 0) {
-            // 获取保存密码复选框
-            loginSaveCheck = (CheckBox) findViewById(loginSaveCheckID);
-            // 设置复选框初状态
-            loginSaveCheck.setChecked(GlobalApplication.getApplicationConfig().isLoginSave());
-        }
-
-        if (loginAutoCheckID > 0) {
-            // 获取自动登录复选框
-            loginAutoCheck = (CheckBox) findViewById(loginAutoCheckID);
-            // 设置复选框初状态
-            loginAutoCheck.setChecked(GlobalApplication.getApplicationConfig().isLoginAuto());
-        }
-
-        // 如果同时存在
-        if (loginSaveCheck != null && loginAutoCheck != null) {
-
-            // 设置监听器使两个复选框联动
-            loginSaveCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if (!isChecked) {
-                        loginAutoCheck.setChecked(false);
-                    }
-                }
-            });
-
-            loginAutoCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if (isChecked) {
-                        loginSaveCheck.setChecked(true);
-                    }
-                }
-            });
-        }
-    }
-
-    /**
      * 提供用户名编辑框ID
      *
-     * @return 用户名编辑框ID
+     * @return 用户名编辑框ID，默认为{@link R.id#login_content_layout_user_name_editText}
      */
-    protected abstract int onUserNameEditTextID();
+    protected int onUserNameEditTextID() {
+        return R.id.login_content_layout_user_name_editText;
+    }
 
     /**
      * 提供密码编辑框ID
      *
-     * @return 密码编辑框ID
+     * @return 密码编辑框ID，默认为{@link R.id#login_content_layout_password_editText}
      */
-    protected abstract int onPasswordEditTextID();
+    protected int onPasswordEditTextID() {
+        return R.id.login_content_layout_password_editText;
+    }
 
     /**
      * 初始化编辑框
@@ -225,14 +196,8 @@ public abstract class BaseLoginActivity extends Activity {
             // 填充用户
             userNameEditText.setText(GlobalApplication.getApplicationConfig().getUserName());
 
-            if ((loginSaveCheck != null && loginSaveCheck.isChecked()) || (loginAutoCheck != null
-                    && loginAutoCheck.isChecked())) {
-                // 记住密码状态或自动登录状态，填充密码
-                passwordEditText.setText(GlobalApplication.getApplicationConfig().getPassword());
-            } else {
-                // 让密码框拥有焦点
-                setSoftInput(passwordEditText);
-            }
+            // 让密码框拥有焦点
+            setSoftInput(passwordEditText);
         } else {
             // 让用户名框拥有焦点
             setSoftInput(userNameEditText);
@@ -265,52 +230,34 @@ public abstract class BaseLoginActivity extends Activity {
     }
 
     /**
-     * 登录按钮点击事件触发时最先执行
+     * 登录成功后执行，设置跳转
      *
-     * @param userNameEditText 用户名编辑框
-     * @param passwordEditText 密码编辑框
+     * @param message 成功消息
      */
-    protected void onPreClickLoginButton(EditText userNameEditText, EditText passwordEditText) {
-
-    }
+    protected abstract void onLoginSuccess(String message);
 
     /**
-     * 登录成功后执行
-     */
-    protected void onPostClickLoginButton() {
-    }
-
-    /**
-     * 设置应用相关属性，
-     * 用于填充登录请求参数
-     */
-    protected void onApplicationAttribute(ApplicationAttribute applicationAttribute) {
-
-    }
-
-    /**
-     * 设置应用标识
+     * 登录失败后执行
      *
-     * @return 应用标识串
+     * @param message 失败消息
      */
-    protected abstract String onAppName();
+    protected void onLoginFailed(String message) {
+        SimpleDialog.showDialog(this, message);
+    }
 
     /**
-     * 登录按钮
+     * 登录按钮点击事件
      *
      * @param view 按钮
      */
-    public void LoginButton(View view) {
-
-        // 执行前置事件
-        onPreClickLoginButton(userNameEditText, passwordEditText);
+    public void onLoginClick(View view) {
 
         // 获取用户名和密码
         final String userName = userNameEditText.getText().toString();
         final String password = passwordEditText.getText().toString();
 
         // 判断是否输入用户名和密码
-        if (userName.length() == 0 || password.length() == 0) {
+        if (TextUtils.isEmpty(userName) || TextUtils.isEmpty(password)) {
             return;
         }
 
@@ -318,39 +265,31 @@ public abstract class BaseLoginActivity extends Activity {
         CheckLogin login = new CheckLogin();
 
         // 设置回调监听
-        login.setWorkEndListener(new WorkBack<String>() {
+        login.setWorkEndListener(new IWorkEndListener<String>() {
             @Override
-            public void doEndWork(boolean state, String data) {
-                // 关闭进度条
-                progressDialog.cancel();
+            public void doEndWork(boolean state, String message, String data) {
+
+                if (progressDialog != null && progressDialog.isShowing()) {
+                    // 关闭进度条
+                    progressDialog.cancel();
+                }
+
+                LoginStatus loginStatus = GlobalApplication.getLoginStatus();
+
+                loginStatus.setLogin(state);
+                loginStatus.setUserID(data);
+
+                // 登录完成执行
+                onLoginData(userName, password, state, data);
 
                 if (state) {
                     // 登录成功
 
-                    // 保存当前设置
-                    ApplicationConfig config = GlobalApplication.getApplicationConfig();
-                    config.setUserName(userName);
-                    if (loginAutoCheck != null) {
-                        config.setLoginAuto(loginAutoCheck.isChecked());
-                    }
-                    if (loginSaveCheck != null) {
-                        config.setLoginSave(loginSaveCheck.isChecked());
-                    }
-
-                    // 检查是否要保存用户名和密码
-                    if ((loginSaveCheck != null && loginSaveCheck.isChecked()) || (loginAutoCheck
-                            != null && loginAutoCheck.isChecked())) {
-                        config.setPassword(password);
-                    }
-
-                    // 保存设置
-                    config.Save();
-
                     // 执行登录成功后的事件
-                    onPostClickLoginButton();
+                    onLoginSuccess(message);
                 } else {
                     // 登录失败
-                    SimpleDialog.showDialog(BaseLoginActivity.this, data);
+                    onLoginFailed(message);
                 }
             }
         });
@@ -358,25 +297,52 @@ public abstract class BaseLoginActivity extends Activity {
         // 打开旋转进度条
         startProgressDialog();
 
-        // 设置应用相关参数
-        onApplicationAttribute(GlobalApplication.getApplicationAttribute());
-
         // 执行登录任务
-        login.beginExecute(userName, password, onAppName(), GlobalApplication
-                .getApplicationAttribute().getDeviceToken(), GlobalApplication
-                .getApplicationAttribute().getDeviceType());
+        login.beginExecute(userName, password);
+    }
+
+    /**
+     * 登录执行结果装配，
+     * 用于保存用户名密码等
+     *
+     * @param userName 用户名
+     * @param password 密码
+     * @param state    登录结果
+     * @param data     用户id
+     */
+    protected void onLoginData(String userName, String password, boolean state, String data) {
+        if (state) {
+            // 登录成功
+
+            // 保存当前设置
+            ApplicationConfig config = GlobalApplication.getApplicationConfig();
+            config.setUserName(userName);
+            config.setPassword(password);
+
+            // 保存设置
+            config.Save();
+        }
     }
 
     /**
      * 打开进度条
      */
-    private void startProgressDialog() {
+    protected void startProgressDialog() {
         progressDialog = new ProgressDialog(this);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         // 设置提醒
         progressDialog.setMessage(getString(R.string.login_loading));
         progressDialog.setCancelable(true);
         progressDialog.show();
+    }
+
+    /**
+     * 注册按钮点击事件
+     *
+     * @param view 按钮
+     */
+    public void onRegisterClick(View view) {
+
     }
 }
 

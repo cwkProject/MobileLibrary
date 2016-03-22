@@ -100,9 +100,9 @@ public class VersionUpdateService extends Service {
         }
         // 下载并保存目标文件id
         long id = downloadManager.enqueue(request);
-        getSharedPreferences(ApplicationStaticValue.APPLICATION_CONFIG_FILE_NAME, Context
-                .MODE_PRIVATE).edit().putLong(ApplicationStaticValue.UPDATE_APP_FILE_ID_TAG, id)
-                .commit();
+        getSharedPreferences(ApplicationStaticValue.AppConfig.APPLICATION_CONFIG_FILE_NAME,
+                Context.MODE_PRIVATE).edit().putLong(ApplicationStaticValue.AppConfig
+                .UPDATE_APP_FILE_ID_TAG, id).commit();
     }
 
     /**

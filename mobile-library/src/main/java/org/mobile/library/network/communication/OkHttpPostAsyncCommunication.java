@@ -9,6 +9,7 @@ import org.mobile.library.global.GlobalApplication;
 import org.mobile.library.network.util.AsyncCommunication;
 import org.mobile.library.network.util.NetworkCallback;
 import org.mobile.library.network.util.NetworkTimeoutHandler;
+import org.mobile.library.network.util.RequestBodyBuilder;
 
 import java.io.IOException;
 import java.util.Map;
@@ -16,7 +17,6 @@ import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
 import okhttp3.Callback;
-import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -111,7 +111,7 @@ public class OkHttpPostAsyncCommunication implements AsyncCommunication<Map<Stri
         }
 
         // 拼接参数
-        RequestBody body = onBuildForm(sendData);
+        RequestBody body = RequestBodyBuilder.onBuildPostForm(sendData);
 
         // 得到okHttpClient对象
         OkHttpClient okHttpClient = GlobalApplication.getOkHttpClient();
@@ -171,33 +171,6 @@ public class OkHttpPostAsyncCommunication implements AsyncCommunication<Map<Stri
                 }
             }
         });
-    }
-
-    /**
-     * 创建提交表单
-     *
-     * @param sendData 要发送的参数对
-     *
-     * @return 装配好的表单
-     */
-    private RequestBody onBuildForm(Map<String, String> sendData) {
-        FormBody.Builder builder = new FormBody.Builder();
-
-        // 遍历sendData集合并加入请求参数对象
-        if (sendData != null && !sendData.isEmpty()) {
-            Log.i(LOG_TAG + "onBuildForm", "sendData count is " + sendData.size());
-
-            // 遍历并追加参数
-            for (Map.Entry<String, String> dataEntry : sendData.entrySet()) {
-                Log.i(LOG_TAG + "onBuildForm", "pair is " + dataEntry.getKey() + "=" + dataEntry
-                        .getValue());
-                // 加入表单
-                builder.add(dataEntry.getKey(), dataEntry.getValue() == null ? "" : dataEntry
-                        .getValue());
-            }
-        }
-
-        return builder.build();
     }
 
     @Override

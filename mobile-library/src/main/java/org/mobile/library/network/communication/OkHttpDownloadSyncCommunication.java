@@ -3,7 +3,6 @@ package org.mobile.library.network.communication;
  * Created by 超悟空 on 2015/11/30.
  */
 
-import android.support.annotation.NonNull;
 import android.util.Log;
 
 import org.mobile.library.global.GlobalApplication;
@@ -11,12 +10,11 @@ import org.mobile.library.network.util.NetworkProgressListener;
 import org.mobile.library.network.util.NetworkRefreshProgressHandler;
 import org.mobile.library.network.util.NetworkTimeoutHandler;
 import org.mobile.library.network.util.ProgressResponseBody;
+import org.mobile.library.network.util.RequestBodyBuilder;
 import org.mobile.library.network.util.SyncCommunication;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -148,7 +146,7 @@ public class OkHttpDownloadSyncCommunication implements SyncCommunication<Map<St
         }
 
         // 拼接参数
-        String params = onBuildParameter(sendData);
+        String params = RequestBodyBuilder.onBuildParameter(sendData, encoded);
 
         // 最终请求地址
         String finalUrl = params.length() == 0 ? url : url + "?" + params;
@@ -214,46 +212,6 @@ public class OkHttpDownloadSyncCommunication implements SyncCommunication<Map<St
             this.success = false;
             response = null;
         }
-    }
-
-    /**
-     * 拼接参数字符串
-     *
-     * @param sendData 请求参数对
-     *
-     * @return 拼接完成的字符串
-     */
-    @NonNull
-    private String onBuildParameter(Map<String, String> sendData) {
-        // 请求参数装配器参数
-        StringBuilder params = new StringBuilder();
-
-        try {
-
-            // 遍历sendData集合并加入请求参数对象
-            if (sendData != null && !sendData.isEmpty()) {
-                Log.i(LOG_TAG + "onBuildParameter", "sendData count is " + sendData.size());
-
-                // 遍历并追加参数
-                for (Map.Entry<String, String> dataEntry : sendData.entrySet()) {
-                    params.append(dataEntry.getKey());
-                    params.append('=');
-                    if (dataEntry.getValue() != null && dataEntry.getValue().length() > 0) {
-                        params.append(URLEncoder.encode(dataEntry.getValue(), encoded));
-                    }
-                    params.append('&');
-                }
-                // 移除末尾的'&'
-                params.deleteCharAt(params.length() - 1);
-            }
-        } catch (UnsupportedEncodingException e) {
-            Log.e(LOG_TAG + "onBuildParameter", "response error IOException class is " + e
-                    .toString());
-
-            Log.e(LOG_TAG + "onBuildParameter", "response error IOException message is " + e
-                    .getMessage());
-        }
-        return params.toString();
     }
 
     @Override

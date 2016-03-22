@@ -93,7 +93,6 @@ public class UpdateData extends JsonDataModel {
     protected void onFillRequestParameters(Map<String, String> dataMap) {
         // 加入设备类型
         dataMap.put("DeviceType", deviceType);
-        Log.i(LOG_TAG + "onFillRequestParameters", "deviceType is " + deviceType);
 
         try {
             // 包信息
@@ -108,12 +107,7 @@ public class UpdateData extends JsonDataModel {
 
         // 加入当前版本号
         dataMap.put("Build", String.valueOf(versionBuild));
-        Log.i(LOG_TAG + "onFillRequestParameters", "version code is " + versionBuild);
-        Log.i(LOG_TAG + "onFillRequestParameters", "version name is " + versionName);
-
         dataMap.put("AppName", appCode);
-        Log.i(LOG_TAG + "onFillRequestParameters", "application code is " + appCode);
-
     }
 
     @Override

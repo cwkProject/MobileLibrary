@@ -19,13 +19,13 @@ public abstract class WorkBack<Result> implements IWorkEndListener<Result> {
      * 任务结束回调方法，
      * 在任务函数执行结束后被调用
      *
-     * @param state  任务执行结果
-     * @param result 结果数据
+     * @param state 任务执行结果
+     * @param data  结果数据
      */
-    public abstract void doEndWork(boolean state, Result result);
+    public abstract void doEndWork(boolean state, Result data);
 
     @Override
-    public final void doEndWork(boolean state, String message, Result result) {
-        doEndWork(state, result);
+    public final void doEndWork(boolean state, String message, Result data) {
+        doEndWork(state, data);
     }
 }

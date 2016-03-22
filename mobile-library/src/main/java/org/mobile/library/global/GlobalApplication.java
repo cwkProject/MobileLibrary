@@ -144,7 +144,7 @@ public class GlobalApplication extends Application {
         // 网络请求用户代理字符串
         final StringBuilder userAgentBuilder = new StringBuilder();
 
-        userAgentBuilder.append(ApplicationStaticValue.DEVICE_TYPE);
+        userAgentBuilder.append(ApplicationStaticValue.AppConfig.DEVICE_TYPE);
         userAgentBuilder.append("/");
         // 制造商
         userAgentBuilder.append(Build.BRAND);

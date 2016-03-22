@@ -9,6 +9,7 @@ import android.util.Log;
 
 import org.mobile.library.R;
 import org.mobile.library.common.dialog.VersionUpdateDialog;
+import org.mobile.library.global.GlobalApplication;
 import org.mobile.library.model.work.WorkBack;
 import org.mobile.library.model.work.implement.CheckVersion;
 import org.mobile.library.global.ApplicationStaticValue;
@@ -33,109 +34,12 @@ public class CheckUpdate {
     private Context context = null;
 
     /**
-     * 设备类型
-     */
-    private String deviceType = null;
-
-    /**
-     * 应用代码
-     */
-    private String applicationCode = null;
-
-    /**
-     * 版本状态请求地址
-     */
-    private String updateRequestUrl = null;
-
-    /**
      * 构造函数
      *
-     * @param context         上下文
-     * @param applicationCode 当前应用代码
+     * @param context 上下文
      */
-    public CheckUpdate(Context context, String applicationCode) {
-        this(context, applicationCode, ApplicationStaticValue.UPDATE_REQUEST_URL);
-    }
-
-    /**
-     * 构造函数
-     *
-     * @param context          上下文
-     * @param applicationCode  当前应用代码
-     * @param updateRequestUrl 版本状态请求地址
-     */
-    public CheckUpdate(Context context, String applicationCode, String updateRequestUrl) {
-        this(context, applicationCode, updateRequestUrl, ApplicationStaticValue.DEVICE_TYPE);
-    }
-
-    /**
-     * 构造函数
-     *
-     * @param context          上下文
-     * @param applicationCode  当前应用代码
-     * @param updateRequestUrl 版本状态请求地址
-     * @param deviceType       设备类型码
-     */
-    public CheckUpdate(Context context, String applicationCode, String updateRequestUrl, String
-            deviceType) {
+    public CheckUpdate(Context context) {
         this.context = context;
-        this.applicationCode = applicationCode;
-        this.updateRequestUrl = updateRequestUrl;
-        this.deviceType = deviceType;
-    }
-
-    /**
-     * 设置当前设备类型
-     *
-     * @param deviceType 类型字符串，默认使用{@link ApplicationStaticValue#DEVICE_TYPE}
-     */
-    public void setDeviceType(String deviceType) {
-        this.deviceType = deviceType;
-    }
-
-    /**
-     * 设置应用代码，用于升级请求识别具体应用程序
-     *
-     * @param applicationCode 代码字符串
-     */
-    public void setApplicationCode(String applicationCode) {
-        this.applicationCode = applicationCode;
-    }
-
-    /**
-     * 获取当前使用的设备类型
-     *
-     * @return 设备类型码
-     */
-    public String getDeviceType() {
-        return deviceType;
-    }
-
-    /**
-     * 获取当前应用代码
-     *
-     * @return 应用代码串
-     */
-    public String getApplicationCode() {
-        return applicationCode;
-    }
-
-    /**
-     * 获取当前使用的版本状态请求地址
-     *
-     * @return 完整的地址串
-     */
-    public String getUpdateRequestUrl() {
-        return updateRequestUrl;
-    }
-
-    /**
-     * 设置版本状态请求地址
-     *
-     * @param updateRequestUrl 完整的地址串，默认使用{@link ApplicationStaticValue#UPDATE_REQUEST_URL}
-     */
-    public void setUpdateRequestUrl(String updateRequestUrl) {
-        this.updateRequestUrl = updateRequestUrl;
     }
 
     /**
@@ -176,7 +80,9 @@ public class CheckUpdate {
         progressDialog.show();
 
         // 执行任务
-        checkVersion.beginExecute(deviceType, applicationCode, updateRequestUrl);
+        checkVersion.beginExecute(ApplicationStaticValue.AppConfig.DEVICE_TYPE, GlobalApplication
+                .getApplicationAttribute().getAppCode(), ApplicationStaticValue.Url
+                .UPDATE_REQUEST_URL);
     }
 
     /**
@@ -189,7 +95,9 @@ public class CheckUpdate {
         CheckVersion checkVersion = new CheckVersion();
 
         // 执行任务
-        checkVersion.beginExecute(deviceType, applicationCode, updateRequestUrl);
+        checkVersion.beginExecute(ApplicationStaticValue.AppConfig.DEVICE_TYPE, GlobalApplication
+                .getApplicationAttribute().getAppCode(), ApplicationStaticValue.Url
+                .UPDATE_REQUEST_URL);
     }
 
     /**
@@ -217,7 +125,9 @@ public class CheckUpdate {
         });
 
         // 执行任务
-        checkVersion.beginExecute(deviceType, applicationCode, updateRequestUrl);
+        checkVersion.beginExecute(ApplicationStaticValue.AppConfig.DEVICE_TYPE, GlobalApplication
+                .getApplicationAttribute().getAppCode(), ApplicationStaticValue.Url
+                .UPDATE_REQUEST_URL);
     }
 
     /**
