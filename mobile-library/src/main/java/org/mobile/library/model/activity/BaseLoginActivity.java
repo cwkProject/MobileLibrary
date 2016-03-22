@@ -342,7 +342,6 @@ public abstract class BaseLoginActivity extends AppCompatActivity {
      * @param view 按钮
      */
     public void onRegisterClick(View view) {
-
     }
 }
 
