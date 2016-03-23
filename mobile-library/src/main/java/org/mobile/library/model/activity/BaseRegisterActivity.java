@@ -273,6 +273,8 @@ public abstract class BaseRegisterActivity extends AppCompatActivity {
                             button.setText(R.string.send_verification_code_button);
                         }
                     });
+
+                    valueAnimator.start();
                 }
             }
         });

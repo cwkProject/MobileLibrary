@@ -60,6 +60,7 @@
         android:layout_marginLeft="@dimen/layout_default_horizontal_padding"
         android:layout_marginRight="@dimen/layout_default_horizontal_padding"
         android:layout_marginTop="@dimen/layout_default_vertical_margin"
+        android:backgroundTint="?colorPrimary"
         android:onClick="onLoginClick"
         android:text="@string/login_button"
         android:textColor="@android:color/white"

@@ -217,8 +217,8 @@ public class CitySelectList implements ISelectList<View, String> {
                 viewHolder.cityAdapter.clear();
                 viewHolder.districtAdapter.clear();
 
-                viewHolder.cityListView.clearFocus();
-                viewHolder.districtListView.clearFocus();
+                viewHolder.cityListView.clearChoices();
+                viewHolder.districtListView.clearChoices();
 
                 if (position == 0) {
                     // 点击了全国标签
@@ -258,7 +258,7 @@ public class CitySelectList implements ISelectList<View, String> {
                 viewHolder.city = null;
                 viewHolder.districtAdapter.clear();
 
-                viewHolder.districtListView.clearFocus();
+                viewHolder.districtListView.clearChoices();
 
                 if (position == 0) {
                     // 点击了不限标签
