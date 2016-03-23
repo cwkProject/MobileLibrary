@@ -4,12 +4,12 @@ package org.mobile.library.common.dialog;
  */
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
+import android.support.v7.app.AppCompatDialog;
 
 import org.mobile.library.R;
 import org.mobile.library.global.GlobalApplication;
@@ -74,7 +74,7 @@ public class VersionUpdateDialog {
     public static void showLatest(Context context) {
 
         // 提示框
-        Dialog dialog = new Dialog(context);
+        AppCompatDialog dialog = new AppCompatDialog(context);
 
         // 设置标题
         dialog.setTitle(R.string.update_now_version_latest);

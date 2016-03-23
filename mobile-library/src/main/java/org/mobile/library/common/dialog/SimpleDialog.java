@@ -3,8 +3,8 @@ package org.mobile.library.common.dialog;
  * Created by 超悟空 on 2015/4/18.
  */
 
-import android.app.Dialog;
 import android.content.Context;
+import android.support.v7.app.AppCompatDialog;
 
 /**
  * 显示简单消息提示窗
@@ -23,7 +23,7 @@ public class SimpleDialog {
      */
     public static void showDialog(Context context, String message) {
         // 提示框
-        Dialog dialog = new Dialog(context);
+        AppCompatDialog dialog = new AppCompatDialog(context);
 
         // 设置标题
         dialog.setTitle(message);
