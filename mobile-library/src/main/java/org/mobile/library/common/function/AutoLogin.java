@@ -36,9 +36,9 @@ public class AutoLogin {
      * .BroadcastAction#LOGIN_STATE},
      * 如果需要配置登录参数则提前在{@link ApplicationAttribute}中设置
      *
-     * @param appCode 应用代号
+     * @param context 上下文
      */
-    public static void checkAutoLogin(Context context, String appCode) {
+    public static void checkAutoLogin(Context context) {
         Log.i(LOG_TAG + "checkAutoLogin", "checkAutoLogin is invoked");
 
         // 判断是否有用户名密码

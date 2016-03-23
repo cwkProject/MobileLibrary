@@ -345,6 +345,7 @@ public abstract class DefaultWorkModel<Parameters, Result, DataModelType extends
 
         if (!cancelMark) {
             // 最后执行
+            Log.i(LOG_TAG + "onStopWork", "onFinish invoke");
             onFinish();
         }
 

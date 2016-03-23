@@ -339,27 +339,27 @@ public abstract class BaseRegisterActivity extends AppCompatActivity {
             verifyMobile.setWorkEndListener(new IWorkEndListener<String>() {
                 @Override
                 public void doEndWork(boolean state, String message, String data) {
-                    if (state){
+                    if (state) {
                         // 手机验证成功
-                        onDoRegister(finalUserName, finalMobile,password1,password2);
-                    }else {
+                        onDoRegister(finalUserName, finalMobile, password1, password2);
+                    } else {
                         Toast.makeText(BaseRegisterActivity.this, message, Toast.LENGTH_SHORT)
                                 .show();
-                        return;
                     }
                 }
             });
-        }else {
-            onDoRegister(userName,null,password1,password2);
+        } else {
+            onDoRegister(userName, null, password1, password2);
         }
     }
 
     /**
      * 执行注册
+     *
      * @param parameters 参数
      */
-    protected void onDoRegister(String... parameters){
-        UserRegister userRegister=new UserRegister();
+    protected void onDoRegister(String... parameters) {
+        UserRegister userRegister = new UserRegister();
         userRegister.setWorkEndListener(new IWorkEndListener<String>() {
             @Override
             public void doEndWork(boolean state, String message, String data) {
@@ -373,10 +373,10 @@ public abstract class BaseRegisterActivity extends AppCompatActivity {
                 loginStatus.setLogin(state);
                 loginStatus.setUserID(data);
 
-                if (state){
+                if (state) {
                     // 注册成功
                     onRegisterSuccess();
-                }else {
+                } else {
                     // 注册失败
                     onRegisterFailed(message);
                 }
@@ -386,7 +386,7 @@ public abstract class BaseRegisterActivity extends AppCompatActivity {
         // 打开旋转进度条
         startProgressDialog();
 
-        userRegister.beginExecute(parameters[0],parameters[1],parameters[2],parameters[3]);
+        userRegister.beginExecute(parameters[0], parameters[1], parameters[2], parameters[3]);
     }
 
     /**
@@ -403,11 +403,11 @@ public abstract class BaseRegisterActivity extends AppCompatActivity {
 
     /**
      * 注册失败执行
+     *
      * @param message 返回消息
      */
     protected void onRegisterFailed(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT)
-                .show();
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
     /**
