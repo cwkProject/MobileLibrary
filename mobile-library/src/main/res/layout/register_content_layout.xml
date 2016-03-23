@@ -82,11 +82,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="right"
-                    android:backgroundTint="?colorPrimary"
                     android:onClick="onSendVerificationCodeClick"
                     android:text="@string/send_verification_code_button"
-                    android:textColor="@android:color/white"
-                    app:backgroundTint="?colorPrimary"/>
+                    android:textColor="@android:color/white"/>
 
             </FrameLayout>
 
@@ -131,14 +129,12 @@
     <android.support.v7.widget.AppCompatButton
         android:id="@+id/register_content_layout_register_button"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/layout_default_mini_height"
         android:layout_marginLeft="@dimen/layout_default_horizontal_padding"
         android:layout_marginRight="@dimen/layout_default_horizontal_padding"
         android:layout_marginTop="@dimen/layout_default_vertical_margin"
-        android:backgroundTint="?colorPrimary"
         android:onClick="onRegisterClick"
         android:text="@string/register_button"
-        android:textColor="@android:color/white"
-        app:backgroundTint="?colorPrimary"/>
+        android:textColor="@android:color/white"/>
 
 </LinearLayout>

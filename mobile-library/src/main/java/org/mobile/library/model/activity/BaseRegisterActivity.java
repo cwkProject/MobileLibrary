@@ -7,6 +7,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.app.ProgressDialog;
+import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
@@ -168,7 +169,14 @@ public abstract class BaseRegisterActivity extends AppCompatActivity {
      * 按钮类型{@link android.support.v7.widget.AppCompatButton}
      */
     protected void onCustomRegister() {
+        AppCompatButton button = (AppCompatButton) findViewById(R.id
+                .register_content_layout_register_button);
 
+        TypedArray typedArray = getTheme().obtainStyledAttributes(new int[]{R.attr.colorPrimary});
+
+        button.setSupportBackgroundTintList(typedArray.getColorStateList(0));
+
+        typedArray.recycle();
     }
 
     /**
@@ -177,7 +185,14 @@ public abstract class BaseRegisterActivity extends AppCompatActivity {
      * 按钮类型{@link android.support.v7.widget.AppCompatButton}
      */
     protected void onCustomVerificationCode() {
+        AppCompatButton button = (AppCompatButton) findViewById(R.id
+                .register_content_layout_verification_code_send_button);
 
+        TypedArray typedArray = getTheme().obtainStyledAttributes(new int[]{R.attr.colorPrimary});
+
+        button.setSupportBackgroundTintList(typedArray.getColorStateList(0));
+
+        typedArray.recycle();
     }
 
     /**

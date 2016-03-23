@@ -5,8 +5,10 @@ package org.mobile.library.model.activity;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
@@ -149,6 +151,15 @@ public abstract class BaseLoginActivity extends AppCompatActivity {
      * 按钮类型{@link android.support.v7.widget.AppCompatButton}
      */
     protected void onCustomLoginButton() {
+
+        AppCompatButton button = (AppCompatButton) findViewById(R.id
+                .login_content_layout_login_button);
+
+        TypedArray typedArray = getTheme().obtainStyledAttributes(new int[]{R.attr.colorPrimary});
+
+        button.setSupportBackgroundTintList(typedArray.getColorStateList(0));
+
+        typedArray.recycle();
     }
 
 
