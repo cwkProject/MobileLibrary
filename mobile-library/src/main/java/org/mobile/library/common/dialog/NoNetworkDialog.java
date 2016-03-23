@@ -3,7 +3,6 @@ package org.mobile.library.common.dialog;
  * Created by 超悟空 on 2015/4/18.
  */
 
-import android.app.Dialog;
 import android.content.Context;
 
 import org.mobile.library.R;
@@ -23,14 +22,6 @@ public class NoNetworkDialog {
      * @param context 上下文
      */
     public static void showNoNetworkDialog(Context context) {
-        // 提示框
-        Dialog dialog = new Dialog(context);
-
-        // 设置标题
-        dialog.setTitle(R.string.no_network);
-
-        // 显示提示框
-        dialog.setCancelable(true);
-        dialog.show();
+        SimpleDialog.showDialog(context, R.string.no_network);
     }
 }

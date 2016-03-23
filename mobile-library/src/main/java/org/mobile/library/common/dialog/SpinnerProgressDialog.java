@@ -59,7 +59,8 @@ public class SpinnerProgressDialog implements IProgressDialog<SpinnerProgressDia
 
             progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             // 提示信息
-            progressDialog.setMessage(context.getString(R.string.web_view_spinner_progress_dialog_message));
+            progressDialog.setMessage(context.getString(R.string
+                    .web_view_spinner_progress_dialog_message));
             progressDialog.setCancelable(false);
             progressDialog.show();
             // 启动超时定时器

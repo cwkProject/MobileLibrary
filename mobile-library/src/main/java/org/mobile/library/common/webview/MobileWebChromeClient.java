@@ -1,9 +1,9 @@
 package org.mobile.library.common.webview;
 
-import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
+
 import android.content.Context;
 import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 import android.webkit.JsResult;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
@@ -64,7 +64,7 @@ public class MobileWebChromeClient extends WebChromeClient {
     public boolean onJsAlert(WebView view, String url, String message, final JsResult result) {
 
         // 新建一个弹出对话框
-        Builder builder = new Builder(context);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
         // 设置提示信息
         builder.setMessage(message);
@@ -91,7 +91,7 @@ public class MobileWebChromeClient extends WebChromeClient {
     public boolean onJsConfirm(WebView view, String url, String message, final JsResult result) {
 
         // 新建一个弹出对话框
-        Builder builder = new Builder(context);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
         // 设置提示信息
         builder.setMessage(message);
