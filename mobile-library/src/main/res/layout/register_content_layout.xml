@@ -67,7 +67,7 @@
 
                 <EditText
                     android:id="@+id/register_content_layout_verification_code_editText"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="@dimen/layout_default_mini_height"
                     android:layout_marginRight="@dimen/layout_default_spacing"
                     android:background="@android:color/white"
