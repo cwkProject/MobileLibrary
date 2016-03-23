@@ -129,7 +129,7 @@
     <android.support.v7.widget.AppCompatButton
         android:id="@+id/register_content_layout_register_button"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/layout_default_mini_height"
+        android:layout_height="@dimen/button_default_large_height"
         android:layout_marginLeft="@dimen/layout_default_horizontal_padding"
         android:layout_marginRight="@dimen/layout_default_horizontal_padding"
         android:layout_marginTop="@dimen/layout_default_vertical_margin"

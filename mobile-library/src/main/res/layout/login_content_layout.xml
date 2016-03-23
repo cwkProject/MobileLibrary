@@ -24,7 +24,7 @@
             android:layout_height="@dimen/layout_default_mini_height"
             android:background="@android:color/white"
             android:drawableLeft="@drawable/ic_account_grey600_36dp"
-            android:drawablePadding="@dimen/layout_default_spacing"
+            android:drawablePadding="20dp"
             android:hint="@string/login_user_name_or_mobile_hint"
             android:singleLine="true"/>
 
@@ -40,7 +40,7 @@
             android:layout_height="@dimen/layout_default_mini_height"
             android:background="@android:color/white"
             android:drawableLeft="@drawable/ic_key_grey600_36dp"
-            android:drawablePadding="@dimen/layout_default_spacing"
+            android:drawablePadding="20dp"
             android:hint="@string/password_edit_hint"
             android:inputType="textPassword"
             android:singleLine="true"/>
@@ -55,7 +55,7 @@
     <android.support.v7.widget.AppCompatButton
         android:id="@+id/login_content_layout_login_button"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/layout_default_mini_height"
+        android:layout_height="@dimen/button_default_large_height"
         android:layout_marginLeft="@dimen/layout_default_horizontal_padding"
         android:layout_marginRight="@dimen/layout_default_horizontal_padding"
         android:layout_marginTop="@dimen/layout_default_vertical_margin"
