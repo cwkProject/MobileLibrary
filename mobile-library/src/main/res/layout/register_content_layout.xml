@@ -66,22 +66,29 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <EditText
-                    android:id="@+id/register_content_layout_verification_code_editText"
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="@dimen/layout_default_mini_height"
                     android:layout_weight="1"
-                    android:background="@android:color/white"
-                    android:hint="@string/login_verification_code_hint"
-                    android:inputType="number"
-                    android:maxLength="6"
-                    android:singleLine="true"/>
+                    android:orientation="horizontal">
+
+                    <EditText
+                        android:id="@+id/register_content_layout_verification_code_editText"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="@dimen/layout_default_spacing"
+                        android:background="@android:color/white"
+                        android:hint="@string/login_verification_code_hint"
+                        android:inputType="number"
+                        android:maxLength="6"
+                        android:singleLine="true"/>
+
+                </LinearLayout>
 
                 <android.support.v7.widget.AppCompatButton
                     android:id="@+id/register_content_layout_verification_code_send_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/layout_default_spacing"
                     android:backgroundTint="?colorPrimary"
                     android:onClick="onSendVerificationCodeClick"
                     android:text="@string/send_verification_code_button"

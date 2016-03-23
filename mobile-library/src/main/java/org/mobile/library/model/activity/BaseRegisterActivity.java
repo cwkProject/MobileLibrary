@@ -269,8 +269,8 @@ public abstract class BaseRegisterActivity extends AppCompatActivity {
                     valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                         @Override
                         public void onAnimationUpdate(ValueAnimator animation) {
-                            button.setText(String.valueOf(animation.getAnimatedValue()) +
-                                    resendText);
+                            button.setText(String.format("%s%s", String.valueOf(animation
+                                    .getAnimatedValue()), resendText));
                         }
                     });
 
