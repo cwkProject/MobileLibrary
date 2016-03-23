@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.mobile.library.R;
+import org.mobile.library.common.dialog.SimpleDialog;
 import org.mobile.library.global.GlobalApplication;
 import org.mobile.library.global.LoginStatus;
 import org.mobile.library.model.work.IWorkEndListener;
@@ -235,7 +236,12 @@ public abstract class BaseRegisterActivity extends AppCompatActivity {
      * @param view 按钮
      */
     public void onSendVerificationCodeClick(final View view) {
+        // 启动倒计时动画
+        final AppCompatButton button = (AppCompatButton) view;
+        button.setEnabled(false);
+
         if (!onSetMobileRegister() || mobileEditText == null) {
+            button.setEnabled(true);
             return;
         }
 
@@ -243,6 +249,8 @@ public abstract class BaseRegisterActivity extends AppCompatActivity {
 
         if (mobile.length() != 11) {
             Toast.makeText(this, R.string.prompt_mobile_error, Toast.LENGTH_SHORT).show();
+            button.setEnabled(true);
+            return;
         }
 
         SendMobileVerificationCode sendMobileVerificationCode = new SendMobileVerificationCode();
@@ -254,15 +262,15 @@ public abstract class BaseRegisterActivity extends AppCompatActivity {
 
                 if (state) {
 
-                    // 启动倒计时动画
-                    final AppCompatButton button = (AppCompatButton) view;
-                    button.setEnabled(false);
+                    // 重发消息后缀
+                    final String resendText = getString(R.string.resend_verification_code);
 
-                    ValueAnimator valueAnimator = ValueAnimator.ofInt(120, 0).setDuration(120000);
+                    ValueAnimator valueAnimator = ValueAnimator.ofInt(60, 0).setDuration(60000);
                     valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                         @Override
                         public void onAnimationUpdate(ValueAnimator animation) {
-                            button.setText(String.valueOf(animation.getAnimatedValue()));
+                            button.setText(String.valueOf(animation.getAnimatedValue()) +
+                                    resendText);
                         }
                     });
 
@@ -272,9 +280,18 @@ public abstract class BaseRegisterActivity extends AppCompatActivity {
                             button.setEnabled(true);
                             button.setText(R.string.send_verification_code_button);
                         }
+
+                        @Override
+                        public void onAnimationCancel(Animator animation) {
+                            button.setEnabled(true);
+                            button.setText(R.string.send_verification_code_button);
+                        }
                     });
 
                     valueAnimator.start();
+                } else {
+                    button.setEnabled(true);
+                    button.setText(R.string.send_verification_code_button);
                 }
             }
         });
@@ -334,6 +351,9 @@ public abstract class BaseRegisterActivity extends AppCompatActivity {
             return;
         }
 
+        // 打开旋转进度条
+        startProgressDialog();
+
         if (onSetMobileRegister()) {
             VerifyMobile verifyMobile = new VerifyMobile();
 
@@ -347,11 +367,17 @@ public abstract class BaseRegisterActivity extends AppCompatActivity {
                         // 手机验证成功
                         onDoRegister(finalUserName, finalMobile, password1, password2);
                     } else {
-                        Toast.makeText(BaseRegisterActivity.this, message, Toast.LENGTH_SHORT)
-                                .show();
+                        if (progressDialog != null && progressDialog.isShowing()) {
+                            // 关闭进度条
+                            progressDialog.cancel();
+                        }
+                        // 注册失败
+                        onRegisterFailed(message);
                     }
                 }
             });
+
+            verifyMobile.beginExecute(mobile, verificationCode);
         } else {
             onDoRegister(userName, null, password1, password2);
         }
@@ -387,9 +413,6 @@ public abstract class BaseRegisterActivity extends AppCompatActivity {
             }
         });
 
-        // 打开旋转进度条
-        startProgressDialog();
-
         userRegister.beginExecute(parameters[0], parameters[1], parameters[2], parameters[3]);
     }
 
@@ -411,7 +434,7 @@ public abstract class BaseRegisterActivity extends AppCompatActivity {
      * @param message 返回消息
      */
     protected void onRegisterFailed(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        SimpleDialog.showDialog(this, message);
     }
 
     /**

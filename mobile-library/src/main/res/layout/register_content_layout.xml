@@ -74,6 +74,7 @@
                     android:background="@android:color/white"
                     android:hint="@string/login_verification_code_hint"
                     android:inputType="number"
+                    android:maxLength="6"
                     android:singleLine="true"/>
 
                 <android.support.v7.widget.AppCompatButton
