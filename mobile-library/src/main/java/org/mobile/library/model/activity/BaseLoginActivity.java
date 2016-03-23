@@ -274,11 +274,6 @@ public abstract class BaseLoginActivity extends AppCompatActivity {
                     progressDialog.cancel();
                 }
 
-                LoginStatus loginStatus = GlobalApplication.getLoginStatus();
-
-                loginStatus.setLogin(state);
-                loginStatus.setUserID(data);
-
                 // 登录完成执行
                 onLoginData(userName, password, state, data);
 
@@ -311,6 +306,11 @@ public abstract class BaseLoginActivity extends AppCompatActivity {
      * @param data     用户id
      */
     protected void onLoginData(String userName, String password, boolean state, String data) {
+        LoginStatus loginStatus = GlobalApplication.getLoginStatus();
+
+        loginStatus.setLogin(state);
+        loginStatus.setUserID(data);
+
         if (state) {
             // 登录成功
 

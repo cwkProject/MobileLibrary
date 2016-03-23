@@ -12,12 +12,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.view.animation.LinearInterpolator;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import org.mobile.library.R;
 import org.mobile.library.common.dialog.SimpleDialog;
+import org.mobile.library.global.ApplicationConfig;
 import org.mobile.library.global.GlobalApplication;
 import org.mobile.library.global.LoginStatus;
 import org.mobile.library.model.work.IWorkEndListener;
@@ -266,6 +268,7 @@ public abstract class BaseRegisterActivity extends AppCompatActivity {
                     final String resendText = getString(R.string.resend_verification_code);
 
                     ValueAnimator valueAnimator = ValueAnimator.ofInt(60, 0).setDuration(60000);
+                    valueAnimator.setInterpolator(new LinearInterpolator());
                     valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                         @Override
                         public void onAnimationUpdate(ValueAnimator animation) {
@@ -388,7 +391,7 @@ public abstract class BaseRegisterActivity extends AppCompatActivity {
      *
      * @param parameters 参数
      */
-    protected void onDoRegister(String... parameters) {
+    protected void onDoRegister(final String... parameters) {
         UserRegister userRegister = new UserRegister();
         userRegister.setWorkEndListener(new IWorkEndListener<String>() {
             @Override
@@ -398,10 +401,9 @@ public abstract class BaseRegisterActivity extends AppCompatActivity {
                     progressDialog.cancel();
                 }
 
-                LoginStatus loginStatus = GlobalApplication.getLoginStatus();
-
-                loginStatus.setLogin(state);
-                loginStatus.setUserID(data);
+                // 注册完成执行
+                onLoginData(parameters[1] != null ? parameters[1] : parameters[0], parameters[2],
+                        state, data);
 
                 if (state) {
                     // 注册成功
@@ -414,6 +416,34 @@ public abstract class BaseRegisterActivity extends AppCompatActivity {
         });
 
         userRegister.beginExecute(parameters[0], parameters[1], parameters[2], parameters[3]);
+    }
+
+    /**
+     * 注册执行结果装配，
+     * 用于保存用户名密码等
+     *
+     * @param userName 用户名
+     * @param password 密码
+     * @param state    注册结果
+     * @param data     用户id
+     */
+    protected void onLoginData(String userName, String password, boolean state, String data) {
+        LoginStatus loginStatus = GlobalApplication.getLoginStatus();
+
+        loginStatus.setLogin(state);
+        loginStatus.setUserID(data);
+
+        if (state) {
+            // 登录成功
+
+            // 保存当前设置
+            ApplicationConfig config = GlobalApplication.getApplicationConfig();
+            config.setUserName(userName);
+            config.setPassword(password);
+
+            // 保存设置
+            config.Save();
+        }
     }
 
     /**
