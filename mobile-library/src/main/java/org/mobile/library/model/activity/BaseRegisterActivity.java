@@ -276,6 +276,8 @@ public abstract class BaseRegisterActivity extends AppCompatActivity {
                 }
             }
         });
+
+        sendMobileVerificationCode.beginExecute(mobile);
     }
 
     /**
