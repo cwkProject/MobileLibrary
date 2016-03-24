@@ -264,8 +264,8 @@ public abstract class BaseLoginActivity extends AppCompatActivity {
     public void onLoginClick(View view) {
 
         // 获取用户名和密码
-        final String userName = userNameEditText.getText().toString();
-        final String password = passwordEditText.getText().toString();
+        final String userName = userNameEditText.getText().toString().trim();
+        final String password = passwordEditText.getText().toString().trim();
 
         // 判断是否输入用户名和密码
         if (TextUtils.isEmpty(userName) || TextUtils.isEmpty(password)) {
