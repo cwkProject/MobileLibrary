@@ -330,7 +330,7 @@ public abstract class BaseRegisterActivity extends AppCompatActivity {
             userName = userNameEditText.getText().toString().trim();
 
             if (userName.length() < 3) {
-                Toast.makeText(this, R.string.prompt_user_name_error, Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.prompt_user_name_short, Toast.LENGTH_SHORT).show();
                 return;
             }
         }
@@ -358,8 +358,8 @@ public abstract class BaseRegisterActivity extends AppCompatActivity {
         final String password1 = password1EditText.getText().toString().trim();
         final String password2 = password2EditText.getText().toString().trim();
 
-        if (password1.length() == 0 || password2.length() == 0) {
-            Toast.makeText(this, R.string.prompt_password_null_error, Toast.LENGTH_SHORT).show();
+        if (password1.length() < 6 || password2.length() < 6) {
+            Toast.makeText(this, R.string.prompt_password_short, Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -468,7 +468,7 @@ public abstract class BaseRegisterActivity extends AppCompatActivity {
         progressDialog = new ProgressDialog(this);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         // 设置提醒
-        progressDialog.setMessage(getString(R.string.login_loading));
+        progressDialog.setMessage(getString(R.string.register_loading));
         progressDialog.setCancelable(true);
         progressDialog.show();
     }

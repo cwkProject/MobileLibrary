@@ -3,7 +3,9 @@ package org.mobile.library.model.work.implement;
  * Created by 超悟空 on 2016/3/21.
  */
 
+import org.mobile.library.R;
 import org.mobile.library.global.ApplicationStaticValue;
+import org.mobile.library.global.GlobalApplication;
 import org.mobile.library.model.data.implement.RegisterData;
 import org.mobile.library.model.work.DefaultWorkModel;
 import org.mobile.library.network.factory.NetworkType;
@@ -29,6 +31,11 @@ public class UserRegister extends DefaultWorkModel<String, String, RegisterData>
     @Override
     protected NetworkType onNetworkType() {
         return NetworkType.HTTP_POST;
+    }
+
+    @Override
+    protected String onParseFailedSetMessage(RegisterData data) {
+        return GlobalApplication.getGlobal().getString(R.string.register_error_field_required);
     }
 
     @Override

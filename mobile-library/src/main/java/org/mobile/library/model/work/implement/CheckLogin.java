@@ -45,13 +45,8 @@ public class CheckLogin extends DefaultWorkModel<String, String, LoginData> {
     }
 
     @Override
-    protected String onParseSuccessSetMessage(boolean state, LoginData data) {
-        return data.getMessage();
-    }
-
-    @Override
     protected String onParseFailedSetMessage(LoginData data) {
-        return GlobalApplication.getGlobal().getString(R.string.login_error_parameter);
+        return GlobalApplication.getGlobal().getString(R.string.login_error_field_required);
     }
 
     @Override

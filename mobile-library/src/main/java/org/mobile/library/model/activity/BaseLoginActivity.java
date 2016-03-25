@@ -7,6 +7,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.Toolbar;
@@ -18,6 +19,7 @@ import android.widget.TextView;
 
 import org.mobile.library.R;
 import org.mobile.library.common.dialog.SimpleDialog;
+import org.mobile.library.common.function.InputMethodController;
 import org.mobile.library.global.ApplicationConfig;
 import org.mobile.library.global.GlobalApplication;
 import org.mobile.library.global.LoginStatus;
@@ -39,12 +41,22 @@ public abstract class BaseLoginActivity extends AppCompatActivity {
     /**
      * 用户名编辑框
      */
-    private EditText userNameEditText = null;
+    protected EditText userNameEditText = null;
+
+    /**
+     * 用户名提示框
+     */
+    protected TextInputLayout userNameTextInputLayout = null;
 
     /**
      * 密码编辑框
      */
-    private EditText passwordEditText = null;
+    protected EditText passwordEditText = null;
+
+    /**
+     * 密码提示框
+     */
+    protected TextInputLayout passwordTextInputLayout = null;
 
     /**
      * 进度条
@@ -91,6 +103,7 @@ public abstract class BaseLoginActivity extends AppCompatActivity {
     /**
      * 初始化标题栏
      */
+    @SuppressWarnings("ConstantConditions")
     protected void initToolbar() {
         // 得到Toolbar标题栏
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -157,6 +170,7 @@ public abstract class BaseLoginActivity extends AppCompatActivity {
 
         TypedArray typedArray = getTheme().obtainStyledAttributes(new int[]{R.attr.colorPrimary});
 
+        assert button != null;
         button.setSupportBackgroundTintList(typedArray.getColorStateList(0));
 
         typedArray.recycle();
@@ -177,30 +191,16 @@ public abstract class BaseLoginActivity extends AppCompatActivity {
     }
 
     /**
-     * 提供用户名编辑框ID
-     *
-     * @return 用户名编辑框ID，默认为{@link R.id#login_content_layout_user_name_editText}
-     */
-    protected int onUserNameEditTextID() {
-        return R.id.login_content_layout_user_name_editText;
-    }
-
-    /**
-     * 提供密码编辑框ID
-     *
-     * @return 密码编辑框ID，默认为{@link R.id#login_content_layout_password_editText}
-     */
-    protected int onPasswordEditTextID() {
-        return R.id.login_content_layout_password_editText;
-    }
-
-    /**
      * 初始化编辑框
      */
-    private void initEdit() {
+    protected void initEdit() {
         // 文本框初始化
-        userNameEditText = (EditText) findViewById(onUserNameEditTextID());
-        passwordEditText = (EditText) findViewById(onPasswordEditTextID());
+        userNameEditText = (EditText) findViewById(R.id.login_content_layout_user_name_editText);
+        passwordEditText = (EditText) findViewById(R.id.login_content_layout_password_editText);
+        userNameTextInputLayout = (TextInputLayout) findViewById(R.id
+                .login_content_layout_user_name_textInputLayout);
+        passwordTextInputLayout = (TextInputLayout) findViewById(R.id
+                .login_content_layout_password_textInputLayout);
 
         // 尝试填充数据
         if (GlobalApplication.getApplicationConfig().getUserName() != null) {
@@ -266,6 +266,8 @@ public abstract class BaseLoginActivity extends AppCompatActivity {
         // 获取用户名和密码
         final String userName = userNameEditText.getText().toString().trim();
         final String password = passwordEditText.getText().toString().trim();
+
+        InputMethodController.CloseInputMethod(this);
 
         // 判断是否输入用户名和密码
         if (TextUtils.isEmpty(userName) || TextUtils.isEmpty(password)) {
