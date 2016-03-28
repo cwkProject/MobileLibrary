@@ -9,9 +9,14 @@ import android.animation.ValueAnimator;
 import android.app.ProgressDialog;
 import android.content.res.TypedArray;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
 import android.widget.EditText;
@@ -40,27 +45,57 @@ public abstract class BaseRegisterActivity extends AppCompatActivity {
     /**
      * 用户名编辑框
      */
-    private EditText userNameEditText = null;
+    protected EditText userNameEditText = null;
 
     /**
      * 密码1编辑框
      */
-    private EditText password1EditText = null;
+    protected EditText password1EditText = null;
 
     /**
      * 密码2编辑框
      */
-    private EditText password2EditText = null;
+    protected EditText password2EditText = null;
 
     /**
      * 手机号编辑框
      */
-    private EditText mobileEditText = null;
+    protected EditText mobileEditText = null;
 
     /**
      * 验证码编辑框
      */
-    private EditText verificationCodeEditText = null;
+    protected EditText verificationCodeEditText = null;
+
+    /**
+     * 用户名提示框
+     */
+    protected TextInputLayout userNameTextInputLayout = null;
+
+    /**
+     * 手机号提示框
+     */
+    protected TextInputLayout mobileTextInputLayout = null;
+
+    /**
+     * 验证码提示框
+     */
+    protected TextInputLayout verificationCodeTextInputLayout = null;
+
+    /**
+     * 密码1提示框
+     */
+    protected TextInputLayout password1TextInputLayout = null;
+
+    /**
+     * 密码2提示框
+     */
+    protected TextInputLayout password2TextInputLayout = null;
+
+    /**
+     * 根布局
+     */
+    private View rootView = null;
 
     /**
      * 进度条
@@ -71,7 +106,9 @@ public abstract class BaseRegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(onActivityLoginLayout());
+        setContentView(onActivityRegisterLayout());
+
+        rootView = findViewById(R.id.activity_register_root_layout);
 
         // 重置用户登录参数
         GlobalApplication.getLoginStatus().Reset();
@@ -85,7 +122,7 @@ public abstract class BaseRegisterActivity extends AppCompatActivity {
      *
      * @return activity布局文件ID，默认为{@link R.layout#activity_register}
      */
-    protected int onActivityLoginLayout() {
+    protected int onActivityRegisterLayout() {
         return R.layout.activity_register;
     }
 
@@ -108,6 +145,7 @@ public abstract class BaseRegisterActivity extends AppCompatActivity {
     /**
      * 初始化标题栏
      */
+    @SuppressWarnings("ConstantConditions")
     protected void initToolbar() {
         // 得到Toolbar标题栏
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -174,7 +212,9 @@ public abstract class BaseRegisterActivity extends AppCompatActivity {
 
         TypedArray typedArray = getTheme().obtainStyledAttributes(new int[]{R.attr.colorPrimary});
 
-        button.setSupportBackgroundTintList(typedArray.getColorStateList(0));
+        if (button != null) {
+            button.setSupportBackgroundTintList(typedArray.getColorStateList(0));
+        }
 
         typedArray.recycle();
     }
@@ -190,7 +230,9 @@ public abstract class BaseRegisterActivity extends AppCompatActivity {
 
         TypedArray typedArray = getTheme().obtainStyledAttributes(new int[]{R.attr.colorPrimary});
 
-        button.setSupportBackgroundTintList(typedArray.getColorStateList(0));
+        if (button != null) {
+            button.setSupportBackgroundTintList(typedArray.getColorStateList(0));
+        }
 
         typedArray.recycle();
     }
@@ -234,7 +276,9 @@ public abstract class BaseRegisterActivity extends AppCompatActivity {
                     .register_content_layout_user_name_editText);
         } else {
             View userNameLayout = findViewById(R.id.register_content_layout_user_name_linearLayout);
-            userNameLayout.setVisibility(View.GONE);
+            if (userNameLayout != null) {
+                userNameLayout.setVisibility(View.GONE);
+            }
         }
 
         if (onSetMobileRegister()) {
@@ -243,8 +287,393 @@ public abstract class BaseRegisterActivity extends AppCompatActivity {
                     .register_content_layout_verification_code_editText);
         } else {
             View mobileLayout = findViewById(R.id.register_content_layout_mobile_linearLayout);
-            mobileLayout.setVisibility(View.GONE);
+
+            if (mobileLayout != null) {
+                mobileLayout.setVisibility(View.GONE);
+            }
         }
+
+        userNameTextInputLayout = (TextInputLayout) findViewById(R.id
+                .register_content_layout_user_name_textInputLayout);
+        mobileTextInputLayout = (TextInputLayout) findViewById(R.id
+                .register_content_layout_mobile_textInputLayout);
+        verificationCodeTextInputLayout = (TextInputLayout) findViewById(R.id
+                .register_content_layout_verification_code_textInputLayout);
+        password1TextInputLayout = (TextInputLayout) findViewById(R.id
+                .register_content_layout_password1_textInputLayout);
+        password2TextInputLayout = (TextInputLayout) findViewById(R.id
+                .register_content_layout_password2_textInputLayout);
+
+        // 绑定错误提示
+        onBindEditHint();
+    }
+
+    /**
+     * 绑定输入框错误提示
+     */
+    protected void onBindEditHint() {
+
+        // 用户名提示
+        if (onSetUserNameRegister() && userNameTextInputLayout != null) {
+
+            userNameEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if (!hasFocus) {
+                        String userName = userNameEditText.getText().toString();
+
+                        // 检测用户名
+                        checkUserName(userName);
+                    }
+                }
+            });
+
+            userNameEditText.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    String userName = s.toString();
+                    if (!userName.contains(" ") && userName.length() >= 3) {
+                        userNameTextInputLayout.setError(null);
+                        userNameTextInputLayout.setErrorEnabled(false);
+                    }
+                }
+            });
+        }
+
+        // 手机号提示
+        if (onSetMobileRegister() && mobileTextInputLayout != null) {
+
+            mobileEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if (!hasFocus) {
+                        String mobile = mobileEditText.getText().toString();
+                        // 检测手机号
+                        checkMobile(mobile);
+                    }
+                }
+            });
+
+            mobileEditText.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    String mobile = s.toString();
+                    if (mobile.length() == 11) {
+                        mobileTextInputLayout.setError(null);
+                        mobileTextInputLayout.setErrorEnabled(false);
+                    }
+                }
+            });
+        }
+
+        // 验证码提示
+        if (onSetMobileRegister() && verificationCodeTextInputLayout != null) {
+
+            verificationCodeEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if (!hasFocus) {
+                        String verificationCode = verificationCodeEditText.getText().toString();
+
+                        // 检测验证码
+                        checkVerificationCode(verificationCode);
+                    }
+                }
+            });
+
+            verificationCodeEditText.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    String verificationCode = s.toString();
+                    if (verificationCode.length() == 6) {
+                        verificationCodeTextInputLayout.setError(null);
+                        verificationCodeTextInputLayout.setErrorEnabled(false);
+                    }
+                }
+            });
+        }
+
+        // 密码1提示
+        if (password1TextInputLayout != null) {
+
+            password1EditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if (!hasFocus) {
+                        String password = password1EditText.getText().toString();
+
+                        // 检测密码
+                        checkPassword1(password);
+                    }
+                }
+            });
+
+            password1EditText.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    String password = s.toString();
+                    if (password.length() >= 6) {
+                        password1TextInputLayout.setError(null);
+                        password1TextInputLayout.setErrorEnabled(false);
+                    }
+                }
+            });
+        }
+
+        // 密码2提示
+        if (password2TextInputLayout != null) {
+
+            password2EditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if (!hasFocus) {
+                        String password1 = password1EditText.getText().toString();
+                        String password2 = password2EditText.getText().toString();
+
+                        // 检测密码
+                        checkPassword2(password1, password2);
+                    }
+                }
+            });
+
+            password2EditText.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    String password = s.toString();
+                    if (password.length() >= 6) {
+                        password2TextInputLayout.setError(null);
+                        password2TextInputLayout.setErrorEnabled(false);
+                    }
+                }
+            });
+        }
+    }
+
+    /**
+     * 检测手机号
+     *
+     * @param mobile 手机号
+     *
+     * @return true表示检测通过
+     */
+    protected boolean checkMobile(String mobile) {
+        if (mobileTextInputLayout != null) {
+            if (TextUtils.isEmpty(mobile)) {
+                mobileTextInputLayout.setError(getString(R.string.prompt_mobile_null));
+                return false;
+            }
+
+            if (mobile.length() != 11) {
+                mobileTextInputLayout.setError(getString(R.string.prompt_mobile_short));
+                return false;
+            }
+        } else {
+            if (mobile.length() != 11) {
+                if (rootView != null) {
+                    Snackbar.make(rootView, R.string.prompt_mobile_short, Snackbar.LENGTH_SHORT)
+                            .show();
+                } else {
+                    Toast.makeText(this, R.string.prompt_mobile_short, Toast.LENGTH_SHORT).show();
+                }
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * 检测验证码
+     *
+     * @param verificationCode 验证码
+     *
+     * @return true表示检测通过
+     */
+    protected boolean checkVerificationCode(String verificationCode) {
+        if (verificationCodeTextInputLayout != null) {
+            if (TextUtils.isEmpty(verificationCode)) {
+                verificationCodeTextInputLayout.setError(getString(R.string
+                        .prompt_verification_code_null));
+                return false;
+            }
+
+            if (verificationCode.length() != 6) {
+                verificationCodeTextInputLayout.setError(getString(R.string
+                        .prompt_verification_code_short));
+                return false;
+            }
+        } else {
+            if (verificationCode.length() != 6) {
+                if (rootView != null) {
+                    Snackbar.make(rootView, R.string.prompt_verification_code_short, Snackbar
+                            .LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, R.string.prompt_verification_code_short, Toast
+                            .LENGTH_SHORT).show();
+                }
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * 检测密码1
+     *
+     * @param password 密码
+     *
+     * @return true表示检测通过
+     */
+    protected boolean checkPassword1(String password) {
+
+        if (password1TextInputLayout != null) {
+
+            if (TextUtils.isEmpty(password)) {
+                password1TextInputLayout.setError(getString(R.string.prompt_password_null_error));
+                return false;
+            }
+
+            if (password.length() < 6) {
+                password1TextInputLayout.setError(getString(R.string.prompt_password_short));
+                return false;
+            }
+        } else {
+            if (password.length() < 6) {
+                if (rootView != null) {
+                    Snackbar.make(rootView, R.string.prompt_password_short, Snackbar
+                            .LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, R.string.prompt_password_short, Toast.LENGTH_SHORT).show();
+                }
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * 检测密码2
+     *
+     * @param password1 密码1
+     * @param password2 密码2
+     *
+     * @return true表示检测通过
+     */
+    protected boolean checkPassword2(String password1, String password2) {
+        if (password2TextInputLayout != null) {
+
+            if (!password1.equals(password2)) {
+                password2TextInputLayout.setError(getString(R.string
+                        .prompt_password_different_error));
+                return false;
+            }
+        } else {
+            if (!password1.equals(password2)) {
+                if (rootView != null) {
+                    Snackbar.make(rootView, R.string.prompt_password_different_error, Snackbar
+                            .LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, R.string.prompt_password_different_error, Toast
+                            .LENGTH_SHORT).show();
+                }
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * 检测用户名
+     *
+     * @param userName 用户名
+     *
+     * @return true表示检测通过
+     */
+    protected boolean checkUserName(String userName) {
+
+        if (userNameTextInputLayout != null) {
+
+            if (TextUtils.isEmpty(userName)) {
+                userNameTextInputLayout.setError(getString(R.string.prompt_user_name_null));
+                return false;
+            }
+
+            if (userName.contains(" ")) {
+                userNameTextInputLayout.setError(getString(R.string.prompt_user_name_blank));
+                return false;
+            }
+
+            if (userName.length() < 3) {
+                userNameTextInputLayout.setError(getString(R.string.prompt_user_name_short));
+                return false;
+            }
+        } else {
+            if (userName.contains(" ") || userName.length() < 3) {
+                if (rootView != null) {
+                    Snackbar.make(rootView, R.string.prompt_user_name_error, Snackbar
+                            .LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, R.string.prompt_user_name_error, Toast.LENGTH_SHORT)
+                            .show();
+                }
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -262,10 +691,9 @@ public abstract class BaseRegisterActivity extends AppCompatActivity {
             return;
         }
 
-        String mobile = mobileEditText.getText().toString().trim();
+        String mobile = mobileEditText.getText().toString();
 
-        if (mobile.length() != 11) {
-            Toast.makeText(this, R.string.prompt_mobile_error, Toast.LENGTH_SHORT).show();
+        if (!checkMobile(mobile)) {
             button.setEnabled(true);
             return;
         }
@@ -327,10 +755,9 @@ public abstract class BaseRegisterActivity extends AppCompatActivity {
         String userName = null;
 
         if (onSetUserNameRegister()) {
-            userName = userNameEditText.getText().toString().trim();
+            userName = userNameEditText.getText().toString();
 
-            if (userName.length() < 3) {
-                Toast.makeText(this, R.string.prompt_user_name_short, Toast.LENGTH_SHORT).show();
+            if (!checkUserName(userName)) {
                 return;
             }
         }
@@ -340,32 +767,18 @@ public abstract class BaseRegisterActivity extends AppCompatActivity {
 
         if (onSetMobileRegister()) {
 
-            mobile = mobileEditText.getText().toString().trim();
-            verificationCode = verificationCodeEditText.getText().toString().trim();
+            mobile = mobileEditText.getText().toString();
+            verificationCode = verificationCodeEditText.getText().toString();
 
-            if (mobile.length() != 11) {
-                Toast.makeText(this, R.string.prompt_mobile_error, Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            if (verificationCode.length() == 0) {
-                Toast.makeText(this, R.string.prompt_verification_code_error, Toast.LENGTH_SHORT)
-                        .show();
+            if (!checkMobile(mobile) || !checkVerificationCode(verificationCode)) {
                 return;
             }
         }
 
-        final String password1 = password1EditText.getText().toString().trim();
-        final String password2 = password2EditText.getText().toString().trim();
+        final String password1 = password1EditText.getText().toString();
+        final String password2 = password2EditText.getText().toString();
 
-        if (password1.length() < 6 || password2.length() < 6) {
-            Toast.makeText(this, R.string.prompt_password_short, Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        if (!password1.equals(password2)) {
-            Toast.makeText(this, R.string.prompt_password_different_error, Toast.LENGTH_SHORT)
-                    .show();
+        if (!checkPassword1(password1) || !checkPassword2(password1, password2)) {
             return;
         }
 

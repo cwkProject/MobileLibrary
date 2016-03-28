@@ -4,18 +4,21 @@ package org.mobile.library.model.activity;
  */
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.mobile.library.R;
 import org.mobile.library.common.dialog.SimpleDialog;
@@ -25,9 +28,6 @@ import org.mobile.library.global.GlobalApplication;
 import org.mobile.library.global.LoginStatus;
 import org.mobile.library.model.work.IWorkEndListener;
 import org.mobile.library.model.work.implement.CheckLogin;
-
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * 登录Activity模板
@@ -59,6 +59,11 @@ public abstract class BaseLoginActivity extends AppCompatActivity {
     protected TextInputLayout passwordTextInputLayout = null;
 
     /**
+     * 根布局
+     */
+    private View rootView = null;
+
+    /**
      * 进度条
      */
     protected ProgressDialog progressDialog = null;
@@ -67,6 +72,7 @@ public abstract class BaseLoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(onActivityLoginLayout());
+        rootView = findViewById(R.id.activity_login_root_layout);
 
         // 重置用户登录参数
         GlobalApplication.getLoginStatus().Reset();
@@ -103,7 +109,6 @@ public abstract class BaseLoginActivity extends AppCompatActivity {
     /**
      * 初始化标题栏
      */
-    @SuppressWarnings("ConstantConditions")
     protected void initToolbar() {
         // 得到Toolbar标题栏
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -111,32 +116,41 @@ public abstract class BaseLoginActivity extends AppCompatActivity {
         // 关联ActionBar
         setSupportActionBar(toolbar);
 
+        ActionBar actionBar = getSupportActionBar();
+
         if (onSetCenterTitle()) {
             // 标题居中
             // 取消原actionBar标题
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
+            if (actionBar != null) {
+                actionBar.setDisplayShowTitleEnabled(false);
+            }
 
             // 得到标题文本
             TextView titleTextView = (TextView) findViewById(R.id.toolbar_title);
 
-            titleTextView.setText(R.string.title_login);
-
-            titleTextView.setVisibility(View.VISIBLE);
+            if (titleTextView != null) {
+                titleTextView.setText(R.string.title_login);
+                titleTextView.setVisibility(View.VISIBLE);
+            }
         } else {
             setTitle(R.string.title_login);
         }
 
         if (onSetHasNavigation()) {
             // 显示后退
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            if (actionBar != null) {
+                actionBar.setDisplayHomeAsUpEnabled(true);
+            }
 
-            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // 与返回键相同
-                    onBackPressed();
-                }
-            });
+            if (toolbar != null) {
+                toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // 与返回键相同
+                        onBackPressed();
+                    }
+                });
+            }
         }
     }
 
@@ -170,8 +184,9 @@ public abstract class BaseLoginActivity extends AppCompatActivity {
 
         TypedArray typedArray = getTheme().obtainStyledAttributes(new int[]{R.attr.colorPrimary});
 
-        assert button != null;
-        button.setSupportBackgroundTintList(typedArray.getColorStateList(0));
+        if (button != null) {
+            button.setSupportBackgroundTintList(typedArray.getColorStateList(0));
+        }
 
         typedArray.recycle();
     }
@@ -202,42 +217,170 @@ public abstract class BaseLoginActivity extends AppCompatActivity {
         passwordTextInputLayout = (TextInputLayout) findViewById(R.id
                 .login_content_layout_password_textInputLayout);
 
+        // 绑定错误提示
+        onBindEditHint();
+
         // 尝试填充数据
         if (GlobalApplication.getApplicationConfig().getUserName() != null) {
             // 填充用户
             userNameEditText.setText(GlobalApplication.getApplicationConfig().getUserName());
-
-            // 让密码框拥有焦点
-            setSoftInput(passwordEditText);
-        } else {
-            // 让用户名框拥有焦点
-            setSoftInput(userNameEditText);
         }
     }
 
     /**
-     * 设置指定编辑框获取焦点并弹出软键盘
-     *
-     * @param editText 要获取焦点的编辑框
+     * 绑定输入框错误提示
      */
-    private void setSoftInput(final EditText editText) {
+    protected void onBindEditHint() {
 
-        // 获取焦点
-        editText.setFocusable(true);
-        editText.setFocusableInTouchMode(true);
-        editText.requestFocus();
+        // 用户名提示
+        if (userNameTextInputLayout != null) {
 
-        // 延迟弹出软键盘
-        Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
+            userNameEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if (!hasFocus) {
+                        String userName = userNameEditText.getText().toString();
 
-            public void run() {
-                InputMethodManager inputManager = (InputMethodManager) editText.getContext()
-                        .getSystemService(Context.INPUT_METHOD_SERVICE);
-                inputManager.showSoftInput(editText, 0);
+                        // 检测用户名
+                        checkUserName(userName);
+                    }
+                }
+            });
+
+            userNameEditText.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    String userName = s.toString();
+                    if (!userName.contains(" ") && userName.length() >= 3) {
+                        userNameTextInputLayout.setError(null);
+                        userNameTextInputLayout.setErrorEnabled(false);
+                    }
+                }
+            });
+        }
+
+        // 密码提示
+        if (passwordTextInputLayout != null) {
+
+            passwordEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if (!hasFocus) {
+                        String password = passwordEditText.getText().toString();
+
+                        // 检测密码
+                        checkPassword(password);
+                    }
+                }
+            });
+
+            passwordEditText.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    String password = s.toString();
+                    if (password.length() >= 6) {
+                        passwordTextInputLayout.setError(null);
+                        passwordTextInputLayout.setErrorEnabled(false);
+                    }
+                }
+            });
+        }
+    }
+
+    /**
+     * 检测密码
+     *
+     * @param password 密码
+     *
+     * @return true表示检测通过
+     */
+    private boolean checkPassword(String password) {
+
+        if (passwordTextInputLayout != null) {
+
+            if (TextUtils.isEmpty(password)) {
+                passwordTextInputLayout.setError(getString(R.string.prompt_password_null_error));
+                return false;
             }
 
-        }, 600);
+            if (password.length() < 6) {
+                passwordTextInputLayout.setError(getString(R.string.prompt_password_short));
+                return false;
+            }
+        } else {
+            if (password.length() < 6) {
+                if (rootView != null) {
+                    Snackbar.make(rootView, R.string.prompt_password_short, Snackbar
+                            .LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, R.string.prompt_password_short, Toast.LENGTH_SHORT).show();
+                }
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * 检测用户名
+     *
+     * @param userName 用户名
+     *
+     * @return true表示检测通过
+     */
+    private boolean checkUserName(String userName) {
+
+        if (userNameTextInputLayout != null) {
+
+            if (TextUtils.isEmpty(userName)) {
+                userNameTextInputLayout.setError(getString(R.string.prompt_user_name_null));
+                return false;
+            }
+
+            if (userName.contains(" ")) {
+                userNameTextInputLayout.setError(getString(R.string.prompt_user_name_blank));
+                return false;
+            }
+
+            if (userName.length() < 3) {
+                userNameTextInputLayout.setError(getString(R.string.prompt_user_name_short));
+                return false;
+            }
+        } else {
+            if (userName.contains(" ") || userName.length() < 3) {
+                if (rootView != null) {
+                    Snackbar.make(rootView, R.string.prompt_user_name_error, Snackbar
+                            .LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, R.string.prompt_user_name_error, Toast.LENGTH_SHORT)
+                            .show();
+                }
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -264,13 +407,13 @@ public abstract class BaseLoginActivity extends AppCompatActivity {
     public void onLoginClick(View view) {
 
         // 获取用户名和密码
-        final String userName = userNameEditText.getText().toString().trim();
-        final String password = passwordEditText.getText().toString().trim();
+        final String userName = userNameEditText.getText().toString();
+        final String password = passwordEditText.getText().toString();
 
         InputMethodController.CloseInputMethod(this);
 
-        // 判断是否输入用户名和密码
-        if (TextUtils.isEmpty(userName) || TextUtils.isEmpty(password)) {
+        // 判断是否正确输入用户名和密码
+        if (!checkUserName(userName) || !checkPassword(password)) {
             return;
         }
 

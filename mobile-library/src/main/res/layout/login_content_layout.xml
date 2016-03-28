@@ -3,6 +3,8 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:layout_marginTop="@dimen/layout_toolbar_top_margin"
+              android:focusable="true"
+              android:focusableInTouchMode="true"
               android:orientation="vertical"
               android:paddingLeft="@dimen/layout_default_horizontal_padding"
               android:paddingRight="@dimen/layout_default_horizontal_padding">
@@ -21,8 +23,6 @@
                 android:id="@+id/login_content_layout_user_name_editText"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/layout_default_mini_height"
-                android:drawableLeft="@drawable/ic_account_grey600_36dp"
-                android:drawablePadding="20dp"
                 android:hint="@string/login_user_name_or_mobile_hint"
                 android:singleLine="true"/>
         </android.support.design.widget.TextInputLayout>
@@ -37,8 +37,6 @@
                 android:id="@+id/login_content_layout_password_editText"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/layout_default_mini_height"
-                android:drawableLeft="@drawable/ic_key_grey600_36dp"
-                android:drawablePadding="20dp"
                 android:hint="@string/password_edit_hint"
                 android:inputType="textPassword"
                 android:maxLength="32"

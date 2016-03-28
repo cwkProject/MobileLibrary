@@ -3,20 +3,16 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:layout_marginTop="@dimen/layout_toolbar_top_margin"
-              android:orientation="vertical">
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@android:color/darker_gray"/>
+              android:focusable="true"
+              android:focusableInTouchMode="true"
+              android:orientation="vertical"
+              android:paddingLeft="@dimen/layout_default_horizontal_padding"
+              android:paddingRight="@dimen/layout_default_horizontal_padding">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/white"
-        android:orientation="vertical"
-        android:paddingLeft="@dimen/layout_default_horizontal_padding"
-        android:paddingRight="@dimen/layout_default_horizontal_padding">
+        android:orientation="vertical">
 
         <LinearLayout
             android:id="@+id/register_content_layout_user_name_linearLayout"
@@ -25,6 +21,7 @@
             android:orientation="vertical">
 
             <android.support.design.widget.TextInputLayout
+                android:id="@+id/register_content_layout_user_name_textInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -32,15 +29,10 @@
                     android:id="@+id/register_content_layout_user_name_editText"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/layout_default_mini_height"
-                    android:background="@android:color/white"
                     android:hint="@string/login_user_name_hint"
                     android:singleLine="true"/>
             </android.support.design.widget.TextInputLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@android:color/darker_gray"/>
 
         </LinearLayout>
 
@@ -48,38 +40,44 @@
             android:id="@+id/register_content_layout_mobile_linearLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/layout_default_spacing"
             android:orientation="vertical">
 
-            <EditText
-                android:id="@+id/register_content_layout_mobile_editText"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/layout_default_mini_height"
-                android:background="@android:color/white"
-                android:hint="@string/login_mobile_hint"
-                android:inputType="number"
-                android:maxLength="11"
-                android:singleLine="true"/>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@android:color/darker_gray"/>
-
-            <FrameLayout
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/register_content_layout_mobile_textInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <EditText
-                    android:id="@+id/register_content_layout_verification_code_editText"
+                    android:id="@+id/register_content_layout_mobile_editText"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/layout_default_mini_height"
-                    android:layout_marginRight="@dimen/layout_default_spacing"
-                    android:background="@android:color/white"
-                    android:hint="@string/login_verification_code_hint"
+                    android:hint="@string/login_mobile_hint"
                     android:inputType="number"
-                    android:maxLength="6"
+                    android:maxLength="11"
                     android:singleLine="true"/>
 
+            </android.support.design.widget.TextInputLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/layout_default_spacing">
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/register_content_layout_verification_code_textInputLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:id="@+id/register_content_layout_verification_code_editText"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/layout_default_mini_height"
+                        android:hint="@string/login_verification_code_hint"
+                        android:inputType="number"
+                        android:maxLength="6"
+                        android:singleLine="true"/>
+                </android.support.design.widget.TextInputLayout>
 
                 <android.support.v7.widget.AppCompatButton
                     android:id="@+id/register_content_layout_verification_code_send_button"
@@ -92,41 +90,33 @@
 
             </FrameLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@android:color/darker_gray"/>
-
         </LinearLayout>
 
         <android.support.design.widget.TextInputLayout
+            android:id="@+id/register_content_layout_password1_textInputLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/layout_default_spacing">
 
             <EditText
                 android:id="@+id/register_content_layout_password1_editText"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/layout_default_mini_height"
-                android:background="@android:color/white"
                 android:hint="@string/password_edit_hint"
                 android:inputType="textPassword"
                 android:singleLine="true"/>
         </android.support.design.widget.TextInputLayout>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@android:color/darker_gray"/>
-
         <android.support.design.widget.TextInputLayout
+            android:id="@+id/register_content_layout_password2_textInputLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/layout_default_spacing">
 
             <EditText
                 android:id="@+id/register_content_layout_password2_editText"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/layout_default_mini_height"
-                android:background="@android:color/white"
                 android:hint="@string/password_again_edit_hint"
                 android:inputType="textPassword"
                 android:singleLine="true"/>
@@ -134,17 +124,10 @@
 
     </LinearLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@android:color/darker_gray"/>
-
     <android.support.v7.widget.AppCompatButton
         android:id="@+id/register_content_layout_register_button"
         android:layout_width="match_parent"
         android:layout_height="@dimen/button_default_large_height"
-        android:layout_marginLeft="@dimen/layout_default_horizontal_padding"
-        android:layout_marginRight="@dimen/layout_default_horizontal_padding"
         android:layout_marginTop="@dimen/layout_default_vertical_margin"
         android:onClick="onRegisterClick"
         android:text="@string/register_button"
