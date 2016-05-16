@@ -3,10 +3,7 @@ package org.mobile.library;
  * Created by 超悟空 on 2015/9/16.
  */
 
-import android.support.test.runner.AndroidJUnit4;
-
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mobile.library.global.ApplicationStaticValue;
 import org.mobile.library.global.GlobalApplication;
 import org.mobile.library.model.work.WorkBack;
@@ -22,7 +19,6 @@ import static org.junit.Assert.assertNotNull;
  * @version 1.0 2015/9/16
  * @since 1.0
  */
-@RunWith(AndroidJUnit4.class)
 public class TestUpdateVersion {
 
     @Test

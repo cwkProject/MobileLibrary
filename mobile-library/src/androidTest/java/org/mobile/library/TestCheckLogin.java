@@ -83,7 +83,6 @@ public class TestCheckLogin {
         CheckLogin login = new CheckLogin();
 
         assertTrue(login.execute("xuehui", "123456"));
-        assertEquals("登陆成功！", login.getMessage());
 
         assertEquals("227", login.getResult());
     }
