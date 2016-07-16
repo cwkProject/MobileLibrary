@@ -27,7 +27,7 @@ public class SendMobileVerificationCode extends DefaultWorkModel<String, String,
 
     @Override
     protected NetworkType onNetworkType() {
-        return NetworkType.HTTP_POST;
+        return NetworkType.POST;
     }
 
     @Override

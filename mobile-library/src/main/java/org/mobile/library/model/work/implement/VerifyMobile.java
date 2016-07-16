@@ -25,7 +25,7 @@ public class VerifyMobile extends DefaultWorkModel<String, String, VerificationM
 
     @Override
     protected NetworkType onNetworkType() {
-        return NetworkType.HTTP_POST;
+        return NetworkType.POST;
     }
 
     @Override

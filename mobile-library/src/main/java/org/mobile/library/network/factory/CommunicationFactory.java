@@ -3,16 +3,7 @@ package org.mobile.library.network.factory;
  * Created by 超悟空 on 2015/4/23.
  */
 
-import org.mobile.library.network.communication.OkHttpDownloadAsyncCommunication;
-import org.mobile.library.network.communication.OkHttpDownloadSyncCommunication;
-import org.mobile.library.network.communication.OkHttpGetAsyncCommunication;
-import org.mobile.library.network.communication.OkHttpGetSyncCommunication;
-import org.mobile.library.network.communication.OkHttpPostAsyncCommunication;
-import org.mobile.library.network.communication.OkHttpPostSyncCommunication;
-import org.mobile.library.network.communication.OkHttpUploadAsyncCommunication;
-import org.mobile.library.network.communication.OkHttpUploadSyncCommunication;
-import org.mobile.library.network.util.AsyncCommunication;
-import org.mobile.library.network.util.SyncCommunication;
+import org.mobile.library.network.util.NetworkProgressListener;
 
 
 /**
@@ -24,56 +15,35 @@ import org.mobile.library.network.util.SyncCommunication;
  */
 public class CommunicationFactory {
 
-    /**
-     * 创建同步通讯工具对象
-     *
-     * @param networkType 网络工具类型
-     *
-     * @return 初始化完成的通讯工具
-     */
-    public static SyncCommunication CreateSyncCommunication(NetworkType networkType) {
 
-        switch (networkType) {
-            case HTTP_GET:
-                // HttpGet请求对象
-                return new OkHttpGetSyncCommunication();
-            case HTTP_POST:
-                // HttpPost请求对象
-                return new OkHttpPostSyncCommunication();
-            case UPLOAD:
-                // HttpUpload请求对象
-                return new OkHttpUploadSyncCommunication();
-            case DOWNLOAD:
-                // HttpDownload请求对象
-                return new OkHttpDownloadSyncCommunication();
-            default:
-                throw new UnsupportedOperationException("network protocol not implemented");
-        }
-    }
 
-    /**
-     * 创建异步通信工具
-     *
-     * @param networkType 网络工具类型
-     *
-     * @return 初始化完成的通讯工具
-     */
-    public static AsyncCommunication CreateAsyncCommunication(NetworkType networkType) {
-        switch (networkType) {
-            case HTTP_GET:
-                // HttpGet请求对象
-                return new OkHttpGetAsyncCommunication();
-            case HTTP_POST:
-                // HttpPost请求对象
-                return new OkHttpPostAsyncCommunication();
-            case UPLOAD:
-                // HttpUpload请求对象
-                return new OkHttpUploadAsyncCommunication();
-            case DOWNLOAD:
-                // HttpDownload请求对象
-                return new OkHttpDownloadAsyncCommunication();
-            default:
-                throw new UnsupportedOperationException("network protocol not implemented");
-        }
+    public class Builder {
+
+        /**
+         * 网络工具类型
+         */
+        private NetworkType networkType = NetworkType.GET;
+
+        /**
+         * 进度监听器，仅上传和下载时有效
+         */
+        private NetworkProgressListener progressListener = null;
+
+        /**
+         * 请求超时时间
+         */
+        private int connectTimeout = -1;
+
+        /**
+         * 读取超时时间
+         */
+        private int readTimeout = -1;
+
+        /**
+         * 写入超时时间
+         */
+        private int writeTimeout = -1;
+
+
     }
 }

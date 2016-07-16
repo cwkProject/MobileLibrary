@@ -15,11 +15,11 @@ public enum NetworkType {
     /**
      * http get类型请求
      */
-    HTTP_GET,
+    GET,
     /**
      * http post类型的请求
      */
-    HTTP_POST,
+    POST,
     /**
      * 下载
      */

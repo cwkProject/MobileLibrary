@@ -30,7 +30,7 @@ public class UserRegister extends DefaultWorkModel<String, String, RegisterData>
 
     @Override
     protected NetworkType onNetworkType() {
-        return NetworkType.HTTP_POST;
+        return NetworkType.POST;
     }
 
     @Override

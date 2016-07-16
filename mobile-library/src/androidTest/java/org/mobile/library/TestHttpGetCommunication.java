@@ -37,7 +37,7 @@ public class TestHttpGetCommunication {
     @Before
     public void setUp() throws Exception {
         // 新建通讯工具
-        communication = CommunicationFactory.CreateSyncCommunication(NetworkType.HTTP_GET);
+        communication = CommunicationFactory.CreateSyncCommunication(NetworkType.GET);
 
         communication.setTaskName("http://218.92.115.55/WlkgbsgsApp/Service/test.aspx");
     }
@@ -166,7 +166,7 @@ public class TestHttpGetCommunication {
         map3.put("Data", "测试3");
 
         SyncCommunication communication1 = CommunicationFactory.CreateSyncCommunication
-                (NetworkType.HTTP_GET);
+                (NetworkType.GET);
 
         communication1.setTaskName("http://218.92.115.55/WlkgbsgsApp/Service/test.aspx");
 
@@ -178,14 +178,14 @@ public class TestHttpGetCommunication {
         assertEquals("测试1", result.trim());
 
         SyncCommunication communication2 = CommunicationFactory.CreateSyncCommunication
-                (NetworkType.HTTP_GET);
+                (NetworkType.GET);
 
         communication2.setTaskName("http://218.92.115.55/WlkgbsgsApp/Service/test.aspx");
 
         communication2.Request(map2);
 
         SyncCommunication communication3 = CommunicationFactory.CreateSyncCommunication
-                (NetworkType.HTTP_GET);
+                (NetworkType.GET);
 
         communication3.setTaskName("http://218.92.115.55/WlkgbsgsApp/Service/test.aspx");
 
@@ -221,7 +221,7 @@ public class TestHttpGetCommunication {
         map.put("Data", "测试测试");
 
         AsyncCommunication communication = CommunicationFactory.CreateAsyncCommunication
-                (NetworkType.HTTP_GET);
+                (NetworkType.GET);
 
         communication.setTaskName("http://218.92.115.55/WlkgbsgsApp/Service/test.aspx");
 

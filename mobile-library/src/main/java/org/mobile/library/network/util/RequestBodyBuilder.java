@@ -34,7 +34,7 @@ public class RequestBodyBuilder {
     private static final String LOG_TAG = "RequestBodyBuilder.";
 
     /**
-     * 拼接参数字符串，用于get请求参数
+     * 拼接参数字符串，用于get请求参数，默认utf-8编码
      *
      * @param sendData 请求参数对
      * @param encoded  编码方式
@@ -70,16 +70,59 @@ public class RequestBodyBuilder {
                 }
             }
         } catch (UnsupportedEncodingException e) {
-            Log.e(LOG_TAG + "onBuildParameter", "response error IOException class is " + e
-                    .toString());
-            Log.e(LOG_TAG + "onBuildParameter", "response error IOException message is " + e
-                    .getMessage());
+            Log.e(LOG_TAG + "onBuildParameter", "URLEncoder error", e);
         }
         return params.toString();
     }
 
     /**
+     * 拼接参数字符串，用于get请求参数
+     *
+     * @param sendData 请求参数对
+     *
+     * @return 拼接完成的字符串
+     */
+    @NonNull
+    public static String onBuildParameter(Map<String, String> sendData) {
+        return onBuildParameter(sendData, "utf-8");
+    }
+
+    /**
      * 创建文本post表单
+     *
+     * @param sendData 要发送的参数对
+     * @param encoded  编码方式
+     *
+     * @return 装配好的表单
+     */
+    public static RequestBody onBuildPostForm(Map<String, String> sendData, String encoded) {
+        FormBody.Builder builder = new FormBody.Builder();
+
+        // 遍历sendData集合并加入请求参数对象
+        if (sendData != null && !sendData.isEmpty()) {
+            Log.i(LOG_TAG + "onBuildForm", "sendData count is " + sendData.size());
+
+            try {
+                // 遍历并追加参数
+                for (Map.Entry<String, String> dataEntry : sendData.entrySet()) {
+                    Log.i(LOG_TAG + "onBuildForm", "parameter is " + dataEntry.getKey() + " = " +
+                            dataEntry.getValue());
+                    if (dataEntry.getValue() != null) {
+                        // 加入表单
+                        builder.addEncoded(dataEntry.getKey(), URLEncoder.encode(dataEntry
+                                .getValue(), encoded));
+                    }
+                }
+            } catch (UnsupportedEncodingException e) {
+                Log.e(LOG_TAG + "onBuildParameter", "URLEncoder error", e);
+            }
+        }
+
+        return builder.build();
+    }
+
+    /**
+     * 创建文本post表单，默认utf-8编码
      *
      * @param sendData 要发送的参数对
      *

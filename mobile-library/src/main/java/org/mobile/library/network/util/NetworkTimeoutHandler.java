@@ -13,23 +13,9 @@ package org.mobile.library.network.util;
 public interface NetworkTimeoutHandler {
 
     /**
-     * 设置读取超时时间
+     * 设置网络请求超时配置
      *
-     * @param readTimeout 超时时间，单位毫秒
+     * @param networkTimeout 超时配置
      */
-    void setReadTimeout(int readTimeout);
-
-    /**
-     * 设置写入超时时间
-     *
-     * @param readTimeout 超时时间，单位毫秒
-     */
-    void setWriteTimeout(int readTimeout);
-
-    /**
-     * 设置超时时间
-     *
-     * @param timeout 超时时间，单位毫秒
-     */
-    void setTimeout(int timeout);
+    void setNetworkTimeout(NetworkTimeout networkTimeout);
 }

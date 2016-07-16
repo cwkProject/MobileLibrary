@@ -78,7 +78,7 @@ public class TestHttpWithSign {
 
     @Test
     public void httpGet() throws Exception {
-        SyncCommunication communication = CommunicationFactory.CreateSyncCommunication(NetworkType.HTTP_GET);
+        SyncCommunication communication = CommunicationFactory.CreateSyncCommunication(NetworkType.GET);
 
         communication.setTaskName(URL);
 

@@ -43,13 +43,6 @@ public class CheckVersion extends DefaultWorkModel<String, String, UpdateData> {
         config.setLatestVersion(!data.isSuccess());
         config.setLatestVersionName(data.getVersionName());
         config.setLatestVersionUrl(data.getUrl());
-
-        sendBroadcast();
-    }
-
-    @Override
-    protected void onParseFailed(UpdateData data) {
-        sendBroadcast();
     }
 
     @Override
@@ -73,6 +66,11 @@ public class CheckVersion extends DefaultWorkModel<String, String, UpdateData> {
         data.setAppCode(parameters[1]);
 
         return data;
+    }
+
+    @Override
+    protected void onFinish() {
+        sendBroadcast();
     }
 
     /**

@@ -66,7 +66,7 @@ public class CheckLogin extends DefaultWorkModel<String, String, LoginData> {
 
     @Override
     protected NetworkType onNetworkType() {
-        return NetworkType.HTTP_POST;
+        return NetworkType.POST;
     }
 
     @Override

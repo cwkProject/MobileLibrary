@@ -394,12 +394,12 @@ public abstract class DefaultWorkModel<Parameters, Result, DataModelType extends
     /**
      * 设置网络请求类型<br>
      * 用于{@link CommunicationFactory#CreateSyncCommunication(NetworkType)}生产网络请求实例，
-     * 默认为{@link NetworkType#HTTP_GET}
+     * 默认为{@link NetworkType#GET}
      *
      * @return 网络请求类型枚举
      */
     protected NetworkType onNetworkType() {
-        return NetworkType.HTTP_GET;
+        return NetworkType.GET;
     }
 
     /**

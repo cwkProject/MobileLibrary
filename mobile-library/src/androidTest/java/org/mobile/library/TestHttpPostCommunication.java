@@ -34,7 +34,7 @@ public class TestHttpPostCommunication {
     @Before
     public void setUp() throws Exception {
         // 新建通讯工具
-        communication = CommunicationFactory.CreateSyncCommunication(NetworkType.HTTP_POST);
+        communication = CommunicationFactory.CreateSyncCommunication(NetworkType.POST);
 
         communication.setTaskName("http://218.92.115.55/WlkgbsgsApp/Service/test.aspx");
 
@@ -111,7 +111,7 @@ public class TestHttpPostCommunication {
         map.put("Data", "测试测试");
 
         AsyncCommunication communication = CommunicationFactory.CreateAsyncCommunication
-                (NetworkType.HTTP_POST);
+                (NetworkType.POST);
 
         communication.setTaskName("http://218.92.115.55/WlkgbsgsApp/Service/test.aspx");
 
