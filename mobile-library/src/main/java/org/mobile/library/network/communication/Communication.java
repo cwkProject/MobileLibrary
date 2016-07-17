@@ -29,13 +29,13 @@ import okhttp3.ResponseBody;
  * @version 1.0 2016/3/7
  * @since 1.0
  */
-public abstract class OKHttpCommunication<RequestType, ResponseType> implements
+public abstract class Communication<RequestType, ResponseType> implements
         AsyncCommunication<RequestType, ResponseType>, SyncCommunication<RequestType,
         ResponseType>, NetworkTimeoutHandler {
     /**
      * 日志标签前缀
      */
-    private static final String LOG_TAG = "OKHttpCommunication.";
+    private static final String LOG_TAG = "Communication.";
 
     /**
      * 超时时间配置

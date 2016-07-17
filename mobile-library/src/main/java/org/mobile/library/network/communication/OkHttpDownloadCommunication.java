@@ -30,7 +30,7 @@ import okhttp3.ResponseBody;
  * @version 2.0 2016/3/7
  * @since 1.0
  */
-public class OkHttpDownloadCommunication extends OKHttpCommunication<Map<String, String>,
+public class OkHttpDownloadCommunication extends Communication<Map<String, String>,
         InputStream> implements NetworkRefreshProgressHandler {
     /**
      * 日志标签前缀

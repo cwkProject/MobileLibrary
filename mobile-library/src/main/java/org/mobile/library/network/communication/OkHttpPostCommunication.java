@@ -25,7 +25,7 @@ import okhttp3.ResponseBody;
  * @version 2.0 2016/3/7
  * @since 1.0
  */
-public class OkHttpPostCommunication extends OKHttpCommunication<Map<String, String>, String> {
+public class OkHttpPostCommunication extends Communication<Map<String, String>, String> {
 
     /**
      * 日志标签前缀

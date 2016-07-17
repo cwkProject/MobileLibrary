@@ -6,7 +6,7 @@ package org.mobile.library;
 import android.util.Log;
 
 import org.junit.Test;
-import org.mobile.library.network.factory.CommunicationFactory;
+import org.mobile.library.network.factory.CommunicationBuilder;
 import org.mobile.library.network.factory.NetworkType;
 import org.mobile.library.network.util.SyncCommunication;
 
@@ -36,7 +36,7 @@ public class TestHttps {
         SyncCommunication communication;
 
         // 新建通讯工具
-        communication = CommunicationFactory.CreateSyncCommunication(NetworkType.GET);
+        communication = CommunicationBuilder.CreateSyncCommunication(NetworkType.GET);
 
         communication.setTaskName("https://www.iportpay.cn");
 
@@ -59,7 +59,7 @@ public class TestHttps {
         SyncCommunication communication;
 
         // 新建通讯工具
-        communication = CommunicationFactory.CreateSyncCommunication(NetworkType.POST);
+        communication = CommunicationBuilder.CreateSyncCommunication(NetworkType.POST);
 
         communication.setTaskName("https://www.iportpay.cn/order");
 

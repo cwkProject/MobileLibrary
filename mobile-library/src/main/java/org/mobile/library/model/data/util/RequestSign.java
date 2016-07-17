@@ -1,4 +1,4 @@
-package org.mobile.library.network.util;
+package org.mobile.library.model.data.util;
 /**
  * Created by 超悟空 on 2016/3/19.
  */

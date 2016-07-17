@@ -3,11 +3,7 @@ package org.mobile.library.model.data.base;
  * Created by 超悟空 on 2015/11/30.
  */
 
-import org.mobile.library.global.GlobalApplication;
-import org.mobile.library.network.util.RequestSign;
-
 import java.io.InputStream;
-import java.util.Map;
 
 /**
  * 用于下载任务的数据模型基类<br>
@@ -64,23 +60,5 @@ public abstract class DownloadDataModel extends StandardDataModel<InputStream, I
 
     @Override
     protected final void onRequestFailed(InputStream handleResult) throws Exception {
-    }
-
-    /**
-     * 表示是否对请求参数进行校验签名
-     *
-     * @return true表示进行签名，默认为false
-     */
-    @Override
-    protected boolean onIsRequestSign() {
-        return false;
-    }
-
-    @Override
-    protected void onRequestParametersSign(Map<String, String> dataMap) {
-        if (GlobalApplication.getApplicationAttribute().getAppCode() != null && GlobalApplication
-                .getApplicationAttribute().getAppToken() != null) {
-            RequestSign.signForText(dataMap);
-        }
     }
 }

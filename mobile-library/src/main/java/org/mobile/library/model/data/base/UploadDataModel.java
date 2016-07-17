@@ -28,14 +28,4 @@ public abstract class UploadDataModel extends StandardDataModel<JSONObject, Stri
     protected final JSONObject onCreateHandle(String response) throws Exception {
         return new JSONObject(response);
     }
-
-    /**
-     * 表示是否对请求参数进行校验签名
-     *
-     * @return true表示进行签名，默认为false
-     */
-    @Override
-    protected boolean onIsRequestSign() {
-        return false;
-    }
 }

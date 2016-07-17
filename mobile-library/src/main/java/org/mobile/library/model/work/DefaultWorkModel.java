@@ -10,12 +10,12 @@ import org.mobile.library.model.data.IDefaultDataModel;
 import org.mobile.library.model.operate.AsyncExecute;
 import org.mobile.library.model.operate.Cancelable;
 import org.mobile.library.model.operate.SyncExecute;
-import org.mobile.library.network.factory.CommunicationFactory;
+import org.mobile.library.network.communication.Communication;
+import org.mobile.library.network.factory.CommunicationBuilder;
 import org.mobile.library.network.factory.NetworkType;
 import org.mobile.library.network.util.AsyncCommunication;
 import org.mobile.library.network.util.NetworkCallback;
 import org.mobile.library.network.util.NetworkProgressListener;
-import org.mobile.library.network.util.NetworkRefreshProgressHandler;
 import org.mobile.library.network.util.SyncCommunication;
 
 /**
@@ -52,14 +52,9 @@ public abstract class DefaultWorkModel<Parameters, Result, DataModelType extends
     private NetworkProgressListener networkProgressListener = null;
 
     /**
-     * 同步网络请求工具
+     * 网络请求工具
      */
-    private SyncCommunication syncCommunication = null;
-
-    /**
-     * 异步网络请求工具
-     */
-    private AsyncCommunication asyncCommunication = null;
+    private Communication communication = null;
 
     /**
      * 指示是否将取消回调接口在UI线程执行，默认为发送到UI线程
@@ -107,15 +102,16 @@ public abstract class DefaultWorkModel<Parameters, Result, DataModelType extends
         if (!cancelMark) {
             Log.i(LOG_TAG + "onDoWork", "task request url is " + onTaskUri());
 
+            // 设置请求地址
+            communication.setTaskName(onTaskUri());
+
             // 进入同步异步请求分支
             if (isAsync) {
                 // 异步分支
 
-                // 设置请求地址
-                asyncCommunication.setTaskName(onTaskUri());
                 // 发送请求
                 //noinspection unchecked
-                asyncCommunication.Request(data.serialization(), new NetworkCallback() {
+                communication.Request(data.serialization(), new NetworkCallback() {
                     @Override
                     public void onFinish(boolean result, Object response) {
                         if (!cancelMark) {
@@ -135,18 +131,16 @@ public abstract class DefaultWorkModel<Parameters, Result, DataModelType extends
             } else {
                 // 同步分支
 
-                // 设置请求地址
-                syncCommunication.setTaskName(onTaskUri());
                 // 发送请求
                 //noinspection unchecked
-                syncCommunication.Request(data.serialization());
+                communication.Request(data.serialization());
 
                 // 解析响应数据
-                boolean success = onParseResult(data, syncCommunication.isSuccessful(),
-                        syncCommunication.Response());
+                boolean success = onParseResult(data, communication.isSuccessful(), communication
+                        .Response());
 
                 // 关闭网络
-                syncCommunication.close();
+                communication.close();
                 return success;
             }
         } else {
@@ -261,47 +255,31 @@ public abstract class DefaultWorkModel<Parameters, Result, DataModelType extends
     public final void cancel() {
         Log.i(LOG_TAG + "cancel", "work cancel");
         this.cancelMark = true;
-        if (syncCommunication != null) {
-            syncCommunication.cancel();
-        }
-        if (asyncCommunication != null) {
-            asyncCommunication.cancel();
+        if (communication != null) {
+            communication.cancel();
         }
     }
 
     @Override
     protected final void onStartWork() {
         Log.i(LOG_TAG + "onStartWork", "work start");
-        if (isAsync) {
-            // 新建通讯工具
-            asyncCommunication = onCreateAsyncCommunication();
-            // 尝试绑定进度监听器
-            if (asyncCommunication instanceof NetworkRefreshProgressHandler) {
-                onBindProgressListener((NetworkRefreshProgressHandler) asyncCommunication);
-            }
-        } else {
-            // 新建通讯工具
-            syncCommunication = onCreateSyncCommunication();
-            // 尝试绑定进度监听器
-            if (syncCommunication instanceof NetworkRefreshProgressHandler) {
-                onBindProgressListener((NetworkRefreshProgressHandler) syncCommunication);
-            }
-        }
+        // 创建网络请求工具
+        communication = onCreateCommunication();
     }
 
     /**
-     * 绑定进度监听器
+     * 创建网络请求进度监听器，根据情况可能进行了包装
      *
-     * @param progressHandler 可设置监听器的网络工具
+     * @return 网络请求进度监听器
      */
-    private void onBindProgressListener(NetworkRefreshProgressHandler progressHandler) {
+    protected NetworkProgressListener onCreateProgressListener() {
         if (networkProgressListener != null) {
             // 开始绑定
-            Log.i(LOG_TAG + "onBindProgressListener", "set ProgressListener");
+            Log.i(LOG_TAG + "onCreateProgressListener", "set ProgressListener");
 
             if (isProgressUiThread) {
                 // 发送到UI线程
-                progressHandler.setNetworkProgressListener(new NetworkProgressListener() {
+                return new NetworkProgressListener() {
                     @Override
                     public void onRefreshProgress(final long current, final long total, final
                     boolean done) {
@@ -312,12 +290,14 @@ public abstract class DefaultWorkModel<Parameters, Result, DataModelType extends
                             }
                         });
                     }
-                });
+                };
             } else {
                 // 在当前线程
                 // 直接绑定
-                progressHandler.setNetworkProgressListener(networkProgressListener);
+                return networkProgressListener;
             }
+        } else {
+            return null;
         }
     }
 
@@ -393,7 +373,7 @@ public abstract class DefaultWorkModel<Parameters, Result, DataModelType extends
 
     /**
      * 设置网络请求类型<br>
-     * 用于{@link CommunicationFactory#CreateSyncCommunication(NetworkType)}生产网络请求实例，
+     * 用于{@link CommunicationBuilder#CommunicationBuilder(NetworkType)}生产网络请求实例，
      * 默认为{@link NetworkType#GET}
      *
      * @return 网络请求类型枚举
@@ -403,29 +383,17 @@ public abstract class DefaultWorkModel<Parameters, Result, DataModelType extends
     }
 
     /**
-     * 创建同步网络请求工具<br>
+     * 创建网络请求工具<br>
      * 用于发送网络请求，
-     * 默认使用{@link CommunicationFactory}工具进行创建，
+     * 默认使用{@link CommunicationBuilder}工具进行创建，
      * 使用{@link #onNetworkType()}返回的请求类型，
      * 如果需要使用自定义网络请求工具请重写此方法
      *
      * @return 网络请求工具实例
      */
-    protected SyncCommunication onCreateSyncCommunication() {
-        return CommunicationFactory.CreateSyncCommunication(onNetworkType());
-    }
-
-    /**
-     * 创建异步网络请求工具<br>
-     * 用于发送网络请求，
-     * 默认使用{@link CommunicationFactory}工具进行创建，
-     * 使用{@link #onNetworkType()}返回的请求类型，
-     * 如果需要使用自定义网络请求工具请重写此方法
-     *
-     * @return 网络请求工具实例
-     */
-    protected AsyncCommunication onCreateAsyncCommunication() {
-        return CommunicationFactory.CreateAsyncCommunication(onNetworkType());
+    protected Communication onCreateCommunication() {
+        return new CommunicationBuilder(onNetworkType()).networkRefreshProgressListener
+                (onCreateProgressListener()).build();
     }
 
     /**

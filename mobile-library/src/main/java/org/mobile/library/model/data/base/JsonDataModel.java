@@ -4,8 +4,7 @@ package org.mobile.library.model.data.base;
  */
 
 import org.json.JSONObject;
-import org.mobile.library.global.GlobalApplication;
-import org.mobile.library.network.util.RequestSign;
+import org.mobile.library.model.data.util.RequestSign;
 
 import java.util.Map;
 
@@ -20,7 +19,7 @@ import java.util.Map;
 public abstract class JsonDataModel extends StandardDataModel<JSONObject, String, String> {
 
     @Override
-    protected final boolean onCheckResponse(String response) {
+    protected boolean onCheckResponse(String response) {
         return response != null;
     }
 
@@ -29,11 +28,16 @@ public abstract class JsonDataModel extends StandardDataModel<JSONObject, String
         return new JSONObject(response);
     }
 
+    /**
+     * 对参数进行签名，
+     * 需要在应用启动时对环境变量赋值，
+     * {@link org.mobile.library.global.ApplicationAttribute#setAppCode(String)}，
+     * {@link org.mobile.library.global.ApplicationAttribute#setAppToken(String)}
+     *
+     * @param dataMap 要发送的数据
+     */
     @Override
     protected void onRequestParametersSign(Map<String, String> dataMap) {
-        if (GlobalApplication.getApplicationAttribute().getAppCode() != null && GlobalApplication
-                .getApplicationAttribute().getAppToken() != null) {
-            RequestSign.signForText(dataMap);
-        }
+        RequestSign.signForText(dataMap);
     }
 }

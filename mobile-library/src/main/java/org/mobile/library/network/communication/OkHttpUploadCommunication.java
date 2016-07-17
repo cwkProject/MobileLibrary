@@ -28,7 +28,7 @@ import okhttp3.ResponseBody;
  * @version 1.0 2016/7/16
  * @since 1.0
  */
-public class OkHttpUploadCommunication extends OKHttpCommunication<Map<String, Object>, String>
+public class OkHttpUploadCommunication extends Communication<Map<String, Object>, String>
         implements NetworkRefreshProgressHandler {
     /**
      * 日志标签前缀

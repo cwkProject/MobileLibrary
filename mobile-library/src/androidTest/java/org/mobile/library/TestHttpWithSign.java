@@ -10,7 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mobile.library.global.GlobalApplication;
 import org.mobile.library.model.data.base.SimpleJsonDataModel;
-import org.mobile.library.network.factory.CommunicationFactory;
+import org.mobile.library.network.factory.CommunicationBuilder;
 import org.mobile.library.network.factory.NetworkType;
 import org.mobile.library.network.util.SyncCommunication;
 
@@ -78,7 +78,7 @@ public class TestHttpWithSign {
 
     @Test
     public void httpGet() throws Exception {
-        SyncCommunication communication = CommunicationFactory.CreateSyncCommunication(NetworkType.GET);
+        SyncCommunication communication = CommunicationBuilder.CreateSyncCommunication(NetworkType.GET);
 
         communication.setTaskName(URL);
 

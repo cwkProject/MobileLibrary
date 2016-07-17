@@ -8,7 +8,7 @@ import android.util.Log;
 import android.webkit.MimeTypeMap;
 
 import org.junit.Test;
-import org.mobile.library.network.factory.CommunicationFactory;
+import org.mobile.library.network.factory.CommunicationBuilder;
 import org.mobile.library.network.factory.NetworkType;
 import org.mobile.library.network.util.AsyncCommunication;
 import org.mobile.library.network.util.NetworkCallback;
@@ -69,7 +69,7 @@ public class TestUpload {
         map.put("File", new FileInfo(file, "wallpaper", MimeTypeMap.getSingleton()
                 .getMimeTypeFromExtension("jpg")));
 
-        SyncCommunication communication = CommunicationFactory.CreateSyncCommunication
+        SyncCommunication communication = CommunicationBuilder.CreateSyncCommunication
                 (NetworkType.UPLOAD);
 
         communication.setTaskName(URL);
@@ -113,7 +113,7 @@ public class TestUpload {
         map.put("File", new FileInfo(file, "wallpaper", MimeTypeMap.getSingleton()
                 .getMimeTypeFromExtension("jpg")));
 
-        AsyncCommunication communication = CommunicationFactory.CreateAsyncCommunication
+        AsyncCommunication communication = CommunicationBuilder.CreateAsyncCommunication
                 (NetworkType.UPLOAD);
 
         communication.setTaskName(URL);
@@ -168,7 +168,7 @@ public class TestUpload {
         map.put("File", new FileInfo(file, "wallpaper", MimeTypeMap.getSingleton()
                 .getMimeTypeFromExtension("jpg")));
 
-        final SyncCommunication communication = CommunicationFactory.CreateSyncCommunication
+        final SyncCommunication communication = CommunicationBuilder.CreateSyncCommunication
                 (NetworkType.UPLOAD);
 
         communication.setTaskName(URL);
@@ -223,7 +223,7 @@ public class TestUpload {
         map.put("File", new FileInfo(file, "wallpaper", MimeTypeMap.getSingleton()
                 .getMimeTypeFromExtension("jpg")));
 
-        final AsyncCommunication communication = CommunicationFactory.CreateAsyncCommunication
+        final AsyncCommunication communication = CommunicationBuilder.CreateAsyncCommunication
                 (NetworkType.UPLOAD);
 
         communication.setTaskName(URL);

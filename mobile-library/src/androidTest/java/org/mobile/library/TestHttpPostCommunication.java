@@ -5,7 +5,7 @@ package org.mobile.library;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mobile.library.network.factory.CommunicationFactory;
+import org.mobile.library.network.factory.CommunicationBuilder;
 import org.mobile.library.network.factory.NetworkType;
 import org.mobile.library.network.util.AsyncCommunication;
 import org.mobile.library.network.util.NetworkCallback;
@@ -34,7 +34,7 @@ public class TestHttpPostCommunication {
     @Before
     public void setUp() throws Exception {
         // 新建通讯工具
-        communication = CommunicationFactory.CreateSyncCommunication(NetworkType.POST);
+        communication = CommunicationBuilder.CreateSyncCommunication(NetworkType.POST);
 
         communication.setTaskName("http://218.92.115.55/WlkgbsgsApp/Service/test.aspx");
 
@@ -110,7 +110,7 @@ public class TestHttpPostCommunication {
 
         map.put("Data", "测试测试");
 
-        AsyncCommunication communication = CommunicationFactory.CreateAsyncCommunication
+        AsyncCommunication communication = CommunicationBuilder.CreateAsyncCommunication
                 (NetworkType.POST);
 
         communication.setTaskName("http://218.92.115.55/WlkgbsgsApp/Service/test.aspx");

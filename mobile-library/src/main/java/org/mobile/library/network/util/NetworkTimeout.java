@@ -37,31 +37,31 @@ public class NetworkTimeout {
     /**
      * 设置读取超时时间
      *
-     * @param readTimeout 超时时间，单位毫秒
+     * @param timeout 超时时间，单位毫秒
      */
-    public void setReadTimeout(int readTimeout) {
-        Log.i(LOG_TAG + "setReadTimeout", "readTimeout is " + readTimeout);
-        this.readTimeout = readTimeout;
+    public void setReadTimeout(int timeout) {
+        Log.i(LOG_TAG + "setReadTimeout", "timeout is " + timeout);
+        this.readTimeout = timeout;
     }
 
     /**
      * 设置写入超时时间
      *
-     * @param writeTimeout 超时时间，单位毫秒
+     * @param timeout 超时时间，单位毫秒
      */
-    public void setWriteTimeout(int writeTimeout) {
-        Log.i(LOG_TAG + "setWriteTimeout", "writeTimeout is " + writeTimeout);
-        this.writeTimeout = writeTimeout;
+    public void setWriteTimeout(int timeout) {
+        Log.i(LOG_TAG + "setWriteTimeout", "timeout is " + timeout);
+        this.writeTimeout = timeout;
     }
 
     /**
      * 设置连接超时时间
      *
-     * @param connectTimeout 超时时间，单位毫秒
+     * @param timeout 超时时间，单位毫秒
      */
-    public void setConnectTimeout(int connectTimeout) {
-        Log.i(LOG_TAG + "setTimeout", "connectTimeout is " + connectTimeout);
-        this.connectTimeout = connectTimeout;
+    public void setConnectTimeout(int timeout) {
+        Log.i(LOG_TAG + "setConnectTimeout", "timeout is " + timeout);
+        this.connectTimeout = timeout;
     }
 
     /**

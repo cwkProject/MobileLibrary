@@ -7,7 +7,7 @@ import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.mobile.library.network.communication.OkHttpGetSyncCommunication;
-import org.mobile.library.network.factory.CommunicationFactory;
+import org.mobile.library.network.factory.CommunicationBuilder;
 import org.mobile.library.network.factory.NetworkType;
 import org.mobile.library.network.util.AsyncCommunication;
 import org.mobile.library.network.util.NetworkCallback;
@@ -37,7 +37,7 @@ public class TestHttpGetCommunication {
     @Before
     public void setUp() throws Exception {
         // 新建通讯工具
-        communication = CommunicationFactory.CreateSyncCommunication(NetworkType.GET);
+        communication = CommunicationBuilder.CreateSyncCommunication(NetworkType.GET);
 
         communication.setTaskName("http://218.92.115.55/WlkgbsgsApp/Service/test.aspx");
     }
@@ -165,7 +165,7 @@ public class TestHttpGetCommunication {
 
         map3.put("Data", "测试3");
 
-        SyncCommunication communication1 = CommunicationFactory.CreateSyncCommunication
+        SyncCommunication communication1 = CommunicationBuilder.CreateSyncCommunication
                 (NetworkType.GET);
 
         communication1.setTaskName("http://218.92.115.55/WlkgbsgsApp/Service/test.aspx");
@@ -177,14 +177,14 @@ public class TestHttpGetCommunication {
 
         assertEquals("测试1", result.trim());
 
-        SyncCommunication communication2 = CommunicationFactory.CreateSyncCommunication
+        SyncCommunication communication2 = CommunicationBuilder.CreateSyncCommunication
                 (NetworkType.GET);
 
         communication2.setTaskName("http://218.92.115.55/WlkgbsgsApp/Service/test.aspx");
 
         communication2.Request(map2);
 
-        SyncCommunication communication3 = CommunicationFactory.CreateSyncCommunication
+        SyncCommunication communication3 = CommunicationBuilder.CreateSyncCommunication
                 (NetworkType.GET);
 
         communication3.setTaskName("http://218.92.115.55/WlkgbsgsApp/Service/test.aspx");
@@ -220,7 +220,7 @@ public class TestHttpGetCommunication {
 
         map.put("Data", "测试测试");
 
-        AsyncCommunication communication = CommunicationFactory.CreateAsyncCommunication
+        AsyncCommunication communication = CommunicationBuilder.CreateAsyncCommunication
                 (NetworkType.GET);
 
         communication.setTaskName("http://218.92.115.55/WlkgbsgsApp/Service/test.aspx");
