@@ -88,7 +88,7 @@ public class CacheGroup {
      * @param timeout 超时时间，0表示无限制
      */
     public void setTimeout(long timeout) {
-        Log.i(LOG_TAG + "setTimeOut", "timeout is " + timeout);
+        Log.v(LOG_TAG + "setTimeOut", "timeout is " + timeout);
         this.timeout = timeout;
     }
 
@@ -160,7 +160,7 @@ public class CacheGroup {
      */
     private <T> void put(@NotNull T cacheObject, @NotNull CacheConvert<T> cacheConvert, int type) {
         // 写入文件缓存
-        Log.i(LOG_TAG + "put", "group key:" + key + " , cacheMode:only file cache , timeout:" +
+        Log.v(LOG_TAG + "put", "group key:" + key + " , cacheMode:only file cache , timeout:" +
                 timeout + " , type:" + type);
         cacheConvert.saveFile(CacheManager.getCacheFileUtil().putBackStream(cacheLevel, key,
                 timeout, type, true), cacheObject);
@@ -175,7 +175,7 @@ public class CacheGroup {
      * @return 用于写入缓存的文件输出流
      */
     public FileOutputStream putBackStream() {
-        Log.i(LOG_TAG + "putAndBack", "group key:" + key + " timeout:" +
+        Log.v(LOG_TAG + "putAndBack", "group key:" + key + " timeout:" +
                 timeout + " put file cache");
         // 写入文件缓存
         return CacheManager.getCacheFileUtil().putBackStream(cacheLevel, key, timeout,
@@ -191,7 +191,7 @@ public class CacheGroup {
      * @return 用于写入缓存的文件路径
      */
     public String putBackPath() {
-        Log.i(LOG_TAG + "putAndBack", "group key:" + key + " timeout:" +
+        Log.v(LOG_TAG + "putAndBack", "group key:" + key + " timeout:" +
                 timeout + " put file cache");
         // 写入文件缓存
         return CacheManager.getCacheFileUtil().putBackPath(cacheLevel, key, timeout, CacheManager
@@ -207,7 +207,7 @@ public class CacheGroup {
      * @return 用于写入缓存的文件对象
      */
     public File putBackFile() {
-        Log.i(LOG_TAG + "putAndBack", "group key:" + key + " timeout:" +
+        Log.v(LOG_TAG + "putAndBack", "group key:" + key + " timeout:" +
                 timeout + " put file cache");
         // 写入文件缓存
         return CacheManager.getCacheFileUtil().putBackFile(cacheLevel, key, timeout, CacheManager
@@ -222,7 +222,7 @@ public class CacheGroup {
     public Bitmap[] getForBitmaps() {
         String[] paths = CacheManager.getCacheFileUtil().getGroupPath(key, cacheLevel,
                 CacheManager.FILE_TYPE_IMAGE);
-        Log.i(LOG_TAG + "getForBitmaps", "get group key " + key + " all bitmap path count is " +
+        Log.v(LOG_TAG + "getForBitmaps", "get group key " + key + " all bitmap path count is " +
                 paths.length);
         List<Bitmap> list = new ArrayList<>();
 
@@ -234,7 +234,7 @@ public class CacheGroup {
             }
         }
 
-        Log.i(LOG_TAG + "getForFiles", "get group key " + key + " all bitmap count is " + list
+        Log.v(LOG_TAG + "getForFiles", "get group key " + key + " all bitmap count is " + list
                 .size());
 
         return list.toArray(new Bitmap[list.size()]);
@@ -248,7 +248,7 @@ public class CacheGroup {
     public String[] getForTexts() {
         String[] paths = CacheManager.getCacheFileUtil().getGroupPath(key, cacheLevel,
                 CacheManager.FILE_TYPE_TEXT);
-        Log.i(LOG_TAG + "getForTexts", "get group key " + key + " all text path count is " +
+        Log.v(LOG_TAG + "getForTexts", "get group key " + key + " all text path count is " +
                 paths.length);
         List<String> list = new ArrayList<>();
 
@@ -260,7 +260,7 @@ public class CacheGroup {
             }
         }
 
-        Log.i(LOG_TAG + "getForFiles", "get group key " + key + " all text count is " + list.size
+        Log.v(LOG_TAG + "getForFiles", "get group key " + key + " all text count is " + list.size
                 ());
 
         return list.toArray(new String[list.size()]);
@@ -273,7 +273,7 @@ public class CacheGroup {
      */
     public File[] getForFiles() {
         String[] paths = CacheManager.getCacheFileUtil().getGroupPath(key, cacheLevel);
-        Log.i(LOG_TAG + "getForFiles", "get group key " + key + " all file path count is " +
+        Log.v(LOG_TAG + "getForFiles", "get group key " + key + " all file path count is " +
                 paths.length);
         List<File> list = new ArrayList<>();
 
@@ -286,7 +286,7 @@ public class CacheGroup {
             }
         }
 
-        Log.i(LOG_TAG + "getForFiles", "get group key " + key + " all file count is " + list.size
+        Log.v(LOG_TAG + "getForFiles", "get group key " + key + " all file count is " + list.size
                 ());
 
         return list.toArray(new File[list.size()]);

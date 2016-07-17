@@ -47,13 +47,13 @@ public class VersionUpdateService extends Service {
 
     @Override
     public void onCreate() {
-        Log.i(LOG_TAG + "onCreate", "onCreate() is invoked");
+        Log.v(LOG_TAG + "onCreate", "onCreate() is invoked");
         super.onCreate();
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.i(LOG_TAG + "onStartCommand", "onStartCommand is invoked");
+        Log.v(LOG_TAG + "onStartCommand", "onStartCommand is invoked");
         // 注册广播接收者
         registerReceivers();
         // 启动下载
@@ -109,7 +109,7 @@ public class VersionUpdateService extends Service {
      * 注册广播接收者
      */
     private void registerReceivers() {
-        Log.i(LOG_TAG + "registerReceivers", "registerReceivers() is invoked");
+        Log.v(LOG_TAG + "registerReceivers", "registerReceivers() is invoked");
 
         // 新建接收者
         receiver = new ApplicationVersionDownloadReceiver();

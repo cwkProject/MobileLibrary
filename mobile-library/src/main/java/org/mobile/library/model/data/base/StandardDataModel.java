@@ -65,16 +65,16 @@ public abstract class StandardDataModel<Handle, Response, Value> implements
 
     @Override
     public final Map<String, Value> serialization() {
-        Log.i(LOG_TAG + "serialization", "serialization start");
+        Log.v(LOG_TAG + "serialization", "serialization start");
         // 序列化后的参数集
         Map<String, Value> dataMap = new HashMap<>();
-        Log.i(LOG_TAG + "serialization", "onFillRequestParameters(Map<String, String>) is invoked");
+        Log.v(LOG_TAG + "serialization", "onFillRequestParameters(Map<String, String>) is invoked");
         // 调用填充方法
         onFillRequestParameters(dataMap);
-        Log.i(LOG_TAG + "serialization", "serialization end");
+        Log.v(LOG_TAG + "serialization", "serialization end");
 
         // 对参数进行签名
-        Log.i(LOG_TAG + "serialization", "parameters sign");
+        Log.v(LOG_TAG + "serialization", "parameters sign");
         onRequestParametersSign(dataMap);
 
         return dataMap;
@@ -90,8 +90,8 @@ public abstract class StandardDataModel<Handle, Response, Value> implements
 
     @Override
     public final boolean parse(Response response) {
-        Log.i(LOG_TAG + "parse", "parse start");
-        Log.i(LOG_TAG + "parse", "result is " + response);
+        Log.v(LOG_TAG + "parse", "parse start");
+        Log.v(LOG_TAG + "parse", "result is " + response);
         if (!onCheckResponse(response)) {
             // 通信异常
             Log.d(LOG_TAG + "parse", "response is error");
@@ -102,28 +102,28 @@ public abstract class StandardDataModel<Handle, Response, Value> implements
             // 将结果转换为Handle对象
             Handle handle = onCreateHandle(response);
 
-            Log.i(LOG_TAG + "parse", "onRequestResult(Object) is invoked");
+            Log.v(LOG_TAG + "parse", "onRequestResult(Object) is invoked");
             // 提取服务执行结果
             this.success = onRequestResult(handle);
-            Log.i(LOG_TAG + "parse", "request result is " + this.success);
-            Log.i(LOG_TAG + "parse", "onRequestResult(Object) is end");
+            Log.v(LOG_TAG + "parse", "request result is " + this.success);
+            Log.v(LOG_TAG + "parse", "onRequestResult(Object) is end");
 
-            Log.i(LOG_TAG + "parse", "onRequestMessage(boolean) is invoked");
+            Log.v(LOG_TAG + "parse", "onRequestMessage(boolean) is invoked");
             // 提取服务返回的消息
             this.message = onRequestMessage(this.success, handle);
-            Log.i(LOG_TAG + "parse", "request message is " + this.message);
-            Log.i(LOG_TAG + "parse", "onRequestMessage(boolean) is end");
+            Log.v(LOG_TAG + "parse", "request message is " + this.message);
+            Log.v(LOG_TAG + "parse", "onRequestMessage(boolean) is end");
 
             if (this.success) {
                 // 服务请求成功回调
-                Log.i(LOG_TAG + "parse", "onRequestSuccess(Object) is invoked");
+                Log.v(LOG_TAG + "parse", "onRequestSuccess(Object) is invoked");
                 onRequestSuccess(handle);
-                Log.i(LOG_TAG + "parse", "onRequestSuccess(Object) is end");
+                Log.v(LOG_TAG + "parse", "onRequestSuccess(Object) is end");
             } else {
                 // 服务请求失败回调
-                Log.i(LOG_TAG + "parse", "onRequestFailed(Object) is invoked");
+                Log.v(LOG_TAG + "parse", "onRequestFailed(Object) is invoked");
                 onRequestFailed(handle);
-                Log.i(LOG_TAG + "parse", "onRequestFailed(Object) is end");
+                Log.v(LOG_TAG + "parse", "onRequestFailed(Object) is end");
             }
 
             return true;
@@ -132,7 +132,7 @@ public abstract class StandardDataModel<Handle, Response, Value> implements
             Log.e(LOG_TAG + "parse", "exception message is " + e.getMessage());
             return false;
         } finally {
-            Log.i(LOG_TAG + "parse", "parse end");
+            Log.v(LOG_TAG + "parse", "parse end");
         }
     }
 

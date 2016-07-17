@@ -75,12 +75,12 @@ public class CacheInfoOperator extends BaseOperator<CacheInfo> {
 
     @Override
     protected List<CacheInfo> query(String sql) {
-        Log.i(LOG_TAG + "query", "query sql: " + sql);
+        Log.v(LOG_TAG + "query", "query sql: " + sql);
 
         // 查询数据
         Cursor cursor = sqLiteHelper.getReadableDatabase().rawQuery(sql, null);
 
-        Log.i(LOG_TAG + "query", "result cursor count is " + cursor.getCount());
+        Log.v(LOG_TAG + "query", "result cursor count is " + cursor.getCount());
 
         // 数据填充
         List<CacheInfo> list = new ArrayList<>();
@@ -123,8 +123,8 @@ public class CacheInfoOperator extends BaseOperator<CacheInfo> {
      * @return 缓存信息对象，如果目标不存在或目标为缓存组则返回null
      */
     public CacheInfo queryCacheInfo(String key, String levelKey) {
-        Log.i(LOG_TAG + "queryCacheInfo", "query key is " + key);
-        Log.i(LOG_TAG + "queryCacheInfo", "query levelKey is " + levelKey);
+        Log.v(LOG_TAG + "queryCacheInfo", "query key is " + key);
+        Log.v(LOG_TAG + "queryCacheInfo", "query levelKey is " + levelKey);
 
         // 查询sql
         String sql = String.format("select * from %s where %s='%s' and %s='%s' and %s=0",
@@ -145,7 +145,7 @@ public class CacheInfoOperator extends BaseOperator<CacheInfo> {
      * @return 缓存信息对象集合，如果层级中没有缓存或仅包含缓存组则返回空集合
      */
     public List<CacheInfo> queryCacheInfo(String levelKey) {
-        Log.i(LOG_TAG + "queryCacheInfo", "query levelKey is " + levelKey);
+        Log.v(LOG_TAG + "queryCacheInfo", "query levelKey is " + levelKey);
 
         // 查询sql
         String sql = String.format("select * from %s where %s='%s' and %s=0", CacheDatabaseConst
@@ -164,8 +164,8 @@ public class CacheInfoOperator extends BaseOperator<CacheInfo> {
      * @return 缓存信息对象集合，如果层级中没有缓存或仅包含缓存组则返回空集合
      */
     public List<CacheInfo> queryCacheInfo(String levelKey, int type) {
-        Log.i(LOG_TAG + "queryCacheInfo", "query levelKey is " + levelKey);
-        Log.i(LOG_TAG + "queryCacheInfo", "query type is " + type);
+        Log.v(LOG_TAG + "queryCacheInfo", "query levelKey is " + levelKey);
+        Log.v(LOG_TAG + "queryCacheInfo", "query type is " + type);
 
         // 查询sql
         String sql = String.format("select * from %s where %s='%s' and %s=0 and %s=%s",
@@ -185,8 +185,8 @@ public class CacheInfoOperator extends BaseOperator<CacheInfo> {
      * @return 缓存组信息列表，如果目标组不存在或目标不是缓存组则回返回空集合
      */
     public List<CacheInfo> queryCacheGroup(String key, String levelKey) {
-        Log.i(LOG_TAG + "queryCacheGroup", "query key is " + key);
-        Log.i(LOG_TAG + "queryCacheGroup", "query levelKey is " + levelKey);
+        Log.v(LOG_TAG + "queryCacheGroup", "query key is " + key);
+        Log.v(LOG_TAG + "queryCacheGroup", "query levelKey is " + levelKey);
 
         // 查询sql
         String sql = String.format("select * from %s where %s='%s' and %s='%s' and %s=1",
@@ -207,8 +207,8 @@ public class CacheInfoOperator extends BaseOperator<CacheInfo> {
      * @return 缓存组信息列表，如果目标组不存在或目标不是缓存组则回返回空集合
      */
     public List<CacheInfo> queryCacheGroup(String key, String levelKey, int type) {
-        Log.i(LOG_TAG + "queryCacheGroup", "query key is " + key);
-        Log.i(LOG_TAG + "queryCacheGroup", "query levelKey is " + levelKey);
+        Log.v(LOG_TAG + "queryCacheGroup", "query key is " + key);
+        Log.v(LOG_TAG + "queryCacheGroup", "query levelKey is " + levelKey);
 
         // 查询sql
         String sql = String.format("select * from %s where %s='%s' and %s='%s' and %s=1 and " +
@@ -227,7 +227,7 @@ public class CacheInfoOperator extends BaseOperator<CacheInfo> {
      * @return 缓存组键值对集合
      */
     public Map<String, List<CacheInfo>> queryCacheGroup(String levelKey) {
-        Log.i(LOG_TAG + "queryCacheGroup", "query levelKey is " + levelKey);
+        Log.v(LOG_TAG + "queryCacheGroup", "query levelKey is " + levelKey);
 
         // 查询sql
         String sql = String.format("select * from %s where %s='%s' and %s=1", CacheDatabaseConst
@@ -276,12 +276,12 @@ public class CacheInfoOperator extends BaseOperator<CacheInfo> {
         String whereSql = String.format("%s='%s' and %s='%s'", CacheDatabaseConst.CACHE_INFO.KEY,
                 key, CacheDatabaseConst.CACHE_INFO.LEVEL_KEY, levelKey);
 
-        Log.i(LOG_TAG + "delete", "where sql is " + whereSql);
+        Log.v(LOG_TAG + "delete", "where sql is " + whereSql);
 
         // 执行删除
         int rowCount = dbWriter.delete(CacheDatabaseConst.CACHE_INFO.TABLE_NAME, whereSql, null);
 
-        Log.i(LOG_TAG + "delete", "delete row count is " + rowCount);
+        Log.v(LOG_TAG + "delete", "delete row count is " + rowCount);
 
         close(writeSqLiteHelper);
     }
@@ -299,12 +299,12 @@ public class CacheInfoOperator extends BaseOperator<CacheInfo> {
         String whereSql = String.format("%s='%s' or %s like '%s/%%'", CacheDatabaseConst
                 .CACHE_INFO.LEVEL_KEY, levelKey, CacheDatabaseConst.CACHE_INFO.LEVEL_KEY, levelKey);
 
-        Log.i(LOG_TAG + "delete", "where sql is " + whereSql);
+        Log.v(LOG_TAG + "delete", "where sql is " + whereSql);
 
         // 执行删除
         int rowCount = dbWriter.delete(CacheDatabaseConst.CACHE_INFO.TABLE_NAME, whereSql, null);
 
-        Log.i(LOG_TAG + "delete", "delete row count is " + rowCount);
+        Log.v(LOG_TAG + "delete", "delete row count is " + rowCount);
 
         close(writeSqLiteHelper);
     }

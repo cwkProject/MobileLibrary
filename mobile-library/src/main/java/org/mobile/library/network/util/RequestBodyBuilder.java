@@ -49,12 +49,12 @@ public class RequestBodyBuilder {
         try {
             // 遍历sendData集合并加入请求参数对象
             if (sendData != null && !sendData.isEmpty()) {
-                Log.i(LOG_TAG + "onBuildParameter", "sendData count is " + sendData.size());
+                Log.v(LOG_TAG + "onBuildParameter", "sendData count is " + sendData.size());
 
                 // 遍历并追加参数
                 for (Map.Entry<String, String> dataEntry : sendData.entrySet()) {
 
-                    Log.i(LOG_TAG + "onBuildParameter", "parameter is " + dataEntry.getKey() + " " +
+                    Log.v(LOG_TAG + "onBuildParameter", "parameter is " + dataEntry.getKey() + " " +
                             "= " + dataEntry.getValue());
 
                     if (dataEntry.getValue() != null) {
@@ -100,12 +100,12 @@ public class RequestBodyBuilder {
 
         // 遍历sendData集合并加入请求参数对象
         if (sendData != null && !sendData.isEmpty()) {
-            Log.i(LOG_TAG + "onBuildForm", "sendData count is " + sendData.size());
+            Log.v(LOG_TAG + "onBuildForm", "sendData count is " + sendData.size());
 
             try {
                 // 遍历并追加参数
                 for (Map.Entry<String, String> dataEntry : sendData.entrySet()) {
-                    Log.i(LOG_TAG + "onBuildForm", "parameter is " + dataEntry.getKey() + " = " +
+                    Log.v(LOG_TAG + "onBuildForm", "parameter is " + dataEntry.getKey() + " = " +
                             dataEntry.getValue());
                     if (dataEntry.getValue() != null) {
                         // 加入表单
@@ -133,11 +133,11 @@ public class RequestBodyBuilder {
 
         // 遍历sendData集合并加入请求参数对象
         if (sendData != null && !sendData.isEmpty()) {
-            Log.i(LOG_TAG + "onBuildForm", "sendData count is " + sendData.size());
+            Log.v(LOG_TAG + "onBuildForm", "sendData count is " + sendData.size());
 
             // 遍历并追加参数
             for (Map.Entry<String, String> dataEntry : sendData.entrySet()) {
-                Log.i(LOG_TAG + "onBuildForm", "parameter is " + dataEntry.getKey() + " = " +
+                Log.v(LOG_TAG + "onBuildForm", "parameter is " + dataEntry.getKey() + " = " +
                         dataEntry.getValue());
                 if (dataEntry.getValue() != null) {
                     // 加入表单
@@ -161,10 +161,10 @@ public class RequestBodyBuilder {
 
         // 遍历sendData集合并加入请求参数对象
         if (sendData != null && !sendData.isEmpty()) {
-            Log.i(LOG_TAG + "onBuildForm", "sendData count is " + sendData.size());
+            Log.v(LOG_TAG + "onBuildForm", "sendData count is " + sendData.size());
             // 遍历并追加参数
             for (Map.Entry<String, Object> dataEntry : sendData.entrySet()) {
-                Log.i(LOG_TAG + "onBuildForm", "parameter is " + dataEntry.getKey() + " = " +
+                Log.v(LOG_TAG + "onBuildForm", "parameter is " + dataEntry.getKey() + " = " +
                         dataEntry.getValue());
 
                 if (dataEntry.getValue() instanceof FileInfo) {

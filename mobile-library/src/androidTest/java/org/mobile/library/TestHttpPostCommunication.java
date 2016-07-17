@@ -5,11 +5,11 @@ package org.mobile.library;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mobile.library.network.communication.Communication;
 import org.mobile.library.network.factory.CommunicationBuilder;
 import org.mobile.library.network.factory.NetworkType;
 import org.mobile.library.network.util.AsyncCommunication;
 import org.mobile.library.network.util.NetworkCallback;
-import org.mobile.library.network.util.SyncCommunication;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,12 +29,12 @@ public class TestHttpPostCommunication {
     /**
      * 网络连接工具
      */
-    private SyncCommunication communication = null;
+    private Communication communication = null;
 
     @Before
     public void setUp() throws Exception {
         // 新建通讯工具
-        communication = CommunicationBuilder.CreateSyncCommunication(NetworkType.POST);
+        communication = new CommunicationBuilder(NetworkType.POST).build();
 
         communication.setTaskName("http://218.92.115.55/WlkgbsgsApp/Service/test.aspx");
 
@@ -110,8 +110,7 @@ public class TestHttpPostCommunication {
 
         map.put("Data", "测试测试");
 
-        AsyncCommunication communication = CommunicationBuilder.CreateAsyncCommunication
-                (NetworkType.POST);
+        AsyncCommunication communication = new CommunicationBuilder(NetworkType.POST).build();
 
         communication.setTaskName("http://218.92.115.55/WlkgbsgsApp/Service/test.aspx");
 

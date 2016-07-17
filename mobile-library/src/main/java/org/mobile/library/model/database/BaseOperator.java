@@ -157,10 +157,10 @@ public abstract class BaseOperator<DataModel> {
      * @return 受影响的行数
      */
     public final int update(DataModel data) {
-        Log.i(LOG_TAG + "update", "update is invoked");
+        Log.v(LOG_TAG + "update", "update is invoked");
 
         if (data == null) {
-            Log.i(LOG_TAG + "update", "data is null");
+            Log.v(LOG_TAG + "update", "data is null");
             return 0;
         }
 
@@ -173,11 +173,11 @@ public abstract class BaseOperator<DataModel> {
         // where子句
         String whereSql = onWhereSql(data);
 
-        Log.i(LOG_TAG + "update", "where sql is " + whereSql);
+        Log.v(LOG_TAG + "update", "where sql is " + whereSql);
         // 执行更新
         int rowCount = dbWriter.update(tableName, cv, whereSql, null);
 
-        Log.i(LOG_TAG + "update", "update row count is " + rowCount);
+        Log.v(LOG_TAG + "update", "update row count is " + rowCount);
 
         close(writeSqLiteHelper);
 
@@ -192,10 +192,10 @@ public abstract class BaseOperator<DataModel> {
      * @return 删除的记录数
      */
     public final int delete(DataModel data) {
-        Log.i(LOG_TAG + "delete", "delete is invoked");
+        Log.v(LOG_TAG + "delete", "delete is invoked");
 
         if (data == null) {
-            Log.i(LOG_TAG + "delete", "data is null");
+            Log.v(LOG_TAG + "delete", "data is null");
             return 0;
         }
 
@@ -205,12 +205,12 @@ public abstract class BaseOperator<DataModel> {
         // where子句
         String whereSql = onWhereSql(data);
 
-        Log.i(LOG_TAG + "delete", "where sql is " + whereSql);
+        Log.v(LOG_TAG + "delete", "where sql is " + whereSql);
 
         // 执行删除
         int rowCount = dbWriter.delete(tableName, whereSql, null);
 
-        Log.i(LOG_TAG + "delete", "delete row count is " + rowCount);
+        Log.v(LOG_TAG + "delete", "delete row count is " + rowCount);
 
         close(writeSqLiteHelper);
 
@@ -223,14 +223,14 @@ public abstract class BaseOperator<DataModel> {
      * @return 删除的行数
      */
     public final int clear() {
-        Log.i(LOG_TAG + "clear", "clear is invoked");
+        Log.v(LOG_TAG + "clear", "clear is invoked");
 
         // 执行删除
         int rowCount = writeSqLiteHelper.getWritableDatabase().delete(tableName, null, null);
 
         close(writeSqLiteHelper);
 
-        Log.i(LOG_TAG + "clear", "delete row count is " + rowCount);
+        Log.v(LOG_TAG + "clear", "delete row count is " + rowCount);
 
         return rowCount;
     }
@@ -241,7 +241,7 @@ public abstract class BaseOperator<DataModel> {
      * @return 全部数据集
      */
     public final List<DataModel> queryAll() {
-        Log.i(LOG_TAG + "queryAll", "query is invoked");
+        Log.v(LOG_TAG + "queryAll", "query is invoked");
 
         final String sql = "select * from " + tableName;
 
@@ -279,7 +279,7 @@ public abstract class BaseOperator<DataModel> {
      * @return 成功插入的新行id
      */
     public final List<Long> insert(List<DataModel> dataList) {
-        Log.i(LOG_TAG + "insert", "insert is invoked");
+        Log.v(LOG_TAG + "insert", "insert is invoked");
 
         if (dataList == null || dataList.size() == 0) {
             Log.d(LOG_TAG + "insert", "data list is null");
@@ -310,7 +310,7 @@ public abstract class BaseOperator<DataModel> {
      * @return 成功插入的新行id，插入失败返回-1
      */
     public final long insert(DataModel data) {
-        Log.i(LOG_TAG + "insert", "insert is invoked");
+        Log.v(LOG_TAG + "insert", "insert is invoked");
 
         if (data == null) {
             Log.d(LOG_TAG + "insert", "data list is null");

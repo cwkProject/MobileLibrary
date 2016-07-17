@@ -35,7 +35,7 @@ public abstract class PersistenceConfigModel {
     public PersistenceConfigModel(Context context) {
         // 默认使用"config"作为配置文件名
         this.preferencesUtil = new PreferencesUtil(context, "config");
-        Log.i(LOG_TAG + "PersistenceConfigModel", "config name is config");
+        Log.v(LOG_TAG + "PersistenceConfigModel", "config name is config");
     }
 
     /**
@@ -47,14 +47,14 @@ public abstract class PersistenceConfigModel {
     public PersistenceConfigModel(Context context, String fileName) {
         // 新建持久化对象
         this.preferencesUtil = new PreferencesUtil(context, fileName);
-        Log.i(LOG_TAG + "PersistenceConfigModel", "config name is " + fileName);
+        Log.v(LOG_TAG + "PersistenceConfigModel", "config name is " + fileName);
     }
 
     /**
      * 保存设置
      */
     public void Save() {
-        Log.i(LOG_TAG + "Save", "Save() is invoked");
+        Log.v(LOG_TAG + "Save", "Save() is invoked");
         this.preferencesUtil.Save(this);
     }
 
@@ -62,7 +62,7 @@ public abstract class PersistenceConfigModel {
      * 刷新配置参数，从配置文件中重新读取参数
      */
     public void Refresh() {
-        Log.i(LOG_TAG + "Refresh", "Refresh() is invoked");
+        Log.v(LOG_TAG + "Refresh", "Refresh() is invoked");
         this.preferencesUtil.Read(this);
     }
 
@@ -70,7 +70,7 @@ public abstract class PersistenceConfigModel {
      * 清空配置文件，重置当前参数
      */
     public void Clear() {
-        Log.i(LOG_TAG + "Clear", "Clear() is invoked");
+        Log.v(LOG_TAG + "Clear", "Clear() is invoked");
         this.preferencesUtil.Clear(this);
         onDefault();
     }

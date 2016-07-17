@@ -50,8 +50,8 @@ public class ImageCompression {
         int height = options.outHeight;
         int width = options.outWidth;
 
-        Log.i(LOG_TAG + "calculateLowSampleSize", "old height:" + height + " old width:" + width);
-        Log.i(LOG_TAG + "calculateLowSampleSize", "target height:" + reqHeight + " target width:" +
+        Log.v(LOG_TAG + "calculateLowSampleSize", "old height:" + height + " old width:" + width);
+        Log.v(LOG_TAG + "calculateLowSampleSize", "target height:" + reqHeight + " target width:" +
                 reqWidth);
 
         // 宽高矫正
@@ -73,7 +73,7 @@ public class ImageCompression {
         // 最终压缩比例
         int sampleSize = heightRatio < widthRatio ? heightRatio : widthRatio;
 
-        Log.i(LOG_TAG + "calculateLowSampleSize", "sampleSize is " + sampleSize);
+        Log.v(LOG_TAG + "calculateLowSampleSize", "sampleSize is " + sampleSize);
 
         return sampleSize;
     }
@@ -104,8 +104,8 @@ public class ImageCompression {
         int height = options.outHeight;
         int width = options.outWidth;
 
-        Log.i(LOG_TAG + "calculateHighSampleSize", "old height:" + height + " old width:" + width);
-        Log.i(LOG_TAG + "calculateHighSampleSize", "target height:" + reqHeight + " target width:" +
+        Log.v(LOG_TAG + "calculateHighSampleSize", "old height:" + height + " old width:" + width);
+        Log.v(LOG_TAG + "calculateHighSampleSize", "target height:" + reqHeight + " target width:" +
                 reqWidth);
 
         // 宽高矫正
@@ -127,7 +127,7 @@ public class ImageCompression {
         // 最终压缩比例
         int sampleSize = heightRatio < widthRatio ? widthRatio : heightRatio;
 
-        Log.i(LOG_TAG + "calculateHighSampleSize", "sampleSize is " + sampleSize);
+        Log.v(LOG_TAG + "calculateHighSampleSize", "sampleSize is " + sampleSize);
 
         return sampleSize;
     }
@@ -146,7 +146,7 @@ public class ImageCompression {
         // 原始高
         final int height = options.outHeight;
 
-        Log.i(LOG_TAG + "calculateHeightSampleSize", "old height:" + height + " target height:" +
+        Log.v(LOG_TAG + "calculateHeightSampleSize", "old height:" + height + " target height:" +
                 reqHeight);
 
         // 计算后缩放值
@@ -157,7 +157,7 @@ public class ImageCompression {
             heightRatio = Math.round((float) height / (float) reqHeight);
         }
 
-        Log.i(LOG_TAG + "calculateHeightSampleSize", "sampleSize is " + heightRatio);
+        Log.v(LOG_TAG + "calculateHeightSampleSize", "sampleSize is " + heightRatio);
 
         return heightRatio;
     }
@@ -176,7 +176,7 @@ public class ImageCompression {
         // 原始宽
         final int width = options.outWidth;
 
-        Log.i(LOG_TAG + "calculateWidthSampleSize", "old width:" + width + " target width:" +
+        Log.v(LOG_TAG + "calculateWidthSampleSize", "old width:" + width + " target width:" +
                 reqWidth);
 
         // 计算后缩放值
@@ -187,7 +187,7 @@ public class ImageCompression {
             widthRatio = Math.round((float) width / (float) reqWidth);
         }
 
-        Log.i(LOG_TAG + "calculateWidthSampleSize", "sampleSize is " + widthRatio);
+        Log.v(LOG_TAG + "calculateWidthSampleSize", "sampleSize is " + widthRatio);
 
         return widthRatio;
     }
@@ -207,7 +207,7 @@ public class ImageCompression {
         // 第一次压缩
         image.compress(Bitmap.CompressFormat.JPEG, scale, os);
 
-        Log.i(LOG_TAG + "compressImage", "now image size is " + os.size() / 1024 + "KB, " +
+        Log.v(LOG_TAG + "compressImage", "now image size is " + os.size() / 1024 + "KB, " +
                 "compress scale is " + scale);
 
         // 循环压缩尝试
@@ -221,7 +221,7 @@ public class ImageCompression {
             // 重新压缩
             image.compress(Bitmap.CompressFormat.JPEG, scale, os);
 
-            Log.i(LOG_TAG + "compressImage", "now image size is " + os.size() / 1024 + "KB, " +
+            Log.v(LOG_TAG + "compressImage", "now image size is " + os.size() / 1024 + "KB, " +
                     "compress scale is " + scale);
         }
 

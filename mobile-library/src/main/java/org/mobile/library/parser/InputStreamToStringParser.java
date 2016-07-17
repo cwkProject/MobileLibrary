@@ -55,7 +55,7 @@ public class InputStreamToStringParser implements IResponseDataParser<String, In
         Log.d(LOG_TAG + "DataParser", "data is " + data.toString());
 
         // 转为字符串
-        Log.i(LOG_TAG + "DataParser", "encoded is " + encoded);
+        Log.v(LOG_TAG + "DataParser", "encoded is " + encoded);
 
         // 数据解析器
         Scanner scanner = null;
@@ -74,11 +74,11 @@ public class InputStreamToStringParser implements IResponseDataParser<String, In
 
             String text = builder.toString().trim();
 
-            Log.i(LOG_TAG + "DataParser", "text is " + text);
+            Log.v(LOG_TAG + "DataParser", "text is " + text);
 
             return text;
         } catch (Exception e) {
-            Log.i(LOG_TAG + "DataParser", "Exception is " + e.getMessage());
+            Log.v(LOG_TAG + "DataParser", "Exception is " + e.getMessage());
             return null;
         } finally {
             if (scanner != null) {
@@ -88,7 +88,7 @@ public class InputStreamToStringParser implements IResponseDataParser<String, In
                 try {
                     data.close();
                 } catch (IOException e) {
-                    Log.i(LOG_TAG + "DataParser", "IOException is " + e.getMessage());
+                    Log.v(LOG_TAG + "DataParser", "IOException is " + e.getMessage());
                 }
             }
         }

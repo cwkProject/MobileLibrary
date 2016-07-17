@@ -69,10 +69,8 @@ public class TestUpload {
         map.put("File", new FileInfo(file, "wallpaper", MimeTypeMap.getSingleton()
                 .getMimeTypeFromExtension("jpg")));
 
-        SyncCommunication communication = CommunicationBuilder.CreateSyncCommunication
-                (NetworkType.UPLOAD);
-
-        communication.setTaskName(URL);
+        SyncCommunication communication = new CommunicationBuilder(NetworkType.UPLOAD).url(URL)
+                .build();
 
         final long startTime = System.currentTimeMillis();
 
@@ -113,10 +111,8 @@ public class TestUpload {
         map.put("File", new FileInfo(file, "wallpaper", MimeTypeMap.getSingleton()
                 .getMimeTypeFromExtension("jpg")));
 
-        AsyncCommunication communication = CommunicationBuilder.CreateAsyncCommunication
-                (NetworkType.UPLOAD);
-
-        communication.setTaskName(URL);
+        AsyncCommunication communication = new CommunicationBuilder(NetworkType.UPLOAD).url(URL)
+                .build();
 
         final long startTime = System.currentTimeMillis();
 
@@ -168,10 +164,8 @@ public class TestUpload {
         map.put("File", new FileInfo(file, "wallpaper", MimeTypeMap.getSingleton()
                 .getMimeTypeFromExtension("jpg")));
 
-        final SyncCommunication communication = CommunicationBuilder.CreateSyncCommunication
-                (NetworkType.UPLOAD);
-
-        communication.setTaskName(URL);
+        final SyncCommunication communication = new CommunicationBuilder(NetworkType.UPLOAD).url
+                (URL).build();
 
         final long startTime = System.currentTimeMillis();
 
@@ -223,10 +217,8 @@ public class TestUpload {
         map.put("File", new FileInfo(file, "wallpaper", MimeTypeMap.getSingleton()
                 .getMimeTypeFromExtension("jpg")));
 
-        final AsyncCommunication communication = CommunicationBuilder.CreateAsyncCommunication
-                (NetworkType.UPLOAD);
-
-        communication.setTaskName(URL);
+        final AsyncCommunication communication = new CommunicationBuilder(NetworkType.UPLOAD).url
+                (URL).build();
 
         final long startTime = System.currentTimeMillis();
 

@@ -41,7 +41,7 @@ public class BroadcastUtil {
      * @param intent  包含一组动作字符串的意图
      */
     public static void sendBroadcast(Context context, Intent intent) {
-        Log.i(LOG_TAG + "send", "send intent");
+        Log.v(LOG_TAG + "send", "send intent");
         LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(context);
         lbm.sendBroadcast(intent);
     }

@@ -169,7 +169,7 @@ public class CacheManager {
             Log.i(LOG_TAG + "getCacheTool", "new CacheTool " + key);
             cacheToolMap.put(key, new CacheTool(key, cacheTool));
         } else {
-            Log.i(LOG_TAG + "getCacheTool", "hit CacheTool " + key);
+            Log.v(LOG_TAG + "getCacheTool", "hit CacheTool " + key);
         }
 
         return cacheToolMap.get(key);

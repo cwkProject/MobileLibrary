@@ -27,7 +27,7 @@ public class CityDatabase {
      * 首次运行复制数据库
      */
     public static void copyDatabase(Context context) {
-        Log.i(LOG_TAG + "copyDatabase", "copyDatabase() is invoked");
+        Log.v(LOG_TAG + "copyDatabase", "copyDatabase() is invoked");
 
         CityOperator cityOperator = new CityOperator(context);
 
@@ -38,24 +38,24 @@ public class CityDatabase {
 
             try {
                 //欲导入的数据库
-                Log.i(LOG_TAG + "copyDatabase", "copy database begin");
-                Log.i(LOG_TAG + "copyDatabase", "create database path");
+                Log.v(LOG_TAG + "copyDatabase", "copy database begin");
+                Log.v(LOG_TAG + "copyDatabase", "create database path");
 
                 InputStream in = context.getAssets().open(CityConst.DB_NAME);
-                Log.i(LOG_TAG + "copyDatabase", "InputStream open");
+                Log.v(LOG_TAG + "copyDatabase", "InputStream open");
                 FileOutputStream out = new FileOutputStream(context.getDatabasePath(CityConst
                         .DB_NAME).getAbsoluteFile());
-                Log.i(LOG_TAG + "copyDatabase", "FileOutputStream open");
+                Log.v(LOG_TAG + "copyDatabase", "FileOutputStream open");
                 byte[] buffer = new byte[1024];
                 int count;
                 while ((count = in.read(buffer)) > 0) {
                     out.write(buffer, 0, count);
                 }
-                Log.i(LOG_TAG + "copyDatabase", "copy database end");
+                Log.v(LOG_TAG + "copyDatabase", "copy database end");
                 out.flush();
                 out.close();
                 in.close();
-                Log.i(LOG_TAG + "copyDatabase", "stream close");
+                Log.v(LOG_TAG + "copyDatabase", "stream close");
             } catch (IOException e) {
                 Log.e(LOG_TAG + "copyDatabase", "IOException is " + e.getMessage());
             }

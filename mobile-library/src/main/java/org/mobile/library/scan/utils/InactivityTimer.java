@@ -112,7 +112,7 @@ public class InactivityTimer {
         protected Object doInBackground(Object... objects) {
             try {
                 Thread.sleep(INACTIVITY_DELAY_MS);
-                Log.i(TAG, "Finishing activity due to inactivity");
+                Log.v(TAG, "Finishing activity due to inactivity");
                 activity.finish();
             } catch (InterruptedException e) {
                 // continue without killing

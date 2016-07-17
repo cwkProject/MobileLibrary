@@ -69,19 +69,19 @@ public class MemoryCache {
      */
     private synchronized void createMemoryCache() {
         if (softCache == null) {
-            Log.i(LOG_TAG + "createMemoryCache", "create soft reference");
+            Log.v(LOG_TAG + "createMemoryCache", "create soft reference");
             softCache = new ConcurrentLinkedHashMap.Builder<String, SoftReference<CacheObject>>()
                     .maximumWeightedCapacity(SOFT_CACHE_SIZE).weigher(Weighers.singleton()).build();
         }
 
         if (lruCache == null) {
-            Log.i(LOG_TAG + "createMemoryCache", "create hard cache");
+            Log.v(LOG_TAG + "createMemoryCache", "create hard cache");
             lruCache = new LruCache<String, CacheObject>(LRU_CACHE_SIZE) {
                 @Override
                 protected void entryRemoved(boolean evicted, String key, CacheObject oldValue,
                                             CacheObject newValue) {
                     if (evicted) {
-                        Log.i(LOG_TAG + "entryRemoved", "hard cache is full , push to soft cache " +
+                        Log.v(LOG_TAG + "entryRemoved", "hard cache is full , push to soft cache " +
                                 "is " + key);
                         softCache.put(key, new SoftReference<>(oldValue));
                     }
@@ -91,7 +91,7 @@ public class MemoryCache {
                 protected int sizeOf(String key, CacheObject value) {
                     int size = value.getSize();
 
-                    Log.i(LOG_TAG + "sizeOf", "hard cache put " + key + " , size is " +
+                    Log.v(LOG_TAG + "sizeOf", "hard cache put " + key + " , size is " +
                             "is " + size);
 
                     return size;
@@ -107,7 +107,7 @@ public class MemoryCache {
      * @param cache 缓存对象
      */
     public void put(String key, CacheObject cache) {
-        Log.i(LOG_TAG + "put", "put cache is " + key);
+        Log.v(LOG_TAG + "put", "put cache is " + key);
         if (key != null && cache != null) {
             lruCache.put(key, cache);
         }
@@ -121,11 +121,11 @@ public class MemoryCache {
      * @return 缓存对象
      */
     public CacheObject get(String key) {
-        Log.i(LOG_TAG + "get", "get cache is " + key);
+        Log.v(LOG_TAG + "get", "get cache is " + key);
         if (key != null) {
             CacheObject cache = lruCache.get(key);
             if (cache != null) {
-                Log.i(LOG_TAG + "get", "hit " + key + " in hard cache");
+                Log.v(LOG_TAG + "get", "hit " + key + " in hard cache");
                 return cache;
             }
 
@@ -136,14 +136,14 @@ public class MemoryCache {
 
                 if (cache == null) {
                     // 已被回收
-                    Log.i(LOG_TAG + "get", "soft reference cache " + key + " is recycled");
+                    Log.v(LOG_TAG + "get", "soft reference cache " + key + " is recycled");
                     softCache.remove(key);
                 } else {
-                    Log.i(LOG_TAG + "get", "hit " + key + " in soft reference");
+                    Log.v(LOG_TAG + "get", "hit " + key + " in soft reference");
                     return cache;
                 }
             } else {
-                Log.i(LOG_TAG + "get", "memory cache not exist " + key);
+                Log.v(LOG_TAG + "get", "memory cache not exist " + key);
             }
         }
 
@@ -156,12 +156,12 @@ public class MemoryCache {
      * @param key 缓存key
      */
     public void remove(String key) {
-        Log.i(LOG_TAG + "remove", "remove cache is " + key);
+        Log.v(LOG_TAG + "remove", "remove cache is " + key);
         if (key != null) {
-            Log.i(LOG_TAG + "remove", "remove " + key + " in hard cache");
+            Log.v(LOG_TAG + "remove", "remove " + key + " in hard cache");
             lruCache.remove(key);
 
-            Log.i(LOG_TAG + "remove", "remove " + key + " in soft reference");
+            Log.v(LOG_TAG + "remove", "remove " + key + " in soft reference");
             softCache.remove(key);
         }
     }

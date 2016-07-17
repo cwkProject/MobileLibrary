@@ -54,8 +54,8 @@ public class CacheTool {
      * @param parent 父缓存工具引用
      */
     public CacheTool(@NotNull String key, @Nullable CacheTool parent) {
-        Log.i(LOG_TAG + "CacheTool", "key is " + key);
-        Log.i(LOG_TAG + "CacheTool", "parent is " + (parent == null ? null : parent.getKey()));
+        Log.v(LOG_TAG + "CacheTool", "key is " + key);
+        Log.v(LOG_TAG + "CacheTool", "parent is " + (parent == null ? null : parent.getKey()));
         this.levelKey = key;
         this.parent = parent;
         init();
@@ -79,7 +79,7 @@ public class CacheTool {
      * @param timeout 超时时间，0表示无限制
      */
     public void setTimeout(long timeout) {
-        Log.i(LOG_TAG + "setTimeOut", "timeout is " + timeout);
+        Log.v(LOG_TAG + "setTimeOut", "timeout is " + timeout);
         cacheLevel.setTimeOut(timeout);
 
         // 更新缓存层级信息
@@ -92,7 +92,7 @@ public class CacheTool {
      * @param remark 备注信息
      */
     public void setRemark(String remark) {
-        Log.i(LOG_TAG + "setRemark", "remark is " + remark);
+        Log.v(LOG_TAG + "setRemark", "remark is " + remark);
         cacheLevel.setRemark(remark);
 
         // 更新缓存层级信息
@@ -112,7 +112,7 @@ public class CacheTool {
      * 缓存工具初始化
      */
     private void init() {
-        Log.i(LOG_TAG + "init", "init CacheTool");
+        Log.v(LOG_TAG + "init", "init CacheTool");
         cacheLevel = CacheManager.getCacheFileUtil().getCacheLevel(levelKey, parent == null ?
                 null : parent.getKey());
     }
@@ -143,7 +143,7 @@ public class CacheTool {
      * @return 子缓存工具
      */
     public CacheTool getChildCacheTool(@NotNull String key) {
-        Log.i(LOG_TAG + "getChildCacheTool", "create child CacheTool " + key);
+        Log.v(LOG_TAG + "getChildCacheTool", "create child CacheTool " + key);
         return CacheManager.getCacheTool(key, this);
     }
 
@@ -380,23 +380,23 @@ public class CacheTool {
      */
     private <T> void put(@NotNull String key, @NotNull T cacheObject, @NotNull CacheConvert<T>
             cacheConvert, int cacheMode, long timeout, int type) {
-        Log.i(LOG_TAG + "put", "key:" + key + " , cacheMode:" + cacheMode + " , timeout:" +
+        Log.v(LOG_TAG + "put", "key:" + key + " , cacheMode:" + cacheMode + " , timeout:" +
                 timeout + " , type:" + type);
 
         switch (cacheMode) {
             case CacheManager.MEMORY_WITH_FILE:
-                Log.i(LOG_TAG + "put", key + " put memory cache");
+                Log.v(LOG_TAG + "put", key + " put memory cache");
                 // 加入内存缓存
                 CacheManager.getMemoryCache().put(levelKey + "/" + key, cacheConvert
                         .toCacheObject(cacheObject));
             case CacheManager.ONLY_FILE_CACHE:
-                Log.i(LOG_TAG + "put", key + " put file cache");
+                Log.v(LOG_TAG + "put", key + " put file cache");
                 // 写入文件缓存
                 cacheConvert.saveFile(CacheManager.getCacheFileUtil().putBackStream(cacheLevel,
                         key, timeout, type), cacheObject);
                 break;
             case CacheManager.ONLY_MEMORY_CACHE:
-                Log.i(LOG_TAG + "put", key + " only put memory cache");
+                Log.v(LOG_TAG + "put", key + " only put memory cache");
                 // 加入内存缓存
                 CacheManager.getMemoryCache().put(levelKey + "/" + key, cacheConvert
                         .toCacheObject(cacheObject));
@@ -432,7 +432,7 @@ public class CacheTool {
      * @return 用于写入缓存的文件输出流
      */
     public FileOutputStream putBackStream(@NotNull String key, long timeout) {
-        Log.i(LOG_TAG + "putAndBack", "key:" + key + " timeout:" +
+        Log.v(LOG_TAG + "putAndBack", "key:" + key + " timeout:" +
                 timeout + " put file cache");
         // 写入文件缓存
         return CacheManager.getCacheFileUtil().putBackStream(cacheLevel, key, timeout,
@@ -467,7 +467,7 @@ public class CacheTool {
      * @return 用于写入缓存的文件对象
      */
     public File putBackFile(@NotNull String key, long timeout) {
-        Log.i(LOG_TAG + "putAndBack", "key:" + key + " timeout:" +
+        Log.v(LOG_TAG + "putAndBack", "key:" + key + " timeout:" +
                 timeout + " put file cache");
         // 写入文件缓存
         return CacheManager.getCacheFileUtil().putBackFile(cacheLevel, key, timeout, CacheManager
@@ -502,7 +502,7 @@ public class CacheTool {
      * @return 用于写入缓存的文件路径
      */
     public String putBackPath(@NotNull String key, long timeout) {
-        Log.i(LOG_TAG + "putAndBack", "key:" + key + " timeout:" +
+        Log.v(LOG_TAG + "putAndBack", "key:" + key + " timeout:" +
                 timeout + " put file cache");
         // 写入文件缓存
         return CacheManager.getCacheFileUtil().putBackPath(cacheLevel, key, timeout, CacheManager
@@ -517,16 +517,16 @@ public class CacheTool {
      * @return 图片对象
      */
     public Bitmap getForBitmap(@NotNull String key) {
-        Log.i(LOG_TAG + "getForBitmap", "key is " + key);
+        Log.v(LOG_TAG + "getForBitmap", "key is " + key);
         // 尝试从内存缓存获取
-        Log.i(LOG_TAG + "getForBitmap", "from memory read " + key);
+        Log.v(LOG_TAG + "getForBitmap", "from memory read " + key);
         CacheObject cacheObject = CacheManager.getMemoryCache().get(levelKey + "/" + key);
 
         Bitmap bitmap = CacheManager.getBitmapCacheConvert().toCache(cacheObject);
 
         if (bitmap == null) {
             // 尝试从文件读取
-            Log.i(LOG_TAG + "getForBitmap", "from file read " + key);
+            Log.v(LOG_TAG + "getForBitmap", "from file read " + key);
             bitmap = CacheManager.getBitmapCacheConvert().toCache(CacheManager.getCacheFileUtil()
                     .getPath(key, cacheLevel));
 
@@ -549,16 +549,16 @@ public class CacheTool {
      * @return 文本对象
      */
     public String getForText(@NotNull String key) {
-        Log.i(LOG_TAG + "getForText", "key is " + key);
+        Log.v(LOG_TAG + "getForText", "key is " + key);
         // 尝试从内存缓存获取
-        Log.i(LOG_TAG + "getForText", "from memory read " + key);
+        Log.v(LOG_TAG + "getForText", "from memory read " + key);
         CacheObject cacheObject = CacheManager.getMemoryCache().get(levelKey + "/" + key);
 
         String text = CacheManager.getTextCacheConvert().toCache(cacheObject);
 
         if (text == null) {
             // 尝试从文件读取
-            Log.i(LOG_TAG + "getForText", "from file read " + key);
+            Log.v(LOG_TAG + "getForText", "from file read " + key);
             text = CacheManager.getTextCacheConvert().toCache(CacheManager.getCacheFileUtil()
                     .getPath(key, cacheLevel));
 
@@ -581,11 +581,11 @@ public class CacheTool {
      * @return 文件对象，如果缓存未保存到文件系统则返回null，如果文件已被清除则文件可能不存在
      */
     public File getForFile(@NotNull String key) {
-        Log.i(LOG_TAG + "getForFile", "key is " + key);
+        Log.v(LOG_TAG + "getForFile", "key is " + key);
 
         String path = CacheManager.getCacheFileUtil().getPath(key, cacheLevel);
 
-        Log.i(LOG_TAG + "getForFile", "cache " + key + " path is " + path);
+        Log.v(LOG_TAG + "getForFile", "cache " + key + " path is " + path);
 
         return path == null ? null : new File(CacheManager.getCacheFileUtil().getPath(key,
                 cacheLevel));
@@ -599,7 +599,7 @@ public class CacheTool {
      * @return 输入流
      */
     public InputStream getInputStream(@NotNull String key) {
-        Log.i(LOG_TAG + "getInputStream", "key is " + key);
+        Log.v(LOG_TAG + "getInputStream", "key is " + key);
         return CacheManager.getInputStreamCacheConvert().toCache(CacheManager.getCacheFileUtil()
                 .getPath(key, cacheLevel));
     }
@@ -613,16 +613,16 @@ public class CacheTool {
      * @return 缓存对象
      */
     public <T> T getForCacheConvert(@NotNull String key, @NotNull CacheConvert<T> cacheConvert) {
-        Log.i(LOG_TAG + "getForCacheConvert", "key is " + key);
+        Log.v(LOG_TAG + "getForCacheConvert", "key is " + key);
         // 尝试从内存缓存获取
-        Log.i(LOG_TAG + "getForCacheConvert", "from memory read " + key);
+        Log.v(LOG_TAG + "getForCacheConvert", "from memory read " + key);
         CacheObject cacheObject = CacheManager.getMemoryCache().get(levelKey + "/" + key);
 
         T cache = cacheConvert.toCache(cacheObject);
 
         if (cache == null) {
             // 尝试从文件读取
-            Log.i(LOG_TAG + "getForCacheConvert", "from file read " + key);
+            Log.v(LOG_TAG + "getForCacheConvert", "from file read " + key);
             cache = cacheConvert.toCache(CacheManager.getCacheFileUtil().getPath(key, cacheLevel));
         }
 
@@ -637,7 +637,7 @@ public class CacheTool {
     public Bitmap[] getForBitmaps() {
         String[] paths = CacheManager.getCacheFileUtil().getPath(cacheLevel, CacheManager
                 .FILE_TYPE_IMAGE);
-        Log.i(LOG_TAG + "getForBitmaps", "get level " + levelKey + " all bitmap path count is " +
+        Log.v(LOG_TAG + "getForBitmaps", "get level " + levelKey + " all bitmap path count is " +
                 paths.length);
 
         List<Bitmap> list = new ArrayList<>();
@@ -649,7 +649,7 @@ public class CacheTool {
                 list.add(bitmap);
             }
         }
-        Log.i(LOG_TAG + "getForBitmaps", "get level " + levelKey + " all bitmap count is " + list
+        Log.v(LOG_TAG + "getForBitmaps", "get level " + levelKey + " all bitmap count is " + list
                 .size());
 
         return list.toArray(new Bitmap[list.size()]);
@@ -663,7 +663,7 @@ public class CacheTool {
     public String[] getForTexts() {
         String[] paths = CacheManager.getCacheFileUtil().getPath(cacheLevel, CacheManager
                 .FILE_TYPE_TEXT);
-        Log.i(LOG_TAG + "getForTexts", "get level " + levelKey + " all text path count is " +
+        Log.v(LOG_TAG + "getForTexts", "get level " + levelKey + " all text path count is " +
                 paths.length);
         List<String> list = new ArrayList<>();
 
@@ -674,7 +674,7 @@ public class CacheTool {
                 list.add(text);
             }
         }
-        Log.i(LOG_TAG + "getForTexts", "get level " + levelKey + " all text count is " + list
+        Log.v(LOG_TAG + "getForTexts", "get level " + levelKey + " all text count is " + list
                 .size());
 
         return list.toArray(new String[list.size()]);
@@ -687,7 +687,7 @@ public class CacheTool {
      */
     public File[] getForFiles() {
         String[] paths = CacheManager.getCacheFileUtil().getPath(cacheLevel);
-        Log.i(LOG_TAG + "getForFiles", "get level " + levelKey + " all file path count is " +
+        Log.v(LOG_TAG + "getForFiles", "get level " + levelKey + " all file path count is " +
                 paths.length);
 
         List<File> list = new ArrayList<>();
@@ -700,7 +700,7 @@ public class CacheTool {
                 list.add(file);
             }
         }
-        Log.i(LOG_TAG + "getForFiles", "get level " + levelKey + " all file count is " + list
+        Log.v(LOG_TAG + "getForFiles", "get level " + levelKey + " all file count is " + list
                 .size());
 
         return list.toArray(new File[list.size()]);
@@ -712,14 +712,14 @@ public class CacheTool {
      * @param key 缓存key
      */
     public void remove(@NotNull String key) {
-        Log.i(LOG_TAG + "remove", "remove cache " + key);
+        Log.v(LOG_TAG + "remove", "remove cache " + key);
 
         // 尝试移除内存缓存
-        Log.i(LOG_TAG + "remove", "from memory remove cache " + key);
+        Log.v(LOG_TAG + "remove", "from memory remove cache " + key);
         CacheManager.getMemoryCache().remove(levelKey + "/" + key);
 
         // 尝试删除文件缓存
-        Log.i(LOG_TAG + "remove", "from file remove cache " + key);
+        Log.v(LOG_TAG + "remove", "from file remove cache " + key);
         CacheManager.getCacheFileUtil().delete(key, cacheLevel);
     }
 

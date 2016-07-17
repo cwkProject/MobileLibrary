@@ -6,7 +6,7 @@ package org.mobile.library;
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
-import org.mobile.library.network.communication.OkHttpGetSyncCommunication;
+import org.mobile.library.network.communication.Communication;
 import org.mobile.library.network.factory.CommunicationBuilder;
 import org.mobile.library.network.factory.NetworkType;
 import org.mobile.library.network.util.AsyncCommunication;
@@ -32,12 +32,12 @@ public class TestHttpGetCommunication {
     /**
      * 网络连接工具
      */
-    private SyncCommunication communication = null;
+    private Communication communication = null;
 
     @Before
     public void setUp() throws Exception {
         // 新建通讯工具
-        communication = CommunicationBuilder.CreateSyncCommunication(NetworkType.GET);
+        communication = new CommunicationBuilder(NetworkType.GET).build();
 
         communication.setTaskName("http://218.92.115.55/WlkgbsgsApp/Service/test.aspx");
     }
@@ -109,13 +109,11 @@ public class TestHttpGetCommunication {
 
         map.put("Data", "测试测试");
 
-        OkHttpGetSyncCommunication okHttpGetSyncCommunication = (OkHttpGetSyncCommunication)
-                communication;
-        okHttpGetSyncCommunication.setEncoded("GBK");
-        okHttpGetSyncCommunication.Request(map);
+        communication.setEncoded("GBK");
+        communication.Request(map);
 
-        String result = okHttpGetSyncCommunication.Response();
-        okHttpGetSyncCommunication.close();
+        String result = (String) communication.Response();
+        communication.close();
         assertNotEquals("测试测试", result.trim());
     }
 
@@ -165,8 +163,7 @@ public class TestHttpGetCommunication {
 
         map3.put("Data", "测试3");
 
-        SyncCommunication communication1 = CommunicationBuilder.CreateSyncCommunication
-                (NetworkType.GET);
+        SyncCommunication communication1 = new CommunicationBuilder(NetworkType.GET).build();
 
         communication1.setTaskName("http://218.92.115.55/WlkgbsgsApp/Service/test.aspx");
 
@@ -177,15 +174,13 @@ public class TestHttpGetCommunication {
 
         assertEquals("测试1", result.trim());
 
-        SyncCommunication communication2 = CommunicationBuilder.CreateSyncCommunication
-                (NetworkType.GET);
+        SyncCommunication communication2 = new CommunicationBuilder(NetworkType.GET).build();
 
         communication2.setTaskName("http://218.92.115.55/WlkgbsgsApp/Service/test.aspx");
 
         communication2.Request(map2);
 
-        SyncCommunication communication3 = CommunicationBuilder.CreateSyncCommunication
-                (NetworkType.GET);
+        SyncCommunication communication3 = new CommunicationBuilder(NetworkType.GET).build();
 
         communication3.setTaskName("http://218.92.115.55/WlkgbsgsApp/Service/test.aspx");
 
@@ -220,8 +215,7 @@ public class TestHttpGetCommunication {
 
         map.put("Data", "测试测试");
 
-        AsyncCommunication communication = CommunicationBuilder.CreateAsyncCommunication
-                (NetworkType.GET);
+        AsyncCommunication communication = new CommunicationBuilder(NetworkType.GET).build();
 
         communication.setTaskName("http://218.92.115.55/WlkgbsgsApp/Service/test.aspx");
 

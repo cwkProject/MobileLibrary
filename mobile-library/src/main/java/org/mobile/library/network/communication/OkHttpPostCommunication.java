@@ -51,7 +51,7 @@ public class OkHttpPostCommunication extends Communication<Map<String, String>, 
     protected void onAsyncSuccess(ResponseBody body, NetworkCallback<String> callback) throws
             IOException {
         String responseString = body.string();
-        Log.i(LOG_TAG + "Request", "response is " + responseString);
+        Log.v(LOG_TAG + "Request", "response is " + responseString);
         callback.onFinish(true, responseString);
     }
 

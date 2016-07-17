@@ -6,9 +6,9 @@ package org.mobile.library;
 import android.util.Log;
 
 import org.junit.Test;
+import org.mobile.library.network.communication.Communication;
 import org.mobile.library.network.factory.CommunicationBuilder;
 import org.mobile.library.network.factory.NetworkType;
-import org.mobile.library.network.util.SyncCommunication;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,13 +32,10 @@ public class TestHttps {
      */
     @Test
     public void connect() throws Exception {
-        // 网络连接工具
-        SyncCommunication communication;
 
         // 新建通讯工具
-        communication = CommunicationBuilder.CreateSyncCommunication(NetworkType.GET);
-
-        communication.setTaskName("https://www.iportpay.cn");
+        Communication communication = new CommunicationBuilder(NetworkType.GET).url("https://www" +
+                ".iportpay.cn").build();
 
         communication.Request(null);
 
@@ -55,13 +52,10 @@ public class TestHttps {
      */
     @Test
     public void post() throws Exception {
-        // 网络连接工具
-        SyncCommunication communication;
 
         // 新建通讯工具
-        communication = CommunicationBuilder.CreateSyncCommunication(NetworkType.POST);
-
-        communication.setTaskName("https://www.iportpay.cn/order");
+        Communication communication = new CommunicationBuilder(NetworkType.POST).url("https://www" +
+                ".iportpay.cn/order").build();
 
         // 参数
         Map<String, String> map = new HashMap<>();

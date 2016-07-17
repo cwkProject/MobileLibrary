@@ -39,7 +39,7 @@ public class AutoLogin {
      * @param context 上下文
      */
     public static void checkAutoLogin(Context context) {
-        Log.i(LOG_TAG + "checkAutoLogin", "checkAutoLogin is invoked");
+        Log.v(LOG_TAG + "checkAutoLogin", "checkAutoLogin is invoked");
 
         // 判断是否有用户名密码
         if (GlobalApplication.getApplicationConfig().getUserName() != null && GlobalApplication
@@ -60,7 +60,7 @@ public class AutoLogin {
             }, false);
 
             // 执行登录任务
-            Log.i(LOG_TAG + "checkAutoLogin", "auto login begin");
+            Log.v(LOG_TAG + "checkAutoLogin", "auto login begin");
             login.beginExecute(GlobalApplication.getApplicationConfig().getUserName(),
                     GlobalApplication.getApplicationConfig().getPassword());
         } else {

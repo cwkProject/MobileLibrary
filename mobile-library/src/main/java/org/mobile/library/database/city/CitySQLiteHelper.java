@@ -48,16 +48,16 @@ public class CitySQLiteHelper extends SQLiteOpenHelper {
      */
     private CitySQLiteHelper(Context context) {
         super(context, CityConst.DB_NAME, null, CityConst.DB_VERSION);
-        Log.i(LOG_TAG + "CitySQLiteHelper", "CitySQLiteHelper is invoked");
+        Log.v(LOG_TAG + "CitySQLiteHelper", "CitySQLiteHelper is invoked");
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        Log.i(LOG_TAG + "onCreate", "onCreate is invoked");
+        Log.v(LOG_TAG + "onCreate", "onCreate is invoked");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        Log.i(LOG_TAG + "onUpgrade", "onUpgrade is invoked");
+        Log.v(LOG_TAG + "onUpgrade", "onUpgrade is invoked");
     }
 }

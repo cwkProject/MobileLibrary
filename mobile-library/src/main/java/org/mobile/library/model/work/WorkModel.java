@@ -73,47 +73,47 @@ public abstract class WorkModel<Parameters, Result> extends WorkProcessModel<Par
     @SafeVarargs
     @Override
     public final boolean execute(Parameters... parameters) {
-        Log.i(LOG_TAG + "execute", "execute start");
+        Log.v(LOG_TAG + "execute", "execute start");
         // 用于保存执行结果
         boolean state = false;
 
         if (!cancelMark) {
-            Log.i(LOG_TAG + "execute", "onStartWork() is invoked");
+            Log.v(LOG_TAG + "execute", "onStartWork() is invoked");
             // 执行前导任务
             onStartWork();
         }
 
         if (!cancelMark) {
-            Log.i(LOG_TAG + "execute", "onDoWork(Object[]) is invoked");
+            Log.v(LOG_TAG + "execute", "onDoWork(Object[]) is invoked");
             // 执行核心任务
             state = onDoWork(parameters);
         }
 
         if (cancelMark) {
             // 任务被取消
-            Log.i(LOG_TAG + "execute", "work is cancelled");
-            Log.i(LOG_TAG + "execute", "onCancelWork(boolean , String , Object) is invoked");
+            Log.v(LOG_TAG + "execute", "work is cancelled");
+            Log.v(LOG_TAG + "execute", "onCancelWork(boolean , String , Object) is invoked");
             onCancelWork(state, getMessage(), getResult());
 
             if (workCancelledListener != null) {
-                Log.i(LOG_TAG + "execute", "workCancelledListener.doEndWork(boolean , String , "
+                Log.v(LOG_TAG + "execute", "workCancelledListener.doEndWork(boolean , String , "
                         + "Object) is invoked");
                 this.workCancelledListener.doEndWork(state, getMessage(), getResult());
             }
         } else {
-            Log.i(LOG_TAG + "execute", "onStopWork(boolean , String , Object) is invoked");
+            Log.v(LOG_TAG + "execute", "onStopWork(boolean , String , Object) is invoked");
             // 执行后继任务
             onStopWork(state, getMessage(), getResult());
 
             // 如果设置了回调接口则执行回调方法
             if (this.workEndListener != null) {
-                Log.i(LOG_TAG + "execute", "workEndListener.doEndWork(boolean , String , Object) " +
+                Log.v(LOG_TAG + "execute", "workEndListener.doEndWork(boolean , String , Object) " +
                         "is " + "invoked");
 
                 this.workEndListener.doEndWork(state, getMessage(), getResult());
             }
 
-            Log.i(LOG_TAG + "execute", "execute end");
+            Log.v(LOG_TAG + "execute", "execute end");
         }
         return state;
     }
@@ -127,7 +127,7 @@ public abstract class WorkModel<Parameters, Result> extends WorkProcessModel<Par
     @SafeVarargs
     @Override
     public final void beginExecute(Parameters... parameters) {
-        Log.i(LOG_TAG + "beginExecute", "beginExecute start");
+        Log.v(LOG_TAG + "beginExecute", "beginExecute start");
         // 新建异步任务
         work = new WorkModelAsyncTask();
         // 执行任务
@@ -145,12 +145,12 @@ public abstract class WorkModel<Parameters, Result> extends WorkProcessModel<Par
         @SafeVarargs
         @Override
         protected final Result doInBackground(Parameters... params) {
-            Log.i(LOG_TAG + "WorkModelAsyncTask.doInBackground", "doInBackground start");
-            Log.i(LOG_TAG + "WorkModelAsyncTask.doInBackground", "onDoWork(Object[]) is invoked");
+            Log.v(LOG_TAG + "WorkModelAsyncTask.doInBackground", "doInBackground start");
+            Log.v(LOG_TAG + "WorkModelAsyncTask.doInBackground", "onDoWork(Object[]) is invoked");
             // 执行核心任务
             state = onDoWork(params);
 
-            Log.i(LOG_TAG + "WorkModelAsyncTask.doInBackground", "doInBackground end");
+            Log.v(LOG_TAG + "WorkModelAsyncTask.doInBackground", "doInBackground end");
             return getResult();
         }
 
@@ -158,13 +158,13 @@ public abstract class WorkModel<Parameters, Result> extends WorkProcessModel<Par
         protected void onCancelled() {
             super.onCancelled();
             // 任务被取消
-            Log.i(LOG_TAG + "WorkModelAsyncTask.onCancelled", "work is cancelled");
-            Log.i(LOG_TAG + "WorkModelAsyncTask.onCancelled", "onCancelWork(boolean , String , "
+            Log.v(LOG_TAG + "WorkModelAsyncTask.onCancelled", "work is cancelled");
+            Log.v(LOG_TAG + "WorkModelAsyncTask.onCancelled", "onCancelWork(boolean , String , "
                     + "Object) is invoked");
             onCancelWork(state, getMessage(), getResult());
 
             if (workCancelledListener != null) {
-                Log.i(LOG_TAG + "WorkModelAsyncTask.onCancelled", "workCancelledListener" +
+                Log.v(LOG_TAG + "WorkModelAsyncTask.onCancelled", "workCancelledListener" +
                         ".doEndWork(boolean , String , " + "Object) is invoked");
                 workCancelledListener.doEndWork(state, getMessage(), getResult());
             }
@@ -172,21 +172,21 @@ public abstract class WorkModel<Parameters, Result> extends WorkProcessModel<Par
 
         @Override
         protected void onPreExecute() {
-            Log.i(LOG_TAG + "WorkModelAsyncTask.onPreExecute", "onStartWork() is invoked");
+            Log.v(LOG_TAG + "WorkModelAsyncTask.onPreExecute", "onStartWork() is invoked");
             // 执行前导任务
             onStartWork();
         }
 
         @Override
         protected void onPostExecute(Result result) {
-            Log.i(LOG_TAG + "WorkModelAsyncTask.onPostExecute", "onStopWork(boolean , String , " +
+            Log.v(LOG_TAG + "WorkModelAsyncTask.onPostExecute", "onStopWork(boolean , String , " +
                     "Object) is " + "invoked");
             // 执行后继任务
             onStopWork(state, getMessage(), result);
 
             // 如果设置了回调接口则执行回调方法
             if (workEndListener != null) {
-                Log.i(LOG_TAG + "WorkModelAsyncTask.onPostExecute", "workEndListener.doEndWork" +
+                Log.v(LOG_TAG + "WorkModelAsyncTask.onPostExecute", "workEndListener.doEndWork" +
                         "(boolean , String , Object) is invoked");
                 workEndListener.doEndWork(state, getMessage(), getResult());
             }
@@ -220,12 +220,12 @@ public abstract class WorkModel<Parameters, Result> extends WorkProcessModel<Par
      */
     @Override
     public final void cancel() {
-        Log.i(LOG_TAG + "cancel", "cancel() is invoked");
+        Log.v(LOG_TAG + "cancel", "cancel() is invoked");
         if (work != null) {
-            Log.i(LOG_TAG + "cancel", "starting from beginExecute work is cancelled");
+            Log.v(LOG_TAG + "cancel", "starting from beginExecute work is cancelled");
             work.cancel(true);
         } else {
-            Log.i(LOG_TAG + "cancel", "starting from execute work is cancelled");
+            Log.v(LOG_TAG + "cancel", "starting from execute work is cancelled");
             cancelMark = true;
         }
     }
@@ -286,7 +286,7 @@ public abstract class WorkModel<Parameters, Result> extends WorkProcessModel<Par
      */
     @Override
     protected void onStopWork(boolean state, String message, Result result) {
-        Log.i(LOG_TAG + "onStopWork", "onStopWork(boolean , Object) is invoked");
+        Log.v(LOG_TAG + "onStopWork", "onStopWork(boolean , Object) is invoked");
         onStopWork(state, result);
     }
 
@@ -323,7 +323,7 @@ public abstract class WorkModel<Parameters, Result> extends WorkProcessModel<Par
      * @param result  任务结果数据
      */
     protected void onCancelWork(boolean state, String message, Result result) {
-        Log.i(LOG_TAG + "onCancelWork", "onCancelWork(boolean , Object) is invoked");
+        Log.v(LOG_TAG + "onCancelWork", "onCancelWork(boolean , Object) is invoked");
         onCancelWork(state, result);
     }
 

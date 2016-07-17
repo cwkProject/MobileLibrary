@@ -70,7 +70,7 @@ public class CacheSQLiteOpenHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        Log.i(LOG_TAG + "onCreate", "onCreate is invoked");
+        Log.v(LOG_TAG + "onCreate", "onCreate is invoked");
 
         db.execSQL(CacheDatabaseConst.CACHE_LEVEL.CREATE_TABLE);
         db.execSQL(CacheDatabaseConst.CACHE_INFO.CREATE_TABLE);
@@ -82,7 +82,7 @@ public class CacheSQLiteOpenHelper extends SQLiteOpenHelper {
         // 计数加一
         openCounter.incrementAndGet();
 
-        Log.i(LOG_TAG + "getWritableDatabase", "now open database count is " + openCounter.get());
+        Log.v(LOG_TAG + "getWritableDatabase", "now open database count is " + openCounter.get());
 
         return super.getWritableDatabase();
     }
@@ -92,7 +92,7 @@ public class CacheSQLiteOpenHelper extends SQLiteOpenHelper {
         // 计数加一
         openCounter.incrementAndGet();
 
-        Log.i(LOG_TAG + "getReadableDatabase", "now open database count is " + openCounter.get());
+        Log.v(LOG_TAG + "getReadableDatabase", "now open database count is " + openCounter.get());
 
         return super.getReadableDatabase();
     }
@@ -104,7 +104,7 @@ public class CacheSQLiteOpenHelper extends SQLiteOpenHelper {
             super.close();
         }
 
-        Log.i(LOG_TAG + "close", "now open database count is " + openCounter.get());
+        Log.v(LOG_TAG + "close", "now open database count is " + openCounter.get());
     }
 
     @Override

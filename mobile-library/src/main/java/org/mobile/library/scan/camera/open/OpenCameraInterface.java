@@ -60,14 +60,14 @@ public class OpenCameraInterface {
 
             Camera camera;
             if (cameraId < numCameras) {
-                Log.i(TAG, "Opening camera #" + cameraId);
+                Log.v(TAG, "Opening camera #" + cameraId);
                 camera = Camera.open(cameraId);
             } else {
                 if (explicitRequest) {
                     Log.w(TAG, "Requested camera does not exist: " + cameraId);
                     camera = null;
                 } else {
-                    Log.i(TAG, "No camera facing back; returning camera #0");
+                    Log.v(TAG, "No camera facing back; returning camera #0");
                     camera = Camera.open(0);
                 }
             }

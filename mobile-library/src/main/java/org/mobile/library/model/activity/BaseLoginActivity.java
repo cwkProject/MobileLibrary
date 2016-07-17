@@ -189,14 +189,20 @@ public abstract class BaseLoginActivity extends AppCompatActivity {
         }
 
         typedArray.recycle();
-    }
 
+        assert button != null;
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onLoginClick();
+            }
+        });
+    }
 
     /**
      * 初始化自定义注册按钮
      */
     protected void onCustomRegister() {
-
     }
 
     /**
@@ -401,10 +407,8 @@ public abstract class BaseLoginActivity extends AppCompatActivity {
 
     /**
      * 登录按钮点击事件
-     *
-     * @param view 按钮
      */
-    public void onLoginClick(View view) {
+    protected void onLoginClick() {
 
         // 获取用户名和密码
         final String userName = userNameEditText.getText().toString();
@@ -495,7 +499,7 @@ public abstract class BaseLoginActivity extends AppCompatActivity {
     /**
      * 注册按钮点击事件
      *
-     * @param view 按钮
+     * @param view 注册按钮
      */
     public void onRegisterClick(View view) {
     }

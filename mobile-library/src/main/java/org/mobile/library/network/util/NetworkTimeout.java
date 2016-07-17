@@ -40,7 +40,7 @@ public class NetworkTimeout {
      * @param timeout 超时时间，单位毫秒
      */
     public void setReadTimeout(int timeout) {
-        Log.i(LOG_TAG + "setReadTimeout", "timeout is " + timeout);
+        Log.v(LOG_TAG + "setReadTimeout", "timeout is " + timeout);
         this.readTimeout = timeout;
     }
 
@@ -50,7 +50,7 @@ public class NetworkTimeout {
      * @param timeout 超时时间，单位毫秒
      */
     public void setWriteTimeout(int timeout) {
-        Log.i(LOG_TAG + "setWriteTimeout", "timeout is " + timeout);
+        Log.v(LOG_TAG + "setWriteTimeout", "timeout is " + timeout);
         this.writeTimeout = timeout;
     }
 
@@ -60,7 +60,7 @@ public class NetworkTimeout {
      * @param timeout 超时时间，单位毫秒
      */
     public void setConnectTimeout(int timeout) {
-        Log.i(LOG_TAG + "setConnectTimeout", "timeout is " + timeout);
+        Log.v(LOG_TAG + "setConnectTimeout", "timeout is " + timeout);
         this.connectTimeout = timeout;
     }
 

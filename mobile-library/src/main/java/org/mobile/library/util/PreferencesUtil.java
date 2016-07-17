@@ -52,7 +52,7 @@ public class PreferencesUtil {
      */
     public void Save(Object obj) {
 
-        Log.i(LOG_TAG + "Save", "Save(Object) start");
+        Log.v(LOG_TAG + "Save", "Save(Object) start");
 
         if (isNullObject(obj)) {
             Log.d(LOG_TAG + "Save", "object is null");
@@ -77,7 +77,7 @@ public class PreferencesUtil {
 
         // 提交保存
         editor.commit();
-        Log.i(LOG_TAG + "Save", "Save(Object) end");
+        Log.v(LOG_TAG + "Save", "Save(Object) end");
     }
 
     /**
@@ -108,9 +108,9 @@ public class PreferencesUtil {
         field.setAccessible(true);
 
         try {
-            Log.i(LOG_TAG + "put", "field type is " + field.getType().getName());
-            Log.i(LOG_TAG + "put", "field name is " + field.getName());
-            Log.i(LOG_TAG + "put", "field value is " + field.get(obj));
+            Log.v(LOG_TAG + "put", "field type is " + field.getType().getName());
+            Log.v(LOG_TAG + "put", "field name is " + field.getName());
+            Log.v(LOG_TAG + "put", "field value is " + field.get(obj));
             // 根据属性类型选择操作
             switch (field.getType().getName()) {
                 case "java.lang.String":
@@ -140,7 +140,7 @@ public class PreferencesUtil {
      * @param obj 要填充的对象
      */
     public void Read(Object obj) {
-        Log.i(LOG_TAG + "Read", "Read(Object) start");
+        Log.v(LOG_TAG + "Read", "Read(Object) start");
 
         if (isNullObject(obj)) {
             Log.d(LOG_TAG + "Read", "object is null");
@@ -152,7 +152,7 @@ public class PreferencesUtil {
 
         // 获取对象类名
         String objectName = obj.getClass().getName();
-        Log.i(LOG_TAG + "Read", "object name is " + objectName);
+        Log.v(LOG_TAG + "Read", "object name is " + objectName);
 
         // 获取对象的全部属性
         Field[] fields = obj.getClass().getDeclaredFields();
@@ -163,7 +163,7 @@ public class PreferencesUtil {
             push(reader, field, obj, objectName);
         }
 
-        Log.i(LOG_TAG + "Read", "Read(Object) end");
+        Log.v(LOG_TAG + "Read", "Read(Object) end");
     }
 
     /**
@@ -179,8 +179,8 @@ public class PreferencesUtil {
         field.setAccessible(true);
 
         try {
-            Log.i(LOG_TAG + "push", "field type is " + field.getType().getName());
-            Log.i(LOG_TAG + "push", "field name is " + field.getName());
+            Log.v(LOG_TAG + "push", "field type is " + field.getType().getName());
+            Log.v(LOG_TAG + "push", "field name is " + field.getName());
 
             // 根据属性类型选择操作
             switch (field.getType().getName()) {
@@ -205,7 +205,7 @@ public class PreferencesUtil {
                             (obj)));
                     break;
             }
-            Log.i(LOG_TAG + "push", "field value is " + field.get(obj));
+            Log.v(LOG_TAG + "push", "field value is " + field.get(obj));
         } catch (IllegalAccessException e) {
             Log.d(LOG_TAG + "push", "IllegalAccessException is " + e.getMessage());
         }
@@ -215,7 +215,7 @@ public class PreferencesUtil {
      * 从文件清空对象属性
      */
     public void Clear(Object obj) {
-        Log.i(LOG_TAG + "Clear", "Clear(Object) start");
+        Log.v(LOG_TAG + "Clear", "Clear(Object) start");
 
         if (isNullObject(obj)) {
             Log.d(LOG_TAG + "Clear", "object is null");
@@ -227,21 +227,21 @@ public class PreferencesUtil {
 
         // 获取对象类名
         String objectName = obj.getClass().getName();
-        Log.i(LOG_TAG + "Clear", "object name is " + objectName);
+        Log.v(LOG_TAG + "Clear", "object name is " + objectName);
 
         // 获取对象的全部属性
         Field[] fields = obj.getClass().getDeclaredFields();
 
         // 遍历全部对象属性
         for (Field field : fields) {
-            Log.i(LOG_TAG + "Clear", "field name is " + field.getName());
+            Log.v(LOG_TAG + "Clear", "field name is " + field.getName());
             // 移除一个属性值
             editor.remove(objectName + "." + field.getName());
         }
 
         // 提交保存
         editor.commit();
-        Log.i(LOG_TAG + "Clear", "Clear(Object) end");
+        Log.v(LOG_TAG + "Clear", "Clear(Object) end");
     }
 
     /**

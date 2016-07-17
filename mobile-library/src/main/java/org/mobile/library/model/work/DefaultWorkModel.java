@@ -100,7 +100,7 @@ public abstract class DefaultWorkModel<Parameters, Result, DataModelType extends
         final DataModelType data = onCreateDataModel(parameters);
 
         if (!cancelMark) {
-            Log.i(LOG_TAG + "onDoWork", "task request url is " + onTaskUri());
+            Log.v(LOG_TAG + "onDoWork", "task request url is " + onTaskUri());
 
             // 设置请求地址
             communication.setTaskName(onTaskUri());
@@ -118,7 +118,7 @@ public abstract class DefaultWorkModel<Parameters, Result, DataModelType extends
                             // 解析响应数据
                             boolean success = onParseResult(data, result, response);
 
-                            Log.i(LOG_TAG + "onDoWork", "onStopWork(boolean , String , Object) "
+                            Log.v(LOG_TAG + "onDoWork", "onStopWork(boolean , String , Object) "
                                     + "is invoked");
                             // 执行后继任务
                             onStopWork(success, getMessage(), getResult());
@@ -158,13 +158,13 @@ public abstract class DefaultWorkModel<Parameters, Result, DataModelType extends
      * @return 任务执行结果，true表示成功
      */
     private boolean onParseResult(DataModelType data, boolean result, Object response) {
-        Log.i(LOG_TAG + "onParseResult", "result parse start");
+        Log.v(LOG_TAG + "onParseResult", "result parse start");
         // 解析数据
         //noinspection unchecked
         if (result && data.parse(response)) {
             // 解析成功
-            Log.i(LOG_TAG + "onParseResult", "result parse success");
-            Log.i(LOG_TAG + "onParseResult", "onParseSuccess(IDefaultDataModel) is invoked");
+            Log.v(LOG_TAG + "onParseResult", "result parse success");
+            Log.v(LOG_TAG + "onParseResult", "onParseSuccess(IDefaultDataModel) is invoked");
             // 解析成功回调
             onParseSuccess(data);
             // 设置结果消息
@@ -172,7 +172,7 @@ public abstract class DefaultWorkModel<Parameters, Result, DataModelType extends
 
             if (data.isSuccess()) {
                 // 设置请求成功后返回的数据
-                Log.i(LOG_TAG + "onParseResult", "work success");
+                Log.v(LOG_TAG + "onParseResult", "work success");
                 setResult(onRequestSuccessSetResult(data));
                 return true;
             } else {
@@ -183,8 +183,8 @@ public abstract class DefaultWorkModel<Parameters, Result, DataModelType extends
             }
         } else {
             // 解析失败
-            Log.i(LOG_TAG + "onDoWork", "result parse failed");
-            Log.i(LOG_TAG + "onDoWork", "onParseFailed(IDefaultDataModel) is invoked");
+            Log.v(LOG_TAG + "onDoWork", "result parse failed");
+            Log.v(LOG_TAG + "onDoWork", "onParseFailed(IDefaultDataModel) is invoked");
             // 解析失败回调
             onParseFailed(data);
             // 设置结果消息
@@ -198,21 +198,21 @@ public abstract class DefaultWorkModel<Parameters, Result, DataModelType extends
     @SafeVarargs
     @Override
     public final void beginExecute(Parameters... parameters) {
-        Log.i(LOG_TAG + "beginExecute", "beginExecute start");
+        Log.v(LOG_TAG + "beginExecute", "beginExecute start");
 
         isAsync = true;
 
         if (!cancelMark) {
-            Log.i(LOG_TAG + "beginExecute", "onStartWork() is invoked");
+            Log.v(LOG_TAG + "beginExecute", "onStartWork() is invoked");
             // 执行前导任务
             onStartWork();
         }
 
         if (!cancelMark) {
-            Log.i(LOG_TAG + "beginExecute", "onDoWork(Object[]) is invoked");
+            Log.v(LOG_TAG + "beginExecute", "onDoWork(Object[]) is invoked");
             // 执行核心任务
             if (!onDoWork(parameters)) {
-                Log.i(LOG_TAG + "beginExecute", "onStopWork(boolean , String , Object) is invoked");
+                Log.v(LOG_TAG + "beginExecute", "onStopWork(boolean , String , Object) is invoked");
                 // 任务启动出错
                 // 执行后继任务
                 onStopWork(false, getMessage(), getResult());
@@ -223,7 +223,7 @@ public abstract class DefaultWorkModel<Parameters, Result, DataModelType extends
     @SafeVarargs
     @Override
     public final boolean execute(Parameters... parameters) {
-        Log.i(LOG_TAG + "execute", "execute start");
+        Log.v(LOG_TAG + "execute", "execute start");
 
         isAsync = false;
 
@@ -231,19 +231,19 @@ public abstract class DefaultWorkModel<Parameters, Result, DataModelType extends
         boolean state = false;
 
         if (!cancelMark) {
-            Log.i(LOG_TAG + "execute", "onStartWork() is invoked");
+            Log.v(LOG_TAG + "execute", "onStartWork() is invoked");
             // 执行前导任务
             onStartWork();
         }
 
         if (!cancelMark) {
-            Log.i(LOG_TAG + "execute", "onDoWork(Object[]) is invoked");
+            Log.v(LOG_TAG + "execute", "onDoWork(Object[]) is invoked");
             // 执行核心任务
             state = onDoWork(parameters);
         }
 
         if (!cancelMark) {
-            Log.i(LOG_TAG + "execute", "onStopWork(boolean , String , Object) is invoked");
+            Log.v(LOG_TAG + "execute", "onStopWork(boolean , String , Object) is invoked");
             // 执行后继任务
             onStopWork(state, getMessage(), getResult());
         }
@@ -253,7 +253,7 @@ public abstract class DefaultWorkModel<Parameters, Result, DataModelType extends
 
     @Override
     public final void cancel() {
-        Log.i(LOG_TAG + "cancel", "work cancel");
+        Log.v(LOG_TAG + "cancel", "work cancel");
         this.cancelMark = true;
         if (communication != null) {
             communication.cancel();
@@ -262,7 +262,7 @@ public abstract class DefaultWorkModel<Parameters, Result, DataModelType extends
 
     @Override
     protected final void onStartWork() {
-        Log.i(LOG_TAG + "onStartWork", "work start");
+        Log.v(LOG_TAG + "onStartWork", "work start");
         // 创建网络请求工具
         communication = onCreateCommunication();
     }
@@ -275,7 +275,7 @@ public abstract class DefaultWorkModel<Parameters, Result, DataModelType extends
     protected NetworkProgressListener onCreateProgressListener() {
         if (networkProgressListener != null) {
             // 开始绑定
-            Log.i(LOG_TAG + "onCreateProgressListener", "set ProgressListener");
+            Log.v(LOG_TAG + "onCreateProgressListener", "set ProgressListener");
 
             if (isProgressUiThread) {
                 // 发送到UI线程
@@ -304,10 +304,10 @@ public abstract class DefaultWorkModel<Parameters, Result, DataModelType extends
     @Override
     protected final void onStopWork(final boolean state, final String message, final Result
             result) {
-        Log.i(LOG_TAG + "onStopWork", "work stop");
+        Log.v(LOG_TAG + "onStopWork", "work stop");
         // 如果设置了回调接口则执行回调方法
         if (!cancelMark && this.workEndListener != null) {
-            Log.i(LOG_TAG + "onStopWork", "workEndListener.doEndWork(boolean , String , Object) " +
+            Log.v(LOG_TAG + "onStopWork", "workEndListener.doEndWork(boolean , String , Object) " +
                     "is " + "invoked");
             if (isEndUiThread) {
                 // 发送到UI线程
@@ -325,11 +325,11 @@ public abstract class DefaultWorkModel<Parameters, Result, DataModelType extends
 
         if (!cancelMark) {
             // 最后执行
-            Log.i(LOG_TAG + "onStopWork", "onFinish invoke");
+            Log.v(LOG_TAG + "onStopWork", "onFinish invoke");
             onFinish();
         }
 
-        Log.i(LOG_TAG + "onStopWork", "work end");
+        Log.v(LOG_TAG + "onStopWork", "work end");
     }
 
     /**

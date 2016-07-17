@@ -217,6 +217,14 @@ public abstract class BaseRegisterActivity extends AppCompatActivity {
         }
 
         typedArray.recycle();
+
+        assert button != null;
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onRegisterClick();
+            }
+        });
     }
 
     /**
@@ -235,6 +243,14 @@ public abstract class BaseRegisterActivity extends AppCompatActivity {
         }
 
         typedArray.recycle();
+
+        assert button != null;
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onSendVerificationCodeClick(v);
+            }
+        });
     }
 
     /**
@@ -681,7 +697,7 @@ public abstract class BaseRegisterActivity extends AppCompatActivity {
      *
      * @param view 按钮
      */
-    public void onSendVerificationCodeClick(final View view) {
+    protected void onSendVerificationCodeClick(final View view) {
         // 启动倒计时动画
         final AppCompatButton button = (AppCompatButton) view;
         button.setEnabled(false);
@@ -747,10 +763,8 @@ public abstract class BaseRegisterActivity extends AppCompatActivity {
 
     /**
      * 注册按钮点击事件
-     *
-     * @param view 按钮
      */
-    public void onRegisterClick(View view) {
+    protected void onRegisterClick() {
 
         String userName = null;
 

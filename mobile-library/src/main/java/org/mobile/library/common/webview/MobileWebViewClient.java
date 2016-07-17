@@ -61,7 +61,7 @@ public class MobileWebViewClient extends WebViewClient {
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, String url) {
 
-        Log.i(LOG_TAG + "shouldOverrideUrlLoading", "url is --> " + url);
+        Log.v(LOG_TAG + "shouldOverrideUrlLoading", "url is --> " + url);
         // 用自身打开超链接
         view.loadUrl(url);
 
@@ -87,7 +87,7 @@ public class MobileWebViewClient extends WebViewClient {
 
         // 存在回调就执行
         if (this.loadFinishedCallBack != null) {
-            Log.i(LOG_TAG + "onPageFinished", "call back invoke");
+            Log.v(LOG_TAG + "onPageFinished", "call back invoke");
             this.loadFinishedCallBack.operate(view, url);
         }
         super.onPageFinished(view, url);

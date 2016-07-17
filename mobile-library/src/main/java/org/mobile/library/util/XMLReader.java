@@ -63,7 +63,7 @@ public class XMLReader {
     private void initXmlPullParser(String encoding) throws XmlPullParserException {
         this.xmlPullParser = XmlPullParserFactory.newInstance().newPullParser();
         this.xmlPullParser.setInput(inStream, encoding);
-        Log.i(LOG_TAG + "initXmlPullParser", "encode is " + encoding);
+        Log.v(LOG_TAG + "initXmlPullParser", "encode is " + encoding);
     }
 
     /**
@@ -98,7 +98,7 @@ public class XMLReader {
      */
     public XMLReader(String stringXML, String encoding) throws XmlPullParserException {
         this.stringXML = stringXML;
-        Log.i(LOG_TAG + "XMLReader", "XML is " + stringXML);
+        Log.v(LOG_TAG + "XMLReader", "XML is " + stringXML);
         this.inStream = new ByteArrayInputStream(stringXML.getBytes());
 
         initXmlPullParser(encoding);
@@ -114,7 +114,7 @@ public class XMLReader {
      */
     public XMLReader(InputStream inStream, String encoding) throws XmlPullParserException {
         this.inStream = inStream;
-        Log.i(LOG_TAG + "XMLReader", "inStream is " + inStream.toString());
+        Log.v(LOG_TAG + "XMLReader", "inStream is " + inStream.toString());
         initXmlPullParser(encoding);
     }
 
@@ -124,7 +124,7 @@ public class XMLReader {
     public XMLReader() {
         try {
             this.xmlPullParser = XmlPullParserFactory.newInstance().newPullParser();
-            Log.i(LOG_TAG + "XMLReader", "XMLReader() is invoked");
+            Log.v(LOG_TAG + "XMLReader", "XMLReader() is invoked");
         } catch (XmlPullParserException e) {
             Log.e(LOG_TAG + "XMLReader", "XmlPullParserException is " + e.getMessage());
         }
@@ -162,7 +162,7 @@ public class XMLReader {
      */
     public void setSource(String stringXML, String encoding) throws XmlPullParserException {
         this.stringXML = stringXML;
-        Log.i(LOG_TAG + "setSource", "XML is " + stringXML);
+        Log.v(LOG_TAG + "setSource", "XML is " + stringXML);
         this.inStream = new ByteArrayInputStream(stringXML.getBytes());
 
         initXmlPullParser(encoding);
@@ -178,7 +178,7 @@ public class XMLReader {
      */
     public void setSource(InputStream inStream, String encoding) throws XmlPullParserException {
         this.inStream = inStream;
-        Log.i(LOG_TAG + "setSource", "inStream is " + inStream.toString());
+        Log.v(LOG_TAG + "setSource", "inStream is " + inStream.toString());
         initXmlPullParser(encoding);
     }
 
@@ -213,7 +213,7 @@ public class XMLReader {
      * 清空XMLreader对象
      */
     public void Clear() {
-        Log.i(LOG_TAG + "Clear", "Clear() is invoked");
+        Log.v(LOG_TAG + "Clear", "Clear() is invoked");
         this.stringXML = null;
 
         if (inStream != null) {

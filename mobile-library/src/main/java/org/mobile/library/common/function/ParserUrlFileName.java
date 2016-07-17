@@ -41,12 +41,12 @@ public class ParserUrlFileName {
             conn.getResponseCode();
             // 获得真实Url
             URL absUrl = conn.getURL();
-            Log.i(LOG_TAG + "getReallyFileName", "H3C x: " + absUrl);
+            Log.v(LOG_TAG + "getReallyFileName", "H3C x: " + absUrl);
             // 打印输出服务器Header信息
             Map<String, List<String>> map = conn.getHeaderFields();
             for (String str : map.keySet()) {
                 if (str != null) {
-                    Log.i(LOG_TAG + "getReallyFileName", "H3C " + str + " : " + map.get(str));
+                    Log.v(LOG_TAG + "getReallyFileName", "H3C " + str + " : " + map.get(str));
                 }
             }
 

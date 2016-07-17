@@ -129,7 +129,7 @@ public class UpdateData extends JsonDataModel {
         // 获取最新版本地址
         url = jsonResult.getString("Url");
 
-        Log.i(LOG_TAG + "serialization", "version name is " + versionName);
-        Log.i(LOG_TAG + "parse", "latest url is " + url);
+        Log.v(LOG_TAG + "serialization", "version name is " + versionName);
+        Log.v(LOG_TAG + "parse", "latest url is " + url);
     }
 }

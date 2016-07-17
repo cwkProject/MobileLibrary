@@ -78,7 +78,7 @@ public abstract class Communication<RequestType, ResponseType> implements
      * @param encoded 编码字符串，默认为UTF-8
      */
     public void setEncoded(String encoded) {
-        Log.i(LOG_TAG + "setEncoded", "encoded is " + encoded);
+        Log.v(LOG_TAG + "setEncoded", "encoded is " + encoded);
         this.encoded = encoded;
     }
 
@@ -90,13 +90,13 @@ public abstract class Communication<RequestType, ResponseType> implements
     @Override
     public void setTaskName(String url) {
         this.url = url;
-        Log.i(LOG_TAG + "setTaskName", "url is " + this.url);
+        Log.v(LOG_TAG + "setTaskName", "url is " + this.url);
     }
 
     @Override
     public void Request(RequestType sendData) {
-        Log.i(LOG_TAG + "Request", "Request start");
-        Log.i(LOG_TAG + "Request", "url is " + url);
+        Log.v(LOG_TAG + "Request", "Request start");
+        Log.v(LOG_TAG + "Request", "url is " + url);
 
         if (url == null || (!url.trim().toLowerCase().startsWith("http://") && !url.trim()
                 .toLowerCase().startsWith("https://"))) {
@@ -119,16 +119,16 @@ public abstract class Communication<RequestType, ResponseType> implements
             call = okHttpClient.newCall(request);
             Response response = call.execute();
 
-            Log.i(LOG_TAG + "Request", "response code is " + response.code());
-            Log.i(LOG_TAG + "Request", "response message is " + response.message());
+            Log.v(LOG_TAG + "Request", "response code is " + response.code());
+            Log.v(LOG_TAG + "Request", "response message is " + response.message());
 
             if (response.isSuccessful()) {
-                Log.i(LOG_TAG + "Request", "request is success");
+                Log.v(LOG_TAG + "Request", "request is success");
                 this.success = true;
                 this.response = response.body();
-                Log.i(LOG_TAG + "Request", "response is " + this.response);
+                Log.v(LOG_TAG + "Request", "response is " + this.response);
             } else {
-                Log.i(LOG_TAG + "Request", "request is failed");
+                Log.v(LOG_TAG + "Request", "request is failed");
                 this.success = false;
                 this.response = null;
             }
@@ -215,8 +215,8 @@ public abstract class Communication<RequestType, ResponseType> implements
 
     @Override
     public void Request(RequestType sendData, final NetworkCallback<ResponseType> callback) {
-        Log.i(LOG_TAG + "Request", "Request start");
-        Log.i(LOG_TAG + "Request", "url is " + url);
+        Log.v(LOG_TAG + "Request", "Request start");
+        Log.v(LOG_TAG + "Request", "url is " + url);
 
         if (url == null || (!url.trim().toLowerCase().startsWith("http://") && !url.trim()
                 .toLowerCase().startsWith("https://"))) {
@@ -250,12 +250,12 @@ public abstract class Communication<RequestType, ResponseType> implements
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                Log.i(LOG_TAG + "Request", "onResponse response code is " + response.code());
-                Log.i(LOG_TAG + "Request", "onResponse response message is " + response.message());
+                Log.v(LOG_TAG + "Request", "onResponse response code is " + response.code());
+                Log.v(LOG_TAG + "Request", "onResponse response message is " + response.message());
                 if (callback != null) {
 
                     if (response.isSuccessful()) {
-                        Log.i(LOG_TAG + "Request", "request is success");
+                        Log.v(LOG_TAG + "Request", "request is success");
 
                         // 处理结果
                         onAsyncSuccess(response.body(), callback);
@@ -263,7 +263,7 @@ public abstract class Communication<RequestType, ResponseType> implements
                         // 关闭流
                         response.body().close();
                     } else {
-                        Log.i(LOG_TAG + "Request", "request is failed");
+                        Log.v(LOG_TAG + "Request", "request is failed");
                         callback.onFinish(false, null);
                     }
                 }

@@ -43,7 +43,7 @@ public abstract class TemporaryConfigModel {
      * 刷新数据
      */
     public final void Refresh() {
-        Log.i(LOG_TAG + "Refresh", "Refresh() is invoked");
+        Log.v(LOG_TAG + "Refresh", "Refresh() is invoked");
         onRefresh();
     }
 
@@ -51,7 +51,7 @@ public abstract class TemporaryConfigModel {
      * 重置数据
      */
     public final void Reset() {
-        Log.i(LOG_TAG + "Reset", "Reset() is invoked");
+        Log.v(LOG_TAG + "Reset", "Reset() is invoked");
         onCreate();
     }
 }

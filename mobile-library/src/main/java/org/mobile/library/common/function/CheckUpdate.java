@@ -46,7 +46,7 @@ public class CheckUpdate {
      * 执行检查更新，并且显示旋转进度和结果提示
      */
     public void checkWithSpinner() {
-        Log.i(LOG_TAG + "Spinner", "check update is invoked");
+        Log.v(LOG_TAG + "Spinner", "check update is invoked");
 
         // 新建检查更新任务
         CheckVersion checkVersion = new CheckVersion();
@@ -89,7 +89,7 @@ public class CheckUpdate {
      * 静默执行检查更新，结束后无提示
      */
     public void checkNoPrompt() {
-        Log.i(LOG_TAG + "NoPrompt", "check update is invoked");
+        Log.v(LOG_TAG + "NoPrompt", "check update is invoked");
 
         // 新建检查更新任务
         CheckVersion checkVersion = new CheckVersion();
@@ -104,7 +104,7 @@ public class CheckUpdate {
      * 静默执行检查更新，存在新版本时提示更新
      */
     public void checkInBackground() {
-        Log.i(LOG_TAG + "Background", "check update is invoked");
+        Log.v(LOG_TAG + "Background", "check update is invoked");
 
         // 新建检查更新任务
         CheckVersion checkVersion = new CheckVersion();

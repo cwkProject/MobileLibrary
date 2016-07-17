@@ -47,12 +47,12 @@ public class CityOperator {
      * @return 省份列表集合
      */
     public List<Province> getProvinceList() {
-        Log.i(LOG_TAG + "getProvinceList", "getProvinceList() is invoked");
+        Log.v(LOG_TAG + "getProvinceList", "getProvinceList() is invoked");
 
         // 查询语句
         String sql = String.format("SELECT %s, %s FROM %s ORDER BY %s", CityConst.NAME, CityConst
                 .CODE, CityConst.PROVINCE_TABLE, CityConst._ID);
-        Log.i(LOG_TAG + "getProvinceList", "SQL is " + sql);
+        Log.v(LOG_TAG + "getProvinceList", "SQL is " + sql);
 
         // 查询数据
         Cursor cursor = citySQLiteHelper.getReadableDatabase().rawQuery(sql, null);
@@ -86,13 +86,13 @@ public class CityOperator {
      * @return 城市列表集合
      */
     public List<City> getCityList(int provinceCode) {
-        Log.i(LOG_TAG + "getCityList", "getCityList(int) is invoked");
+        Log.v(LOG_TAG + "getCityList", "getCityList(int) is invoked");
 
         // 查询语句
         String sql = String.format("SELECT %s, %s FROM %s where %s=%d ORDER BY %s", CityConst
                 .NAME, CityConst.CODE, CityConst.CITY_TABLE, CityConst.PROVINCE_CODE,
                 provinceCode, CityConst._ID);
-        Log.i(LOG_TAG + "getCityList", "SQL is " + sql);
+        Log.v(LOG_TAG + "getCityList", "SQL is " + sql);
 
         // 查询数据
         Cursor cursor = citySQLiteHelper.getReadableDatabase().rawQuery(sql, null);
@@ -127,13 +127,13 @@ public class CityOperator {
      * @return 区列表集合
      */
     public List<District> getDistrictList(int cityCode) {
-        Log.i(LOG_TAG + "getDistrictList", "getDistrictList(int) is invoked");
+        Log.v(LOG_TAG + "getDistrictList", "getDistrictList(int) is invoked");
 
         // 查询语句
         String sql = String.format("SELECT %s, %s FROM %s where %s=%d ORDER BY %s", CityConst
                 .NAME, CityConst.CODE, CityConst.DISTRICT_TABLE, CityConst.CITY_CODE, cityCode,
                 CityConst._ID);
-        Log.i(LOG_TAG + "getDistrictList", "SQL is " + sql);
+        Log.v(LOG_TAG + "getDistrictList", "SQL is " + sql);
 
         // 查询数据
         Cursor cursor = citySQLiteHelper.getReadableDatabase().rawQuery(sql, null);

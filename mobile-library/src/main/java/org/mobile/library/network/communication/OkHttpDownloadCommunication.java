@@ -78,7 +78,7 @@ public class OkHttpDownloadCommunication extends Communication<Map<String, Strin
 
         // 最终请求地址
         String finalUrl = params.length() == 0 ? url : url + "?" + params;
-        Log.i(LOG_TAG + "Request", "final url is " + finalUrl);
+        Log.v(LOG_TAG + "Request", "final url is " + finalUrl);
 
         return new Request.Builder().url(finalUrl).build();
     }

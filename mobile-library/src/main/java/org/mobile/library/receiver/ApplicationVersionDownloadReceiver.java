@@ -68,13 +68,13 @@ public class ApplicationVersionDownloadReceiver extends BroadcastReceiver {
         if (action.equals(DownloadManager.ACTION_DOWNLOAD_COMPLETE)) {
 
             // 下载完成
-            Log.i(LOG_TAG + "onReceive", "ACTION_DOWNLOAD_COMPLETE");
+            Log.v(LOG_TAG + "onReceive", "ACTION_DOWNLOAD_COMPLETE");
             long nowId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, 0);
-            Log.i(LOG_TAG + "onReceive", "now download file id is " + nowId);
+            Log.v(LOG_TAG + "onReceive", "now download file id is " + nowId);
             long tagId = context.getSharedPreferences(ApplicationStaticValue.AppConfig
                     .APPLICATION_CONFIG_FILE_NAME, Context.MODE_PRIVATE).getLong
                     (ApplicationStaticValue.AppConfig.UPDATE_APP_FILE_ID_TAG, 0);
-            Log.i(LOG_TAG + "onReceive", "target file id is " + tagId);
+            Log.v(LOG_TAG + "onReceive", "target file id is " + tagId);
 
             if (nowId == tagId) {
                 // 查询下载状态
@@ -91,7 +91,7 @@ public class ApplicationVersionDownloadReceiver extends BroadcastReceiver {
      */
     @TargetApi(Build.VERSION_CODES.GINGERBREAD)
     private void queryDownloadStatus(Context context, long id) {
-        Log.i(LOG_TAG + "queryDownloadStatus", "queryDownloadStatus(Context) is invoked");
+        Log.v(LOG_TAG + "queryDownloadStatus", "queryDownloadStatus(Context) is invoked");
         DownloadManager.Query query = new DownloadManager.Query();
         query.setFilterById(id);
         DownloadManager downloadManager = (DownloadManager) context.getSystemService(Context
@@ -99,28 +99,28 @@ public class ApplicationVersionDownloadReceiver extends BroadcastReceiver {
         Cursor cursor = downloadManager.query(query);
 
         if (cursor != null && cursor.moveToFirst()) {
-            Log.i(LOG_TAG + "down", "cursor row count is " + cursor.getCount());
-            Log.i(LOG_TAG + "down", "cursor column count is " + cursor.getColumnCount());
+            Log.v(LOG_TAG + "down", "cursor row count is " + cursor.getCount());
+            Log.v(LOG_TAG + "down", "cursor column count is " + cursor.getColumnCount());
             int status = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS));
             switch (status) {
                 case DownloadManager.STATUS_PAUSED:
-                    Log.i(LOG_TAG + "down", "STATUS_PAUSED");
+                    Log.v(LOG_TAG + "down", "STATUS_PAUSED");
                 case DownloadManager.STATUS_PENDING:
-                    Log.i(LOG_TAG + "down", "STATUS_PENDING");
+                    Log.v(LOG_TAG + "down", "STATUS_PENDING");
                 case DownloadManager.STATUS_RUNNING:
                     //正在下载，不做任何事情
-                    Log.i(LOG_TAG + "down", "STATUS_RUNNING");
+                    Log.v(LOG_TAG + "down", "STATUS_RUNNING");
                     break;
                 case DownloadManager.STATUS_SUCCESSFUL:
                     //完成
-                    Log.i(LOG_TAG + "down", "STATUS_SUCCESSFUL");
+                    Log.v(LOG_TAG + "down", "STATUS_SUCCESSFUL");
                     String path = cursor.getString(cursor.getColumnIndex(DownloadManager
                             .COLUMN_LOCAL_URI));
                     doInstall(context, path);
                     break;
                 case DownloadManager.STATUS_FAILED:
                     //清除已下载的内容，重新下载
-                    Log.i(LOG_TAG + "down", "STATUS_FAILED");
+                    Log.v(LOG_TAG + "down", "STATUS_FAILED");
                     context.getSharedPreferences(ApplicationStaticValue.AppConfig
                             .APPLICATION_CONFIG_FILE_NAME, Context.MODE_PRIVATE).edit().remove
                             (ApplicationStaticValue.AppConfig.UPDATE_APP_FILE_ID_TAG).commit();
@@ -137,12 +137,12 @@ public class ApplicationVersionDownloadReceiver extends BroadcastReceiver {
      * @param path    文件的本地路径
      */
     private void doInstall(Context context, String path) {
-        Log.i(LOG_TAG + "doInstall", "path is " + path);
+        Log.v(LOG_TAG + "doInstall", "path is " + path);
         Cursor cursor = context.getContentResolver().query(Uri.parse(path), null, null, null, null);
 
         if (cursor != null && cursor.moveToFirst()) {
-            Log.i(LOG_TAG + "doInstall", "cursor row count is " + cursor.getCount());
-            Log.i(LOG_TAG + "doInstall", "cursor column count is " + cursor.getColumnCount());
+            Log.v(LOG_TAG + "doInstall", "cursor row count is " + cursor.getCount());
+            Log.v(LOG_TAG + "doInstall", "cursor column count is " + cursor.getColumnCount());
 
             doInstall(context, cursor.getString(cursor.getColumnIndex("_data")));
             cursor.close();

@@ -222,7 +222,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 
 
         if (this.jumpActivity != null) {
-            Log.i(TAG, "go to activity callback");
+            Log.v(TAG, "go to activity callback");
             startActivity(new Intent(CaptureActivity.this, this.jumpActivity).putExtras(bundle));
         } else {
             setResult(RESULT_OK, new Intent().putExtras(bundle));

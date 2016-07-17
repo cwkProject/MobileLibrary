@@ -41,7 +41,7 @@ public class OkHttpGetCommunication extends Communication<Map<String, String>, S
 
         // 最终请求地址
         String finalUrl = params.length() == 0 ? url : url + "?" + params;
-        Log.i(LOG_TAG + "Request", "final url is " + finalUrl);
+        Log.v(LOG_TAG + "Request", "final url is " + finalUrl);
 
         return new Request.Builder().url(finalUrl).build();
     }
@@ -50,7 +50,7 @@ public class OkHttpGetCommunication extends Communication<Map<String, String>, S
     protected void onAsyncSuccess(ResponseBody body, NetworkCallback<String> callback) throws
             IOException {
         String responseString = body.string();
-        Log.i(LOG_TAG + "Request", "response is " + responseString);
+        Log.v(LOG_TAG + "Request", "response is " + responseString);
         callback.onFinish(true, responseString);
     }
 

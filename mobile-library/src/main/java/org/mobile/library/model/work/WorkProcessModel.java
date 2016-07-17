@@ -72,7 +72,7 @@ public abstract class WorkProcessModel<Parameters, Result> {
      * @param result 结果数据对象
      */
     protected final void setResult(Result result) {
-        Log.i(LOG_TAG + "setResult", "result is " + result);
+        Log.v(LOG_TAG + "setResult", "result is " + result);
         this.result = result;
     }
 
@@ -94,7 +94,7 @@ public abstract class WorkProcessModel<Parameters, Result> {
      * @param message 结果消息
      */
     protected final void setMessage(String message) {
-        Log.i(LOG_TAG + "setMessage", "message is " + message);
+        Log.v(LOG_TAG + "setMessage", "message is " + message);
         this.message = message;
     }
 

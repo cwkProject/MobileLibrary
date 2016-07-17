@@ -76,6 +76,6 @@ public class LoginData extends SimpleJsonDataModel {
     @Override
     protected void onExtractData(JSONObject jsonData) throws Exception {
         userID = jsonData.getString(DATA_TAG);
-        Log.i(LOG_TAG + "onRequestSuccess", "userID is " + this.userID);
+        Log.v(LOG_TAG + "onRequestSuccess", "userID is " + this.userID);
     }
 }

@@ -7,13 +7,12 @@ import android.os.Environment;
 import android.util.Log;
 
 import org.junit.Test;
+import org.mobile.library.network.communication.Communication;
 import org.mobile.library.network.factory.CommunicationBuilder;
 import org.mobile.library.network.factory.NetworkType;
-import org.mobile.library.network.util.AsyncCommunication;
 import org.mobile.library.network.util.NetworkCallback;
 import org.mobile.library.network.util.NetworkProgressListener;
 import org.mobile.library.network.util.NetworkRefreshProgressHandler;
-import org.mobile.library.network.util.SyncCommunication;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -57,8 +56,8 @@ public class TestDownload {
     public void async() throws Exception {
 
         // 通讯工具
-        AsyncCommunication communication = CommunicationBuilder.CreateAsyncCommunication
-                (NetworkType.DOWNLOAD);
+        Communication communication = new CommunicationBuilder
+                (NetworkType.DOWNLOAD).build();
 
         communication.setTaskName(url);
 
@@ -142,8 +141,8 @@ public class TestDownload {
     public void sync() throws Exception {
 
         // 通讯工具
-        SyncCommunication communication = CommunicationBuilder.CreateSyncCommunication
-                (NetworkType.DOWNLOAD);
+        Communication communication = new CommunicationBuilder
+                (NetworkType.DOWNLOAD).build();
 
         communication.setTaskName(url);
 

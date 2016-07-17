@@ -90,10 +90,10 @@ public class RequestSign {
             // 加入签名串
             sendData.put(SIGN, sign);
 
-            Log.i(LOG_TAG + "sign", "app code:" + GlobalApplication.getApplicationAttribute()
+            Log.v(LOG_TAG + "sign", "app code:" + GlobalApplication.getApplicationAttribute()
                     .getAppCode() + " sign:" + sign);
         } else {
-            Log.i(LOG_TAG + "sign", "parameters has null");
+            Log.v(LOG_TAG + "sign", "parameters has null");
         }
     }
 
@@ -141,10 +141,10 @@ public class RequestSign {
             // 加入签名串
             sendData.put(SIGN, sign);
 
-            Log.i(LOG_TAG + "signForText", "app code:" + GlobalApplication
+            Log.v(LOG_TAG + "signForText", "app code:" + GlobalApplication
                     .getApplicationAttribute().getAppCode() + " sign:" + sign);
         } else {
-            Log.i(LOG_TAG + "signForText", "parameters has null");
+            Log.v(LOG_TAG + "signForText", "parameters has null");
         }
     }
 }

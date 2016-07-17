@@ -77,17 +77,17 @@ public abstract class BaseIncludeWebFragment extends Fragment implements BackHan
         // 初始化WebView控件
         initWebView();
 
-        Log.i(LOG_TAG + "onCreateView", "onCustomRootView(View) is invoked");
+        Log.v(LOG_TAG + "onCreateView", "onCustomRootView(View) is invoked");
         // 执行自定义布局
         onCustomRootView(rootView);
 
-        Log.i(LOG_TAG + "onCreateView", "onCreateUrl() is invoked");
+        Log.v(LOG_TAG + "onCreateView", "onCreateUrl() is invoked");
         // 初始化加载的网址
         if (onCreateUrl() != null) {
-            Log.i(LOG_TAG + "onCreateView", "url is " + onCreateUrl());
+            Log.v(LOG_TAG + "onCreateView", "url is " + onCreateUrl());
             loadUrl(onCreateUrl());
         } else {
-            Log.i(LOG_TAG + "onCreateView", "url is null");
+            Log.v(LOG_TAG + "onCreateView", "url is null");
         }
         return rootView;
     }
@@ -140,7 +140,7 @@ public abstract class BaseIncludeWebFragment extends Fragment implements BackHan
      * @return 返回true表示处理，返回false表示不处理
      */
     public boolean onGoBack() {
-        Log.i(LOG_TAG + "onGoBack", "onGoBack() is invoked");
+        Log.v(LOG_TAG + "onGoBack", "onGoBack() is invoked");
         // 处理网页后退
         if (webView.canGoBack()) {
             // 返回webView的上一页面
@@ -152,7 +152,7 @@ public abstract class BaseIncludeWebFragment extends Fragment implements BackHan
 
     @Override
     public boolean onBackPressed() {
-        Log.i(LOG_TAG + "onBackPressed", "onBackPressed() is invoked");
+        Log.v(LOG_TAG + "onBackPressed", "onBackPressed() is invoked");
         return onGoBack();
     }
 
@@ -162,8 +162,8 @@ public abstract class BaseIncludeWebFragment extends Fragment implements BackHan
      * @param url 要加载的网页地址
      */
     public void loadUrl(String url) {
-        Log.i(LOG_TAG + "loadUrl", "loadUrl(String) is invoked");
-        Log.i(LOG_TAG + "loadUrl", "url is " + url);
+        Log.v(LOG_TAG + "loadUrl", "loadUrl(String) is invoked");
+        Log.v(LOG_TAG + "loadUrl", "url is " + url);
         webView.loadUrl(url);
     }
 
@@ -171,7 +171,7 @@ public abstract class BaseIncludeWebFragment extends Fragment implements BackHan
      * 清空网页加载历史，即清空后退栈
      */
     public void clearWebHistory() {
-        Log.i(LOG_TAG + "clearWebHistory", "clearWebHistory() is invoked");
+        Log.v(LOG_TAG + "clearWebHistory", "clearWebHistory() is invoked");
         webView.clearHistory();
     }
 
@@ -181,8 +181,8 @@ public abstract class BaseIncludeWebFragment extends Fragment implements BackHan
      * @param url 要加载的网页地址
      */
     public void reloadUrl(String url) {
-        Log.i(LOG_TAG + "reloadUrl", "reloadUrl(String) is invoked");
-        Log.i(LOG_TAG + "reloadUrl", "url is " + url);
+        Log.v(LOG_TAG + "reloadUrl", "reloadUrl(String) is invoked");
+        Log.v(LOG_TAG + "reloadUrl", "url is " + url);
         // 设为一次全新加载
         reopenUrl = true;
         loadUrl(url);

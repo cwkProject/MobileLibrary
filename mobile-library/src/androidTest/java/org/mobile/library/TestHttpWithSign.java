@@ -78,28 +78,27 @@ public class TestHttpWithSign {
 
     @Test
     public void httpGet() throws Exception {
-        SyncCommunication communication = CommunicationBuilder.CreateSyncCommunication(NetworkType.GET);
-
-        communication.setTaskName(URL);
+        SyncCommunication communication = new CommunicationBuilder(NetworkType.GET).url(URL)
+                .build();
 
         // 任务开始时间
         final long startTime = System.currentTimeMillis();
 
         Map<String, String> map = testData.serialization();
 
-        Log.i("TestHttpWithSign" + "httpGet", "sign cast time " +
-                (System.currentTimeMillis() - startTime));
+        Log.i("TestHttpWithSign" + "httpGet", "sign cast time " + (System.currentTimeMillis() -
+                startTime));
 
         String sign = map.get("Sign");
 
         communication.Request(map);
 
-        Log.i("TestHttpWithSign" + "httpGet", "request cast time " + (System.currentTimeMillis() -
-                startTime));
+        Log.i("TestHttpWithSign" + "httpGet", "request cast time " + (System.currentTimeMillis()
+                - startTime));
 
         assertTrue(communication.isSuccessful());
 
-        Object result=communication.Response();
+        Object result = communication.Response();
         assertNotNull(result);
 
         testData.parse((String) result);

@@ -71,12 +71,12 @@ public class CacheLevelOperator extends BaseOperator<CacheLevel> {
 
     @Override
     protected List<CacheLevel> query(String sql) {
-        Log.i(LOG_TAG + "query", "query sql: " + sql);
+        Log.v(LOG_TAG + "query", "query sql: " + sql);
 
         // 查询数据
         Cursor cursor = sqLiteHelper.getReadableDatabase().rawQuery(sql, null);
 
-        Log.i(LOG_TAG + "query", "result cursor count is " + cursor.getCount());
+        Log.v(LOG_TAG + "query", "result cursor count is " + cursor.getCount());
 
         // 数据填充
         List<CacheLevel> list = new ArrayList<>();
@@ -114,7 +114,7 @@ public class CacheLevelOperator extends BaseOperator<CacheLevel> {
      * @return 缓存层级信息对象，如果查询失败或目标不存在则返回null
      */
     public CacheLevel queryCacheLevel(String key) {
-        Log.i(LOG_TAG + "queryCacheLevel", "query key is " + key);
+        Log.v(LOG_TAG + "queryCacheLevel", "query key is " + key);
 
         String sql = String.format("select * from %s where %s='%s'", CacheDatabaseConst
                 .CACHE_LEVEL.TABLE_NAME, CacheDatabaseConst.CACHE_LEVEL.KEY, key);
