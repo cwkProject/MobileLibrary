@@ -11,9 +11,9 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import org.mobile.library.R;
-import org.mobile.library.database.bean.City;
-import org.mobile.library.database.bean.District;
-import org.mobile.library.database.bean.Province;
+import org.mobile.library.struct.City;
+import org.mobile.library.struct.District;
+import org.mobile.library.struct.Province;
 import org.mobile.library.database.city.CityOperator;
 import org.mobile.library.model.function.ISelectList;
 

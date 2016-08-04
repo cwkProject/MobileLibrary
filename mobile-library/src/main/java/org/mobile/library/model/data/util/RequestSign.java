@@ -5,7 +5,7 @@ package org.mobile.library.model.data.util;
 
 import android.util.Log;
 
-import org.mobile.library.global.GlobalApplication;
+import org.mobile.library.global.ApplicationAttribute;
 import org.mobile.library.struct.FileInfo;
 import org.mobile.library.util.HashMD5;
 
@@ -46,9 +46,9 @@ public class RequestSign {
      */
     public static void sign(Map<String, Object> sendData) {
         // 遍历sendData集合并加入请求参数对象
-        if (sendData != null && !sendData.isEmpty() && GlobalApplication.getApplicationAttribute
-                ().getAppCode() != null && GlobalApplication.getApplicationAttribute()
-                .getAppToken() != null) {
+        if (ApplicationAttribute.isRequestSign() && sendData != null &&
+                ApplicationAttribute.getAppCode() != null && ApplicationAttribute.getAppToken()
+                != null) {
 
             // key数组
             List<String> keyList = new ArrayList<>();
@@ -70,7 +70,7 @@ public class RequestSign {
             }
 
             // 加入应用编号
-            sendData.put(APP_CODE, GlobalApplication.getApplicationAttribute().getAppCode());
+            sendData.put(APP_CODE, ApplicationAttribute.getAppCode());
             keyList.add(APP_CODE);
 
             // 排序
@@ -83,15 +83,15 @@ public class RequestSign {
             }
 
             // 拼接应用令牌
-            builder.append(GlobalApplication.getApplicationAttribute().getAppToken());
+            builder.append(ApplicationAttribute.getAppToken());
 
             String sign = HashMD5.hash(builder.toString());
 
             // 加入签名串
             sendData.put(SIGN, sign);
 
-            Log.v(LOG_TAG + "sign", "app code:" + GlobalApplication.getApplicationAttribute()
-                    .getAppCode() + " sign:" + sign);
+            Log.v(LOG_TAG + "sign", "app code:" + ApplicationAttribute.getAppCode() + " sign:" +
+                    sign);
         } else {
             Log.v(LOG_TAG + "sign", "parameters has null");
         }
@@ -104,9 +104,9 @@ public class RequestSign {
      */
     public static void signForText(Map<String, String> sendData) {
         // 遍历sendData集合并加入请求参数对象
-        if (sendData != null && !sendData.isEmpty() && GlobalApplication.getApplicationAttribute
-                ().getAppCode() != null && GlobalApplication.getApplicationAttribute()
-                .getAppToken() != null) {
+        if (ApplicationAttribute.isRequestSign() && sendData != null &&
+                ApplicationAttribute.getAppCode() != null && ApplicationAttribute.getAppToken()
+                != null) {
 
             // key数组
             List<String> keyList = new ArrayList<>();
@@ -121,7 +121,7 @@ public class RequestSign {
             }
 
             // 加入应用编号
-            sendData.put(APP_CODE, GlobalApplication.getApplicationAttribute().getAppCode());
+            sendData.put(APP_CODE, ApplicationAttribute.getAppCode());
             keyList.add(APP_CODE);
 
             // 排序
@@ -134,15 +134,15 @@ public class RequestSign {
             }
 
             // 拼接应用令牌
-            builder.append(GlobalApplication.getApplicationAttribute().getAppToken());
+            builder.append(ApplicationAttribute.getAppToken());
 
             String sign = HashMD5.hash(builder.toString());
 
             // 加入签名串
             sendData.put(SIGN, sign);
 
-            Log.v(LOG_TAG + "signForText", "app code:" + GlobalApplication
-                    .getApplicationAttribute().getAppCode() + " sign:" + sign);
+            Log.v(LOG_TAG + "signForText", "app code:" + ApplicationAttribute.getAppCode() + " " +
+                    "sign:" + sign);
         } else {
             Log.v(LOG_TAG + "signForText", "parameters has null");
         }

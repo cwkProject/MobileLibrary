@@ -3,8 +3,6 @@ package org.mobile.library.global;
  * Created by 超悟空 on 2015/6/11.
  */
 
-import org.mobile.library.model.config.TemporaryConfigModel;
-
 /**
  * 应用相关参数
  *
@@ -12,12 +10,12 @@ import org.mobile.library.model.config.TemporaryConfigModel;
  * @version 3.0 2016/3/19
  * @since 1.0
  */
-public class ApplicationAttribute extends TemporaryConfigModel {
+public class ApplicationAttribute {
 
     /**
-     * 设备类型，默认{@link org.mobile.library.global.ApplicationStaticValue.AppConfig#DEVICE_TYPE}
+     * 自身静态实例
      */
-    private String deviceType = ApplicationStaticValue.AppConfig.DEVICE_TYPE;
+    private static ApplicationAttribute applicationAttribute = new ApplicationAttribute();
 
     /**
      * 应用标识
@@ -35,41 +33,12 @@ public class ApplicationAttribute extends TemporaryConfigModel {
     private boolean requestSign = false;
 
     /**
-     * 设置设备类型
-     *
-     * @param deviceType 设备类型码，默认{@link org.mobile.library.global.ApplicationStaticValue
-     * .AppConfig#DEVICE_TYPE}
-     */
-    public void setDeviceType(String deviceType) {
-        this.deviceType = deviceType;
-    }
-
-    /**
-     * 设置应用标识
-     *
-     * @param appCode 应用标识码
-     */
-    public void setAppCode(String appCode) {
-        this.appCode = appCode;
-    }
-
-    /**
-     * 获取设备类型
-     *
-     * @return 设备类型码，默认{@link org.mobile.library.global.ApplicationStaticValue
-     * .AppConfig#DEVICE_TYPE}
-     */
-    public String getDeviceType() {
-        return deviceType;
-    }
-
-    /**
      * 获取应用标识
      *
      * @return 应用标识码
      */
-    public String getAppCode() {
-        return appCode;
+    public static String getAppCode() {
+        return applicationAttribute.appCode;
     }
 
     /**
@@ -77,17 +46,8 @@ public class ApplicationAttribute extends TemporaryConfigModel {
      *
      * @return 应用令牌
      */
-    public String getAppToken() {
-        return appToken;
-    }
-
-    /**
-     * 设置应用令牌
-     *
-     * @param appToken 应用令牌
-     */
-    public void setAppToken(String appToken) {
-        this.appToken = appToken;
+    public static String getAppToken() {
+        return applicationAttribute.appToken;
     }
 
     /**
@@ -95,30 +55,61 @@ public class ApplicationAttribute extends TemporaryConfigModel {
      *
      * @return true表示需要签名
      */
-    public boolean isRequestSign() {
-        return requestSign;
-    }
-
-    /**
-     * 设置应用全局范围内是否对网络请求进行签名
-     *
-     * @param requestSign true表示需要签名，默认为false
-     */
-    public void setRequestSign(boolean requestSign) {
-        this.requestSign = requestSign;
+    public static boolean isRequestSign() {
+        return applicationAttribute.requestSign;
     }
 
     /**
      * 构造函数
      */
-    public ApplicationAttribute() {
-        super();
+    private ApplicationAttribute() {
     }
 
-    @Override
-    protected void onCreate() {
-        setDeviceType(ApplicationStaticValue.AppConfig.DEVICE_TYPE);
-        setAppCode(null);
-        setAppToken(null);
+    /**
+     * 创建全局变量参数
+     *
+     * @return 全局变量对象
+     */
+    public static ApplicationAttribute create() {
+        applicationAttribute.appCode = null;
+        applicationAttribute.appToken = null;
+        applicationAttribute.requestSign = false;
+        return applicationAttribute;
+    }
+
+    /**
+     * 设置是否全局签名
+     *
+     * @param flag true表示需要签名
+     *
+     * @return 全局变量对象
+     */
+    public ApplicationAttribute requestSign(boolean flag) {
+        applicationAttribute.requestSign = flag;
+        return applicationAttribute;
+    }
+
+    /**
+     * 设置应用编号
+     *
+     * @param appCode 应用编号
+     *
+     * @return 全局变量对象
+     */
+    public ApplicationAttribute appCode(String appCode) {
+        applicationAttribute.appCode = appCode;
+        return applicationAttribute;
+    }
+
+    /**
+     * 设置应用令牌
+     *
+     * @param appToken 应用令牌
+     *
+     * @return 全局变量对象
+     */
+    public ApplicationAttribute appToken(String appToken) {
+        applicationAttribute.appToken = appToken;
+        return applicationAttribute;
     }
 }

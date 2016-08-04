@@ -14,8 +14,10 @@ import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
 
-import org.mobile.library.model.operate.EmptyParameterObserver;
+
 import org.mobile.library.global.ApplicationStaticValue;
+import org.mobile.library.model.operate.DataChangeListener;
+import org.mobile.library.model.operate.DataChangeObservable;
 
 import java.io.File;
 
@@ -26,7 +28,8 @@ import java.io.File;
  * @version 1.0 2015/7/3
  * @since 1.0
  */
-public class ApplicationVersionDownloadReceiver extends BroadcastReceiver {
+public class ApplicationVersionDownloadReceiver extends BroadcastReceiver implements
+        DataChangeObservable<Void> {
 
     /**
      * 日志标签前缀
@@ -36,15 +39,16 @@ public class ApplicationVersionDownloadReceiver extends BroadcastReceiver {
     /**
      * 下载完成回调
      */
-    private EmptyParameterObserver endObserver = null;
+    private DataChangeListener<Void> listener = null;
 
     /**
      * 设置下载完成监听
      *
-     * @param endObserver 监听器
+     * @param listener 监听器
      */
-    public void setEndObserver(EmptyParameterObserver endObserver) {
-        this.endObserver = endObserver;
+    @Override
+    public void setOnDataChangeListener(DataChangeListener<Void> listener) {
+        this.listener = listener;
     }
 
     /**
@@ -164,8 +168,8 @@ public class ApplicationVersionDownloadReceiver extends BroadcastReceiver {
                 context.startActivity(intent);
             }
 
-            if (endObserver != null) {
-                endObserver.invoke();
+            if (listener != null) {
+                listener.onDataChange(null);
             }
         }
     }

@@ -3,7 +3,7 @@ package org.mobile.library.network.util;
  * Created by 超悟空 on 2015/5/11.
  */
 
-import org.mobile.library.global.GlobalApplication;
+import org.mobile.library.global.Global;
 
 import okhttp3.OkHttpClient;
 
@@ -28,7 +28,7 @@ public class NetworkClient {
      */
     public static OkHttpClient getOkHttpClient() {
         if (okHttpClient == null) {
-            okHttpClient = GlobalApplication.getOkHttpClient();
+            okHttpClient = Global.getOkHttpClient();
         }
 
         return okHttpClient;

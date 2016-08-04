@@ -5,7 +5,7 @@ package org.mobile.library;
 
 import org.junit.Test;
 import org.mobile.library.global.ApplicationStaticValue;
-import org.mobile.library.global.GlobalApplication;
+import org.mobile.library.global.Global;
 import org.mobile.library.model.work.WorkBack;
 import org.mobile.library.model.work.implement.CheckVersion;
 
@@ -39,8 +39,8 @@ public class TestUpdateVersion {
         checkVersion.execute(ApplicationStaticValue.AppConfig.DEVICE_TYPE, "HMW", ApplicationStaticValue
                 .Url.UPDATE_REQUEST_URL);
 
-        assertEquals(false, GlobalApplication.getApplicationVersion().isLatestVersion());
-        assertNotNull(GlobalApplication.getApplicationVersion().getLatestVersionUrl());
-        assertNotNull(GlobalApplication.getApplicationVersion().getLatestVersionName());
+        assertEquals(false, Global.getApplicationVersion().isLatestVersion());
+        assertNotNull(Global.getApplicationVersion().getLatestVersionUrl());
+        assertNotNull(Global.getApplicationVersion().getLatestVersionName());
     }
 }

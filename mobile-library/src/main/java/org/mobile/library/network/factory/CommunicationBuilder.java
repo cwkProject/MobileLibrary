@@ -3,21 +3,23 @@ package org.mobile.library.network.factory;
  * Created by 超悟空 on 2015/4/23.
  */
 
+
 import org.mobile.library.network.communication.Communication;
+import org.mobile.library.network.communication.OkHttpDeleteCommunication;
 import org.mobile.library.network.communication.OkHttpDownloadCommunication;
 import org.mobile.library.network.communication.OkHttpGetCommunication;
 import org.mobile.library.network.communication.OkHttpPostCommunication;
+import org.mobile.library.network.communication.OkHttpPutCommunication;
 import org.mobile.library.network.communication.OkHttpUploadCommunication;
 import org.mobile.library.network.util.NetworkProgressListener;
 import org.mobile.library.network.util.NetworkRefreshProgressHandler;
 import org.mobile.library.network.util.NetworkTimeout;
 
-
 /**
  * 通讯对象构造器
  *
  * @author 超悟空
- * @version 2.0 2015/11/2
+ * @version 3.0 2016/8/4
  * @since 1.0
  */
 public class CommunicationBuilder {
@@ -166,6 +168,12 @@ public class CommunicationBuilder {
                 break;
             case DOWNLOAD:
                 communication = new OkHttpDownloadCommunication();
+                break;
+            case PUT:
+                communication = new OkHttpPutCommunication();
+                break;
+            case DELETE:
+                communication = new OkHttpDeleteCommunication();
                 break;
             default:
                 throw new IllegalArgumentException("error networkType");

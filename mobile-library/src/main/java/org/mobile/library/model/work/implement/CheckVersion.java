@@ -8,7 +8,7 @@ import org.mobile.library.model.data.implement.UpdateData;
 import org.mobile.library.model.work.DefaultWorkModel;
 import org.mobile.library.global.ApplicationVersion;
 import org.mobile.library.util.BroadcastUtil;
-import org.mobile.library.global.GlobalApplication;
+import org.mobile.library.global.Global;
 
 
 /**
@@ -39,7 +39,7 @@ public class CheckVersion extends DefaultWorkModel<String, String, UpdateData> {
     @Override
     protected void onParseSuccess(UpdateData data) {
         // 改变全局临时变量
-        ApplicationVersion config = GlobalApplication.getApplicationVersion();
+        ApplicationVersion config = Global.getApplicationVersion();
         config.setLatestVersion(!data.isSuccess());
         config.setLatestVersionName(data.getVersionName());
         config.setLatestVersionUrl(data.getUrl());
@@ -78,7 +78,7 @@ public class CheckVersion extends DefaultWorkModel<String, String, UpdateData> {
      */
     private void sendBroadcast() {
         // 发送版本检查结果广播
-        BroadcastUtil.sendBroadcast(GlobalApplication.getGlobal(), ApplicationStaticValue
+        BroadcastUtil.sendBroadcast(Global.getContext(), ApplicationStaticValue
                 .BroadcastAction.APPLICATION_VERSION_STATE);
     }
 }

@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import org.mobile.library.cache.util.convert.BitmapCacheConvert;
 import org.mobile.library.cache.util.convert.InputStreamCacheConvert;
 import org.mobile.library.cache.util.convert.TextCacheConvert;
-import org.mobile.library.global.GlobalApplication;
+import org.mobile.library.global.Global;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -108,7 +108,7 @@ public class CacheManager {
     /**
      * 文件操作工具
      */
-    private static CacheFileUtil cacheFileUtil = new CacheFileUtil(GlobalApplication.getGlobal());
+    private static CacheFileUtil cacheFileUtil = new CacheFileUtil(Global.getContext());
 
     /**
      * 存放缓存工具的集合

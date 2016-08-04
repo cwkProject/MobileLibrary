@@ -5,7 +5,7 @@ package org.mobile.library;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mobile.library.global.GlobalApplication;
+import org.mobile.library.global.ApplicationAttribute;
 import org.mobile.library.model.work.IWorkEndListener;
 import org.mobile.library.model.work.WorkBack;
 import org.mobile.library.model.work.implement.CheckLogin;
@@ -28,9 +28,7 @@ public class TestCheckLogin {
 
     @Before
     public void setUp() throws Exception {
-        GlobalApplication.getApplicationAttribute().setAppCode(APP_CODE);
-        GlobalApplication.getApplicationAttribute().setAppToken(APP_TOKEN);
-
+        ApplicationAttribute.create().appCode(APP_CODE).appToken(APP_TOKEN).requestSign(true);
     }
 
     @Test

@@ -11,7 +11,7 @@ import android.os.Build;
 import android.support.v7.app.AlertDialog;
 
 import org.mobile.library.R;
-import org.mobile.library.global.GlobalApplication;
+import org.mobile.library.global.Global;
 import org.mobile.library.service.VersionUpdateService;
 
 /**
@@ -38,7 +38,7 @@ public class VersionUpdateDialog {
 
         // 设置提示
         dialog.setMessage(context.getString(R.string.update_now_version_alert) + ":" +
-                GlobalApplication.getApplicationVersion().getLatestVersionName());
+                Global.getApplicationVersion().getLatestVersionName());
 
         // 设置确认监听器
         dialog.setPositiveButton(R.string.button_ok, new DialogInterface.OnClickListener() {
@@ -49,7 +49,7 @@ public class VersionUpdateDialog {
                     // 启动下载服务
                     context.startService(new Intent(context, VersionUpdateService.class));
                 } else {
-                    Uri uri = Uri.parse(GlobalApplication.getApplicationVersion()
+                    Uri uri = Uri.parse(Global.getApplicationVersion()
                             .getLatestVersionUrl());
                     Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                     context.startActivity(intent);

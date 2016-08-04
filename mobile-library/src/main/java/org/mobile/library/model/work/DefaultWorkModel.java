@@ -5,7 +5,7 @@ package org.mobile.library.model.work;
 
 import android.util.Log;
 
-import org.mobile.library.global.GlobalApplication;
+import org.mobile.library.global.Global;
 import org.mobile.library.model.data.IDefaultDataModel;
 import org.mobile.library.model.operate.AsyncExecute;
 import org.mobile.library.model.operate.Cancelable;
@@ -283,7 +283,7 @@ public abstract class DefaultWorkModel<Parameters, Result, DataModelType extends
                     @Override
                     public void onRefreshProgress(final long current, final long total, final
                     boolean done) {
-                        GlobalApplication.getUiHandler().post(new Runnable() {
+                        Global.getUiHandler().post(new Runnable() {
                             @Override
                             public void run() {
                                 networkProgressListener.onRefreshProgress(current, total, done);
@@ -311,7 +311,7 @@ public abstract class DefaultWorkModel<Parameters, Result, DataModelType extends
                     "is " + "invoked");
             if (isEndUiThread) {
                 // 发送到UI线程
-                GlobalApplication.getUiHandler().post(new Runnable() {
+                Global.getUiHandler().post(new Runnable() {
                     @Override
                     public void run() {
                         workEndListener.doEndWork(state, message, result);

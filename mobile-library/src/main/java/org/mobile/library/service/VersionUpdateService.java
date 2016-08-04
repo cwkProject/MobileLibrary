@@ -16,8 +16,8 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import org.mobile.library.global.ApplicationStaticValue;
-import org.mobile.library.global.GlobalApplication;
-import org.mobile.library.model.operate.EmptyParameterObserver;
+import org.mobile.library.global.Global;
+import org.mobile.library.model.operate.EmptyParameterListener;
 import org.mobile.library.receiver.ApplicationVersionDownloadReceiver;
 
 /**
@@ -75,7 +75,7 @@ public class VersionUpdateService extends Service {
     @TargetApi(Build.VERSION_CODES.GINGERBREAD)
     private void onStartDownload() {
         // 下载地址
-        String downloadUrl = GlobalApplication.getApplicationVersion().getLatestVersionUrl();
+        String downloadUrl = Global.getApplicationVersion().getLatestVersionUrl();
 
         if (downloadUrl == null) {
             Log.d(LOG_TAG + "onStartDownload", "downloadUrl is null");
@@ -115,9 +115,9 @@ public class VersionUpdateService extends Service {
         receiver = new ApplicationVersionDownloadReceiver();
 
         // 设置完成回调
-        receiver.setEndObserver(new EmptyParameterObserver() {
+        receiver.setOnDataChangeListener(new EmptyParameterListener() {
             @Override
-            public void invoke() {
+            public void onInvoke() {
                 // 停止服务
                 stopSelf();
             }

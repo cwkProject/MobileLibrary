@@ -10,7 +10,7 @@ import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.mobile.library.model.data.base.JsonDataModel;
-import org.mobile.library.global.GlobalApplication;
+import org.mobile.library.global.Global;
 
 import java.util.Map;
 
@@ -96,8 +96,8 @@ public class UpdateData extends JsonDataModel {
 
         try {
             // 包信息
-            PackageInfo info = GlobalApplication.getGlobal().getPackageManager().getPackageInfo
-                    (GlobalApplication.getGlobal().getPackageName(), 0);
+            PackageInfo info = Global.getContext().getPackageManager().getPackageInfo
+                    (Global.getContext().getPackageName(), 0);
             versionName = info.versionName;
             versionBuild = info.versionCode;
         } catch (PackageManager.NameNotFoundException e) {

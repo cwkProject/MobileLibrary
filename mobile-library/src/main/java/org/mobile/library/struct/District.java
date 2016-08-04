@@ -1,4 +1,4 @@
-package org.mobile.library.database.bean;
+package org.mobile.library.struct;
 /**
  * Created by 超悟空 on 2016/3/4.
  */

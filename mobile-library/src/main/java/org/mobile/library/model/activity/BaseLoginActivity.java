@@ -24,7 +24,7 @@ import org.mobile.library.R;
 import org.mobile.library.common.dialog.SimpleDialog;
 import org.mobile.library.common.function.InputMethodController;
 import org.mobile.library.global.ApplicationConfig;
-import org.mobile.library.global.GlobalApplication;
+import org.mobile.library.global.Global;
 import org.mobile.library.global.LoginStatus;
 import org.mobile.library.model.work.IWorkEndListener;
 import org.mobile.library.model.work.implement.CheckLogin;
@@ -75,7 +75,7 @@ public abstract class BaseLoginActivity extends AppCompatActivity {
         rootView = findViewById(R.id.activity_login_root_layout);
 
         // 重置用户登录参数
-        GlobalApplication.getLoginStatus().Reset();
+        Global.getLoginStatus().Reset();
 
         // 初始化界面
         init();
@@ -227,9 +227,9 @@ public abstract class BaseLoginActivity extends AppCompatActivity {
         onBindEditHint();
 
         // 尝试填充数据
-        if (GlobalApplication.getApplicationConfig().getUserName() != null) {
+        if (Global.getApplicationConfig().getUserName() != null) {
             // 填充用户
-            userNameEditText.setText(GlobalApplication.getApplicationConfig().getUserName());
+            userNameEditText.setText(Global.getApplicationConfig().getUserName());
         }
     }
 
@@ -466,7 +466,7 @@ public abstract class BaseLoginActivity extends AppCompatActivity {
      * @param data     用户id
      */
     protected void onLoginData(String userName, String password, boolean state, String data) {
-        LoginStatus loginStatus = GlobalApplication.getLoginStatus();
+        LoginStatus loginStatus = Global.getLoginStatus();
 
         loginStatus.setLogin(state);
         loginStatus.setUserID(data);
@@ -475,7 +475,7 @@ public abstract class BaseLoginActivity extends AppCompatActivity {
             // 登录成功
 
             // 保存当前设置
-            ApplicationConfig config = GlobalApplication.getApplicationConfig();
+            ApplicationConfig config = Global.getApplicationConfig();
             config.setUserName(userName);
             config.setPassword(password);
 

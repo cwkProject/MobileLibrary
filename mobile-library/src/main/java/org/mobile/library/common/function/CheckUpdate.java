@@ -9,10 +9,10 @@ import android.util.Log;
 
 import org.mobile.library.R;
 import org.mobile.library.common.dialog.VersionUpdateDialog;
-import org.mobile.library.global.GlobalApplication;
+import org.mobile.library.global.ApplicationAttribute;
+import org.mobile.library.global.ApplicationStaticValue;
 import org.mobile.library.model.work.WorkBack;
 import org.mobile.library.model.work.implement.CheckVersion;
-import org.mobile.library.global.ApplicationStaticValue;
 
 /**
  * 检查更新功能类
@@ -80,9 +80,8 @@ public class CheckUpdate {
         progressDialog.show();
 
         // 执行任务
-        checkVersion.beginExecute(ApplicationStaticValue.AppConfig.DEVICE_TYPE, GlobalApplication
-                .getApplicationAttribute().getAppCode(), ApplicationStaticValue.Url
-                .UPDATE_REQUEST_URL);
+        checkVersion.beginExecute(ApplicationStaticValue.AppConfig.DEVICE_TYPE,
+                ApplicationAttribute.getAppCode(), ApplicationStaticValue.Url.UPDATE_REQUEST_URL);
     }
 
     /**
@@ -95,9 +94,8 @@ public class CheckUpdate {
         CheckVersion checkVersion = new CheckVersion();
 
         // 执行任务
-        checkVersion.beginExecute(ApplicationStaticValue.AppConfig.DEVICE_TYPE, GlobalApplication
-                .getApplicationAttribute().getAppCode(), ApplicationStaticValue.Url
-                .UPDATE_REQUEST_URL);
+        checkVersion.beginExecute(ApplicationStaticValue.AppConfig.DEVICE_TYPE,
+                ApplicationAttribute.getAppCode(), ApplicationStaticValue.Url.UPDATE_REQUEST_URL);
     }
 
     /**
@@ -125,9 +123,8 @@ public class CheckUpdate {
         });
 
         // 执行任务
-        checkVersion.beginExecute(ApplicationStaticValue.AppConfig.DEVICE_TYPE, GlobalApplication
-                .getApplicationAttribute().getAppCode(), ApplicationStaticValue.Url
-                .UPDATE_REQUEST_URL);
+        checkVersion.beginExecute(ApplicationStaticValue.AppConfig.DEVICE_TYPE,
+                ApplicationAttribute.getAppCode(), ApplicationStaticValue.Url.UPDATE_REQUEST_URL);
     }
 
     /**

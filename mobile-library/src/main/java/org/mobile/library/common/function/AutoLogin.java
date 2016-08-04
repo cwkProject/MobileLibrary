@@ -8,7 +8,7 @@ import android.util.Log;
 
 import org.mobile.library.global.ApplicationAttribute;
 import org.mobile.library.global.ApplicationStaticValue;
-import org.mobile.library.global.GlobalApplication;
+import org.mobile.library.global.Global;
 import org.mobile.library.global.LoginStatus;
 import org.mobile.library.model.work.WorkBack;
 import org.mobile.library.model.work.implement.CheckLogin;
@@ -42,7 +42,7 @@ public class AutoLogin {
         Log.v(LOG_TAG + "checkAutoLogin", "checkAutoLogin is invoked");
 
         // 判断是否有用户名密码
-        if (GlobalApplication.getApplicationConfig().getUserName() != null && GlobalApplication
+        if (Global.getApplicationConfig().getUserName() != null && Global
                 .getApplicationConfig().getPassword() != null) {
             Log.i(LOG_TAG + "checkAutoLogin", "auto login");
 
@@ -52,7 +52,7 @@ public class AutoLogin {
             login.setWorkEndListener(new WorkBack<String>() {
                 @Override
                 public void doEndWork(boolean state, String data) {
-                    LoginStatus loginStatus = GlobalApplication.getLoginStatus();
+                    LoginStatus loginStatus = Global.getLoginStatus();
 
                     loginStatus.setLogin(state);
                     loginStatus.setUserID(data);
@@ -61,8 +61,8 @@ public class AutoLogin {
 
             // 执行登录任务
             Log.v(LOG_TAG + "checkAutoLogin", "auto login begin");
-            login.beginExecute(GlobalApplication.getApplicationConfig().getUserName(),
-                    GlobalApplication.getApplicationConfig().getPassword());
+            login.beginExecute(Global.getApplicationConfig().getUserName(),
+                    Global.getApplicationConfig().getPassword());
         } else {
             Log.i(LOG_TAG + "checkAutoLogin", "no auto login");
             // 发送登录状态改变广播，标识一个加载动作结束

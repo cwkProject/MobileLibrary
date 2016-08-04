@@ -7,7 +7,7 @@ package org.mobile.library.network.factory;
  * 网络工具类型枚举
  *
  * @author 超悟空
- * @version 1.0 2015/4/18
+ * @version 2.0 2016/8/4
  * @since 1.0
  */
 public enum NetworkType {
@@ -27,5 +27,13 @@ public enum NetworkType {
     /**
      * 上传
      */
-    UPLOAD
+    UPLOAD,
+    /**
+     * http delete类型的请求
+     */
+    DELETE,
+    /**
+     * http put类型的请求
+     */
+    PUT
 }

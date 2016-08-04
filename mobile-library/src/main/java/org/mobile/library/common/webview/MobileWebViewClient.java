@@ -5,7 +5,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import org.mobile.library.R;
-import org.mobile.library.global.GlobalApplication;
+import org.mobile.library.global.Global;
 
 /**
  * 重写WebViewClient类的某些功能
@@ -73,8 +73,8 @@ public class MobileWebViewClient extends WebViewClient {
 
         //用javascript隐藏系统定义的404页面信息
 
-        view.loadUrl("javascript:document.title=\"" + GlobalApplication.getGlobal().getString(
-                R.string.web_view_load_error_title) + "\";document.body.innerHTML=\"" + GlobalApplication.getGlobal().getString(R.string.web_view_load_error_body) + "\"");
+        view.loadUrl("javascript:document.title=\"" + Global.getContext().getString(
+                R.string.web_view_load_error_title) + "\";document.body.innerHTML=\"" + Global.getContext().getString(R.string.web_view_load_error_body) + "\"");
     }
 
     @Override

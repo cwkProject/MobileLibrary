@@ -7,7 +7,7 @@ import android.util.Log;
 
 import org.mobile.library.R;
 import org.mobile.library.global.ApplicationStaticValue;
-import org.mobile.library.global.GlobalApplication;
+import org.mobile.library.global.Global;
 import org.mobile.library.model.data.implement.LoginData;
 import org.mobile.library.model.work.DefaultWorkModel;
 import org.mobile.library.network.factory.NetworkType;
@@ -41,12 +41,12 @@ public class CheckLogin extends DefaultWorkModel<String, String, LoginData> {
     @Override
     protected void onParameterError(String... parameters) {
         Log.d(LOG_TAG + "onDoWork", "userName or password is null");
-        setResult(GlobalApplication.getGlobal().getString(R.string.login_error_parameter));
+        setResult(Global.getContext().getString(R.string.login_error_parameter));
     }
 
     @Override
     protected String onParseFailedSetMessage(LoginData data) {
-        return GlobalApplication.getGlobal().getString(R.string.login_error_field_required);
+        return Global.getContext().getString(R.string.login_error_field_required);
     }
 
     @Override
@@ -72,7 +72,7 @@ public class CheckLogin extends DefaultWorkModel<String, String, LoginData> {
     @Override
     protected void onFinish() {
         // 发送广播
-        BroadcastUtil.sendBroadcast(GlobalApplication.getGlobal(), ApplicationStaticValue
+        BroadcastUtil.sendBroadcast(Global.getContext(), ApplicationStaticValue
                 .BroadcastAction.LOGIN_STATE);
     }
 }

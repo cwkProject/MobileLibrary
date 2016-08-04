@@ -8,7 +8,7 @@ import android.util.Log;
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
-import org.mobile.library.global.GlobalApplication;
+import org.mobile.library.global.ApplicationAttribute;
 import org.mobile.library.model.data.base.SimpleJsonDataModel;
 import org.mobile.library.network.factory.CommunicationBuilder;
 import org.mobile.library.network.factory.NetworkType;
@@ -67,8 +67,7 @@ public class TestHttpWithSign {
 
     @Before
     public void setUp() throws Exception {
-        GlobalApplication.getApplicationAttribute().setAppCode(APP_CODE);
-        GlobalApplication.getApplicationAttribute().setAppToken(APP_TOKEN);
+        ApplicationAttribute.create().appCode(APP_CODE).appToken(APP_TOKEN).requestSign(true);
 
         testData = new TestData();
 

@@ -7,9 +7,9 @@ import android.content.Context;
 import android.database.Cursor;
 import android.util.Log;
 
-import org.mobile.library.database.bean.City;
-import org.mobile.library.database.bean.District;
-import org.mobile.library.database.bean.Province;
+import org.mobile.library.struct.City;
+import org.mobile.library.struct.District;
+import org.mobile.library.struct.Province;
 
 import java.util.ArrayList;
 import java.util.List;

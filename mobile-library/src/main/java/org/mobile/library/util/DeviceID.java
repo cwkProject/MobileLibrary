@@ -8,7 +8,7 @@ import android.content.SharedPreferences;
 import android.telephony.TelephonyManager;
 
 import org.mobile.library.global.ApplicationStaticValue;
-import org.mobile.library.global.GlobalApplication;
+import org.mobile.library.global.Global;
 
 import java.util.UUID;
 
@@ -69,7 +69,7 @@ public class DeviceID {
      * 从配置文件读取
      */
     private static void readConfig() {
-        SharedPreferences sharedPreferences = GlobalApplication.getGlobal().getSharedPreferences
+        SharedPreferences sharedPreferences = Global.getContext().getSharedPreferences
                 (ApplicationStaticValue.AppConfig.APPLICATION_CONFIG_FILE_NAME, Context
                         .MODE_PRIVATE);
 
@@ -80,7 +80,7 @@ public class DeviceID {
      * 通过IMEI生成
      */
     private static void fromIMEI() {
-        TelephonyManager tm = (TelephonyManager) GlobalApplication.getGlobal().getSystemService
+        TelephonyManager tm = (TelephonyManager) Global.getContext().getSystemService
                 (Context.TELEPHONY_SERVICE);
         deviceId = tm.getDeviceId();
     }
@@ -96,7 +96,7 @@ public class DeviceID {
      * 写入配置文件
      */
     private static void writeConfig() {
-        SharedPreferences.Editor editor = GlobalApplication.getGlobal().getSharedPreferences
+        SharedPreferences.Editor editor = Global.getContext().getSharedPreferences
                 (ApplicationStaticValue.AppConfig.APPLICATION_CONFIG_FILE_NAME, Context
                         .MODE_PRIVATE).edit();
         editor.putString(DEVICE_ID, deviceId);
