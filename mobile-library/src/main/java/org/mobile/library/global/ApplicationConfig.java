@@ -7,6 +7,7 @@ package org.mobile.library.global;
 import android.content.Context;
 
 import org.mobile.library.model.config.PersistenceConfigModel;
+import org.mobile.library.util.PreferencesUtil;
 
 /**
  * 持久化的全局配置对象
@@ -25,6 +26,7 @@ public class ApplicationConfig extends PersistenceConfigModel {
     /**
      * 密码
      */
+    @PreferencesUtil.Encrypt
     private String password = null;
 
     /**
@@ -44,6 +46,11 @@ public class ApplicationConfig extends PersistenceConfigModel {
         super.onDefault();
         userName = null;
         password = null;
+    }
+
+    @Override
+    protected boolean onIsEncrypt() {
+        return true;
     }
 
     /**

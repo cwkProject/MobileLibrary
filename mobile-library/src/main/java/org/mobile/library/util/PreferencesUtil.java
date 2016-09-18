@@ -7,10 +7,14 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.lang.reflect.Field;
 
 /**
- * 基于{@link android.content.SharedPreferences}的对象属性持久化工具,
+ * 基于{@link SharedPreferences}的对象属性持久化工具,
  * 只支持Sting,int,boolean,float,long的属性值，其他类型将不会被保存
  *
  * @author 超悟空
@@ -25,14 +29,45 @@ public class PreferencesUtil {
     private static final String LOG_TAG = "PreferencesUtil.";
 
     /**
-     * 上下文对象
+     * 标记需要进行加密的成员属性，需要设置加解密器{@link #setDataCipher(DataCipher)}
      */
-    private Context context = null;
+    @Target(ElementType.FIELD)
+    @Retention(RetentionPolicy.RUNTIME)
+    public @interface Encrypt {
+    }
 
     /**
-     * 保存文件的名称
+     * 成员属性加解密工具
      */
-    private String fileName = null;
+    public interface DataCipher {
+        /**
+         * 加密数据
+         *
+         * @param data 要加密的数据，非String类型成员会被转换为String类型
+         *
+         * @return 加密后的文本
+         */
+        String encrypt(String data);
+
+        /**
+         * 解密数据
+         *
+         * @param cipherText 密文
+         *
+         * @return 解密后的数据，非String类型成员会自动被转换
+         */
+        String decrypt(String cipherText);
+    }
+
+    /**
+     * 加解密器
+     */
+    private DataCipher cipher = null;
+
+    /**
+     * 存储器对象
+     */
+    private SharedPreferences sharedPreferences = null;
 
     /**
      * 传入上下文和文件名的构造函数
@@ -40,9 +75,17 @@ public class PreferencesUtil {
      * @param context 上下文
      */
     public PreferencesUtil(Context context, String fileName) {
-        this.context = context;
-        this.fileName = fileName;
+        this.sharedPreferences = context.getSharedPreferences(fileName, Context.MODE_PRIVATE);
         Log.i(LOG_TAG + "PreferencesUtil", "file name is " + fileName);
+    }
+
+    /**
+     * 设置加解密器
+     *
+     * @param cipher 加解密工具
+     */
+    public void setDataCipher(DataCipher cipher) {
+        this.cipher = cipher;
     }
 
     /**
@@ -111,6 +154,20 @@ public class PreferencesUtil {
             Log.v(LOG_TAG + "put", "field type is " + field.getType().getName());
             Log.v(LOG_TAG + "put", "field name is " + field.getName());
             Log.v(LOG_TAG + "put", "field value is " + field.get(obj));
+
+            // 是否需要加密
+            if (cipher != null && field.isAnnotationPresent(Encrypt.class)) {
+                Log.v(LOG_TAG + "put", "field " + field.getName() + " use encrypt");
+
+                Object data = field.get(obj);
+
+                if (data != null) {
+                    editor.putString(pre + "." + field.getName(), cipher.encrypt(String.valueOf
+                            (data)));
+                }
+                return;
+            }
+
             // 根据属性类型选择操作
             switch (field.getType().getName()) {
                 case "java.lang.String":
@@ -182,6 +239,39 @@ public class PreferencesUtil {
             Log.v(LOG_TAG + "push", "field type is " + field.getType().getName());
             Log.v(LOG_TAG + "push", "field name is " + field.getName());
 
+            // 是否需要解密
+            if (cipher != null && field.isAnnotationPresent(Encrypt.class)) {
+                Log.v(LOG_TAG + "push", "field " + field.getName() + " need decrypt");
+
+                String cipherText = reader.getString(pre + "." + field.getName(), (String) field
+                        .get(obj));
+
+                if (cipherText != null) {
+                    String data = cipher.decrypt(cipherText);
+
+                    // 根据属性类型选择操作
+                    switch (field.getType().getName()) {
+                        case "java.lang.String":
+                            field.set(obj, data);
+                            break;
+                        case "int":
+                            field.setInt(obj, Integer.parseInt(data));
+                            break;
+                        case "boolean":
+                            field.setBoolean(obj, Boolean.parseBoolean(data));
+                            break;
+                        case "float":
+                            field.setFloat(obj, Float.parseFloat(data));
+                            break;
+                        case "long":
+                            field.setLong(obj, Long.parseLong(data));
+                            break;
+                    }
+                }
+
+                return;
+            }
+
             // 根据属性类型选择操作
             switch (field.getType().getName()) {
                 case "java.lang.String":
@@ -250,7 +340,7 @@ public class PreferencesUtil {
      * @return SharedPreferences对象
      */
     public SharedPreferences getSharedPreferences() {
-        return this.context.getSharedPreferences(this.fileName, Context.MODE_PRIVATE);
+        return sharedPreferences;
     }
 
     /**

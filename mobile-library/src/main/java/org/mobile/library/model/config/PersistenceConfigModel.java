@@ -4,8 +4,10 @@ package org.mobile.library.model.config;
  */
 
 import android.content.Context;
+import android.support.annotation.CallSuper;
 import android.util.Log;
 
+import org.mobile.library.util.DesDataCipher;
 import org.mobile.library.util.PreferencesUtil;
 
 /**
@@ -34,8 +36,7 @@ public abstract class PersistenceConfigModel {
      */
     public PersistenceConfigModel(Context context) {
         // 默认使用"config"作为配置文件名
-        this.preferencesUtil = new PreferencesUtil(context, "config");
-        Log.v(LOG_TAG + "PersistenceConfigModel", "config name is config");
+        this(context, "config");
     }
 
     /**
@@ -48,11 +49,17 @@ public abstract class PersistenceConfigModel {
         // 新建持久化对象
         this.preferencesUtil = new PreferencesUtil(context, fileName);
         Log.v(LOG_TAG + "PersistenceConfigModel", "config name is " + fileName);
+
+        if (onIsEncrypt()) {
+            Log.v(LOG_TAG + "PersistenceConfigModel", "need encrypt");
+            this.preferencesUtil.setDataCipher(onCreateDataCipher());
+        }
     }
 
     /**
      * 保存设置
      */
+    @CallSuper
     public void Save() {
         Log.v(LOG_TAG + "Save", "Save() is invoked");
         this.preferencesUtil.Save(this);
@@ -61,6 +68,7 @@ public abstract class PersistenceConfigModel {
     /**
      * 刷新配置参数，从配置文件中重新读取参数
      */
+    @CallSuper
     public void Refresh() {
         Log.v(LOG_TAG + "Refresh", "Refresh() is invoked");
         this.preferencesUtil.Read(this);
@@ -69,6 +77,7 @@ public abstract class PersistenceConfigModel {
     /**
      * 清空配置文件，重置当前参数
      */
+    @CallSuper
     public void Clear() {
         Log.v(LOG_TAG + "Clear", "Clear() is invoked");
         this.preferencesUtil.Clear(this);
@@ -80,6 +89,39 @@ public abstract class PersistenceConfigModel {
      * 用于在{@link #Clear()}时调用以清空全局变量
      */
     protected void onDefault() {
+    }
+
+    /**
+     * 表示是否需要加密，
+     * 在需要加密的字段上使用注解{@link PreferencesUtil.Encrypt}标记，
+     * 且需要创建加密器，通过重写{@link #onCreateDataCipher()}可以覆盖默认的加密器实现
+     *
+     * @return true表示存在加密字段，默认不加密
+     */
+    protected boolean onIsEncrypt() {
+        return false;
+    }
+
+    /**
+     * 创建一个加解密执行器，默认为DES加密器
+     *
+     * @return 加密器
+     */
+    protected PreferencesUtil.DataCipher onCreateDataCipher() {
+        // 用于存放加密密钥的键
+        final String keyTag = "PersistenceConfigModel.encryption";
+
+        // 尝试读取保存的key
+        String key = preferencesUtil.getSharedPreferences().getString(keyTag, null);
+
+        DesDataCipher cipher = new DesDataCipher(key);
+
+        if (key == null) {
+            key = cipher.createNewKey();
+            preferencesUtil.getEditor().putString(keyTag, key).apply();
+        }
+
+        return cipher;
     }
 
     /**
