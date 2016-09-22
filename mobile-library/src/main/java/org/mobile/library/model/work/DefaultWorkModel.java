@@ -199,7 +199,7 @@ public abstract class DefaultWorkModel<Parameters, Result, DataModelType extends
     @Override
     public final void beginExecute(Parameters... parameters) {
         Log.v(LOG_TAG + "beginExecute", "beginExecute start");
-
+        cancelMark = false;
         isAsync = true;
 
         if (!cancelMark) {
@@ -224,7 +224,7 @@ public abstract class DefaultWorkModel<Parameters, Result, DataModelType extends
     @Override
     public final boolean execute(Parameters... parameters) {
         Log.v(LOG_TAG + "execute", "execute start");
-
+        cancelMark = false;
         isAsync = false;
 
         // 用于保存执行结果
@@ -263,8 +263,11 @@ public abstract class DefaultWorkModel<Parameters, Result, DataModelType extends
     @Override
     protected final void onStartWork() {
         Log.v(LOG_TAG + "onStartWork", "work start");
-        // 创建网络请求工具
-        communication = onCreateCommunication();
+
+        if (communication == null) {
+            // 创建网络请求工具
+            communication = onCreateCommunication();
+        }
     }
 
     /**

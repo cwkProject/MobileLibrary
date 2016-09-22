@@ -98,13 +98,13 @@ public abstract class Communication<RequestType, ResponseType> implements
         Log.v(LOG_TAG + "Request", "Request start");
         Log.v(LOG_TAG + "Request", "url is " + url);
 
+        this.success = false;
+        response = null;
+
         if (url == null || (!url.trim().toLowerCase().startsWith("http://") && !url.trim()
                 .toLowerCase().startsWith("https://"))) {
             // 地址不合法
             Log.d(LOG_TAG + "Request", "url is error");
-
-            this.success = false;
-            response = null;
             return;
         }
 

@@ -393,8 +393,12 @@ public abstract class BaseLoginActivity extends AppCompatActivity {
      * 登录成功后执行，设置跳转
      *
      * @param message 成功消息
+     *
+     * @return 标识是否继续加载数据处理，
+     * 如果返回true，则表示需要进一步加载数据，
+     * 需要用户手动关闭加载进度窗口{@link #progressDialog}
      */
-    protected abstract void onLoginSuccess(String message);
+    protected abstract boolean onLoginSuccess(String message);
 
     /**
      * 登录失败后执行
@@ -429,11 +433,6 @@ public abstract class BaseLoginActivity extends AppCompatActivity {
             @Override
             public void doEndWork(boolean state, String message, String data) {
 
-                if (progressDialog != null && progressDialog.isShowing()) {
-                    // 关闭进度条
-                    progressDialog.cancel();
-                }
-
                 // 登录完成执行
                 onLoginData(userName, password, state, data);
 
@@ -441,8 +440,13 @@ public abstract class BaseLoginActivity extends AppCompatActivity {
                     // 登录成功
 
                     // 执行登录成功后的事件
-                    onLoginSuccess(message);
+                    if (!onLoginSuccess(message)) {
+                        // 关闭进度条
+                        progressDialog.cancel();
+                    }
                 } else {
+                    // 关闭进度条
+                    progressDialog.cancel();
                     // 登录失败
                     onLoginFailed(message);
                 }
@@ -488,11 +492,13 @@ public abstract class BaseLoginActivity extends AppCompatActivity {
      * 打开进度条
      */
     protected void startProgressDialog() {
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        // 设置提醒
-        progressDialog.setMessage(getString(R.string.login_loading));
-        progressDialog.setCancelable(true);
+        if (progressDialog == null) {
+            progressDialog = new ProgressDialog(this);
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            // 设置提醒
+            progressDialog.setMessage(getString(R.string.login_loading));
+            progressDialog.setCancelable(true);
+        }
         progressDialog.show();
     }
 
